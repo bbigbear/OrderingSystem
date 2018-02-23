@@ -19,14 +19,9 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="">
   <div class="layui-form-item">
-    <div class="layui-inline">
-      <label class="layui-form-label">选择开设的食堂</label>
-      <div class="layui-input-block">
-        <select name="Classify" id="classify" lay-verType="tips">
-          <option value="荤菜">南山第一食堂</option>
-          <option value="素菜">南山第二食堂</option>
-        </select>
-      </div>
+    <label class="layui-form-label">食堂名称</label>
+    <div class="layui-input-block">
+	<input type="text" name="Name" id="name" placeholder="请输入食堂名称" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
