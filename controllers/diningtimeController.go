@@ -44,6 +44,7 @@ func (this *DiningTimeController) AddTime() {
 func (this *DiningTimeController) AddTimeAction() {
 	fmt.Println("点击添加时段按钮")
 	o := orm.NewOrm()
+	list := make(map[string]interface{})
 	var time_info models.DiningTime
 	json.Unmarshal(this.Ctx.Input.RequestBody, &time_info)
 	fmt.Println("time_info:", &time_info)
@@ -55,7 +56,9 @@ func (this *DiningTimeController) AddTimeAction() {
 		this.ajaxMsg("新增失败", MSG_ERR_Resources)
 	}
 	fmt.Println("自增Id(num)", num)
-	this.ajaxMsg("新增成功", MSG_OK)
+	//this.ajaxMsg("新增成功", MSG_OK)
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
 	return
 }
 

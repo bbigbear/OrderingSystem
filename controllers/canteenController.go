@@ -24,6 +24,7 @@ func (this *CanteenController) Get() {
 		campus = "雁塔校区"
 	}
 	fmt.Println("campus:", campus)
+	this.Data["campus"] = campus
 	//查询数据库
 	num, err := o.QueryTable(canteen).Filter("CampusName", campus).Values(&maps)
 	if err != nil {
@@ -49,6 +50,7 @@ func (this *CanteenController) AddCanteen() {
 func (this *CanteenController) AddCanteenAction() {
 	fmt.Println("点击添加食堂按钮")
 	o := orm.NewOrm()
+	list := make(map[string]interface{})
 	var canteen_info models.Canteen
 	json.Unmarshal(this.Ctx.Input.RequestBody, &canteen_info)
 	fmt.Println("canteen_info:", &canteen_info)
@@ -60,7 +62,9 @@ func (this *CanteenController) AddCanteenAction() {
 		this.ajaxMsg("新增失败", MSG_ERR_Resources)
 	}
 	fmt.Println("自增Id(num)", num)
-	this.ajaxMsg("新增成功", MSG_OK)
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
+	//this.ajaxMsg("新增成功", MSG_OK)
 	return
 }
 

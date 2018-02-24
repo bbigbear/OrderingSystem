@@ -96,6 +96,17 @@
 		,table=layui.table
 		,form=layui.form;
 	  //layer.msg("你好");
+	//自动加载
+	$(function(){
+		//layer.msg({{.campus}});
+		if({{.campus}}!=""){
+			//layer.msg({{.campus}});
+			$("#campus").val({{.campus}});
+			//$("select[name=campus_select]").val({{.campus}});
+			form.render('select');	
+		}				
+	});
+	
 	$('#addCanteen').on('click',function(){
 		//layer.msg("点击添加按钮");
 		//获取校区
@@ -126,6 +137,7 @@
 		//layer.msg(data)
 		console.log(data.value);
 		window.location.href="/v1/canteen?campus="+data.value;
+		
 	});
 	//
 	{{range .canteen_info}}

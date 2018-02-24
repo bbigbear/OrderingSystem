@@ -58,23 +58,25 @@
 		  <div class="layui-form-item">
 			<label class="layui-form-label">选择校区</label>
 		    <div class="layui-input-inline">
-				<select name="Unit" id="unit" lay-verType="tips">
-		          <option value="">雁塔校区</option>
-		          <option value="">盒</option>
+				<select name="campus" id="campus" lay-filter="campus_select">
+		          <option value="雁塔校区">雁塔校区</option>
+		          <option value="庆兴校区">庆兴校区</option>
+				  <option value="曲江校区">曲江校区</option>
 		        </select>
 			</div>			
 			<label class="layui-form-label">选择食堂</label>
 			<div class="layui-input-inline">
-				<select name="Unit" id="unit" lay-verType="tips">
-		          <option value="">南山第一食堂</option>
-		          <option value="">盒</option>
+				<select name="canteen" id="canteen" lay-filter="canteen_select">
+				  {{range .canteen_info}}
+		          <option value= {{.Name}} > {{.Name}} </option>
+				  {{end}}
 		        </select>
 			</div>
 		  </div>
 		  <div class="layui-form-item">
 		    <label class="layui-form-label">是否营业</label>
 		    <div class="layui-input-block">
-		      <input type="checkbox" name="switch" lay-skin="switch">
+		      <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" checked>
 		    </div>
 		  </div> 	
 		</form>
@@ -124,12 +126,31 @@
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table'], function(){
 	  var element = layui.element
+		,form=layui.form
 		,layer=layui.layer
 		,$=layui.jquery
 		,table=layui.table;
 	  //layer.msg("你好");
+	//自动加载
+	$(function(){
+		if({{.campus}}!=""){
+			$("#campus").val({{.campus}});			
+			form.render('select');	
+		}				
+	});
+	
+	//获取下拉列表
+	form.on('select(campus_select)',function(data){
+		//layer.msg(data)
+		console.log(data.value);
+		window.location.href="/v1/dining_room?campus="+data.value;
+		
+	});
+	
+	//点击新增按钮
 	$('#addroom').on('click',function(){
 		//layer.msg("点击添加按钮");
+		var cp=$("#campus").val();
 		//iframe窗
 		layer.open({
 		  type: 2,
@@ -142,7 +163,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/dining_room/add'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/dining_room/add?campus='+cp], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 		  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 		    layer.close(index)
