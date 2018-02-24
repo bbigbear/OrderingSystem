@@ -8,4 +8,5 @@ type DiningRoom struct {
 	Detail          string
 	BusinessPicPath string
 	RoomPicPath     string
+	Status          string `orm:"index"`
 }

@@ -54,8 +54,8 @@
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
 		<blockquote class="layui-elem-quote">校区选择</blockquote>
-		<div style="padding: 15px;height:50px;">
-			<select name="campus" id="campus" style="height:30px;width:200px;">
+		<div  class="layui-form" style="padding: 15px;height:50px;">
+			<select name="campus" id="campus" lay-filter="campus_select" style="height:30px;width:200px;">
 			  <option value="雁塔校区">雁塔校区</option>
 			  <option value="兴庆校区">兴庆校区</option>
 			  <option value="曲江校区">曲江校区</option>
@@ -63,9 +63,11 @@
 		</div>		
 		<blockquote class="layui-elem-quote">食堂开设</blockquote>
 		<div style="padding: 15px;">
-		    <button class="layui-btn">
-			  南山第一食堂 <i class="layui-icon">&#x1006;</i>
+			{{range .canteen_info}}
+		    <button class="layui-btn" id={{.Id}}>
+			  {{.Name}} <i class="layui-icon">&#x1006;</i>
 			</button>
+			{{end}}
 			<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
 		</div>	
 	</div>
@@ -91,7 +93,8 @@
 	  var element = layui.element
 		,layer=layui.layer
 		,$=layui.jquery
-		,table=layui.table;
+		,table=layui.table
+		,form=layui.form;
 	  //layer.msg("你好");
 	$('#addCanteen').on('click',function(){
 		//layer.msg("点击添加按钮");
@@ -108,9 +111,44 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/canteen/add?campus=cp','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)
+				window.location.reload();				
+			  }
+			  return false; 
+		  },
 		});
-	});		
+	});	
+	//获取下拉列表
+	form.on('select(campus_select)',function(data){
+		//layer.msg(data)
+		console.log(data.value);
+		window.location.href="/v1/canteen?campus="+data.value;
+	});
+	//
+	{{range .canteen_info}}
+	$('#{{.Id}}').on('click',function(){
+		//var dc=$("#delCanteen").val();
+		//layer.msg({{.Name}});
+		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
+			//layer.close(index)
+			//window.location.reload();
+			//layer.msg({{.Name}});
+			//window.location.href="/v1/canteen/del?id="+{{.Id}};
+			var jsData={'id':{{.Id}}}
+			$.post('/v1/canteen/del', jsData, function (out) {
+                if (out.code == 200) {
+                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");	
+	        //向服务端发送删除指令
+		}
+	});
+	{{end}}
   });
 
 	

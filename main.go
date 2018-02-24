@@ -34,13 +34,14 @@ func main() {
 func DBConnection() {
 	fmt.Println("初始化数据库")
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:qwe!23@/menu?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "root:qwe!23@/ordering_system?charset=utf8")
 }
 
 func RegisterModel() {
 	fmt.Println("注册数据库模型")
 	orm.RegisterModel(new(models.Canteen))
+	orm.RegisterModel(new(models.DiningTime))
+	orm.RegisterModel(new(models.DiningRoom))
 	//orm.RegisterModel(new(models.))
 	//orm.RegisterModel(new(models.OrderTime))
-
 }

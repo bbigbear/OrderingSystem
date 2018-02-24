@@ -19,24 +19,67 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="">
   <div class="layui-form-item">
-    <label class="layui-form-label">时段名称</label>
+    <label class="layui-form-label">餐厅名称</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过20个汉字" autocomplete="off" class="layui-input">-->
-	  <input type="text" name="Name" id="name" placeholder="输入时段名称" autocomplete="off" class="layui-input">
+	  <input type="text" name="Name" id="name" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
     </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">经营餐厅</label>
+      <div class="layui-input-block">
+        <select name="Classify" id="classify" lay-verType="tips">
+          <option value="荤菜">第一食堂</option>
+          <option value="素菜">第二食堂</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">经营时段</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="like[write]" title="早餐">
+      <input type="checkbox" name="like[read]" title="午餐" >
+      <input type="checkbox" name="like[game]" title="晚餐">
+    </div>
+  </div>
+<!--  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">经营时段</label>
+      <div class="layui-input-inline" style="width: 100px;">
+        <input type="text" name="Original_price" id="original_price" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+  </div>-->
+  <div class="layui-form-item layui-form-text">
+    <label class="layui-form-label">菜品描述</label>
+    <div class="layui-input-block">
+      <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
+    </div>
+  </div>
+  <div class="layui-form-item">
+	<div class="layui-upload">
+	<label class="layui-form-label">营业执照</label>
+	<div class="layui-upload-list" id="demo2">
+    	<button class="layui-btn layui-btn-primary" id="test2" style="width:80px;height:80px;"><i class="layui-icon">&#xe654;</i></button>
+		<input type="file" name="file" id="file[]" class="layui-upload-file">
+	</div>
+	</div>
   </div>
 
   <div class="layui-form-item">
-	<div class="layui-inline">
-      <label class="layui-form-label">经营时段</label>
-      <div class="layui-input-inline">
-        <input type="text" class="layui-input" id="time" placeholder=" - ">
-      </div>
-    </div>  
+	<div class="layui-upload">
+	<label class="layui-form-label">餐厅照片</label>
+	<div class="layui-upload-list" id="demo2">
+    	<button class="layui-btn layui-btn-primary" id="test2" style="width:80px;height:80px;"><i class="layui-icon">&#xe654;</i></button>
+		<input type="file" name="file" id="file[]" class="layui-upload-file">
+	</div>
+	</div>
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" id="add_time">确认</button>
+      <button class="layui-btn" id="add">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->
       <button type="reset" class="layui-btn layui-btn-primary">取消</button>
     </div>
@@ -50,48 +93,18 @@ body{padding: 10px;}
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
 
 <script>
-layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
+layui.use(['form','laydate','upload','jquery','layedit'], function(){
   var form = layui.form
   ,laydate=layui.laydate
   ,upload = layui.upload
   , $ = layui.jquery
-  ,layedit=layui.layedit
-  ,element=layui.element;
+  ,layedit=layui.layedit;
   
-	//点击上传
-	$('#add_time').on('click',function(){
-		var data={
-			'type':$("#name").val(),
-			'time':$("#time").val()
-			};
-		console.log(data)
-		$.ajax({
-			type:"POST",
-			contentType:"application/json;charset=utf-8",
-			url:"/v1/dining_time/add_action",
-			data:JSON.stringify(data),
-			async:false,
-			error:function(request){
-				alert("post error")						
-			},
-			success:function(res){
-				if(res.code==200){
-					alert("新增成功")
-					window.location.reload();					
-				}else{
-					alert("新增失败")
-				}						
-			}
-		});
-		return false;
-	});
-
-	//时间范围
-	  laydate.render({
-	    elem: '#time'
-	    ,type: 'time'
-	    ,range: true
-	  });
+	//日期
+	laydate.render({
+		elem:'#time'
+		,type: 'datetime'
+	}); 
 	
 	//图片上传
 	  var path_src=""
@@ -139,7 +152,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 	  }); 
 	//文本域
 	var index=layedit.build('info',{
-		hideTool:['image']
+		hideTool:['image','face']
 	});
 	//添加图片
 	$('#test2').on('click',function(){
@@ -187,7 +200,6 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 		}
 		return false;
 	});
-
 	
 
 	  
