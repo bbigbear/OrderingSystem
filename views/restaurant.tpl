@@ -10,26 +10,11 @@
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
     <div class="layui-logo">订餐系统</div>
-    <!-- 头部区域（可配合layui已有的水平导航） -->
-    <!--<ul class="layui-nav layui-layout-left">
-      <li class="layui-nav-item"><a href="">个人中心</a></li>
-      <li class="layui-nav-item"><a href="">内容管理</a></li>
-      <li class="layui-nav-item"><a href="">统计报表</a></li>
-	  <li class="layui-nav-item"><a href="">客服管理</a></li>
-      <li class="layui-nav-item">
-        <a href="javascript:;">系统管理</a>
-        <dl class="layui-nav-child">
-          <dd><a href="">邮件管理</a></dd>
-          <dd><a href="">消息管理</a></dd>
-          <dd><a href="">授权管理</a></dd>
-        </dl>
-      </li>
-    </ul>-->
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
           <img src="../static/img/admin.jpg" class="layui-nav-img">
-          学校管理员
+          餐厅管理员
         </a>
         <dl class="layui-nav-child">
           <dd><a href="">基本资料</a></dd>
@@ -44,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/canteen">食堂管理</a></li>
-        <li class="layui-nav-item"><a href="/v1/dining_room">餐厅管理</a></li>
-        <li class="layui-nav-item"><a href="/v1/dining_time">供应时段</a></li>
+        <li class="layui-nav-item"><a href="/v1/canteen">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/dining_room">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/dining_time">管理</a></li>
       </ul>
     </div>
   </div>

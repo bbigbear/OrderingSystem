@@ -15,12 +15,19 @@ func init() {
 	beego.Router("/v1/canteen/add", &controllers.CanteenController{}, "*:AddCanteen")
 	beego.Router("/v1/canteen/add_action", &controllers.CanteenController{}, "*:AddCanteenAction")
 	beego.Router("/v1/canteen/del", &controllers.CanteenController{}, "*:DelCanteen")
+
 	beego.Router("/v1/dining_room", &controllers.DiningRoomController{})
 	beego.Router("/v1/dining_room/add", &controllers.DiningRoomController{}, "*:AddRoom")
 	beego.Router("/v1/dining_room/add_action", &controllers.DiningRoomController{}, "*:AddRoomAction")
+	beego.Router("/v1/dining_room/getdata", &controllers.DiningRoomController{}, "*:GetRoomData")
+	beego.Router("/v1/dining_room/edit", &controllers.DiningRoomController{}, "*:EditRoom")
+	beego.Router("/v1/dining_room/del", &controllers.DiningRoomController{}, "*:DelRoom")
+
 	beego.Router("/v1/dining_time", &controllers.DiningTimeController{})
 	beego.Router("/v1/dining_time/add", &controllers.DiningTimeController{}, "*:AddTime")
 	beego.Router("/v1/dining_time/add_action", &controllers.DiningTimeController{}, "*:AddTimeAction")
 	beego.Router("/v1/dining_time/getdata", &controllers.DiningTimeController{}, "*:GetTimeData")
 	beego.Router("/v1/dining_time/del", &controllers.DiningTimeController{}, "*:DelTime")
+
+	beego.Router("/v1/restaurant", &controllers.RestaurantController{})
 }

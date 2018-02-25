@@ -91,3 +91,91 @@ func (this *DiningRoomController) AddRoomAction() {
 	this.ajaxList("新增成功", MSG_OK, 1, list)
 	return
 }
+
+func (this *DiningRoomController) EditRoom() {
+	o := orm.NewOrm()
+	var maps []orm.Params
+	diningroom := new(models.DiningRoom)
+
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+
+	num, err := o.QueryTable(diningroom).Filter("Id", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("编辑餐厅失败", err.Error())
+		this.ajaxMsg("编辑失败", MSG_ERR_Resources)
+	}
+	fmt.Println("edit room reslut num:", num)
+	this.Data["room_info"] = maps
+	for _, m := range maps {
+		this.Data["id"] = m["Id"]
+		this.Data["n"] = m["Name"]
+		this.Data["cn"] = m["CanteenName"]
+		this.Data["t"] = m["Time"]
+		this.Data["d"] = m["Detail"]
+		this.Data["bp"] = m["BusinessPicPath"]
+		this.Data["rp"] = m["RoomPicPath"]
+		this.Data["s"] = m["Status"]
+	}
+	this.TplName = "edit_diningroom.tpl"
+}
+
+func (this *DiningRoomController) EditRoomAction() {
+	fmt.Println("点击新增餐厅按钮")
+	//定义
+	o := orm.NewOrm()
+	list := make(map[string]interface{})
+	var diningroom models.DiningRoom
+	json.Unmarshal(this.Ctx.Input.RequestBody, &diningroom)
+	fmt.Println("diningroom_info:", &diningroom)
+	//插入餐厅数据库
+	num, err := o.Insert(&diningroom)
+	if err != nil {
+		log4go.Stdout("新增餐厅失败", err.Error())
+		this.ajaxMsg("新增失败", MSG_ERR_Resources)
+	}
+	fmt.Println("自增Id(num)", num)
+
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
+	return
+}
+
+func (this *DiningRoomController) GetRoomData() {
+	fmt.Println("获取餐厅信息")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	diningroom := new(models.DiningRoom)
+
+	//查询数据库
+	num, err := o.QueryTable(diningroom).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取餐厅失败", err.Error())
+		this.ajaxMsg("获取餐厅失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get diningroom reslut num:", num)
+	this.ajaxList("获取餐厅成功", 0, num, maps)
+	return
+}
+
+func (this *DiningRoomController) DelRoom() {
+	fmt.Println("点击删除餐厅按钮")
+	//获取id
+	id, err := this.GetInt("id")
+	if err != nil {
+		log4go.Stdout("删除餐厅id失败", err.Error())
+		this.ajaxMsg("删除餐厅id失败", MSG_ERR_Param)
+	}
+	fmt.Println("删除餐厅id:", id)
+	o := orm.NewOrm()
+	diningroom := new(models.DiningRoom)
+	num, err := o.QueryTable(diningroom).Filter("Id", id).Delete()
+	if err != nil {
+		log4go.Stdout("删除餐厅失败", err.Error())
+		this.ajaxMsg("删除餐厅失败", MSG_ERR_Resources)
+	}
+	fmt.Println("del canteen reslut num:", num)
+	//list["data"] = maps
+	this.ajaxMsg("删除餐厅成功", MSG_OK)
+	return
+}

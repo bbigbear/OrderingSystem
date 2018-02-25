@@ -18,7 +18,7 @@
 		<a href="/v1/canteen" class="layui-btn">学校管理员</a>
 	</div>
 	<div style="padding: 15px;padding-left: 50px;">
-		<a href="" class="layui-btn">餐厅管理员</a>			
+		<a href="/v1/restaurant" class="layui-btn">餐厅管理员</a>			
 	</div>
 	<div style="padding: 15px;padding-left: 50px;">
 		<a href="" class="layui-btn">学生</a>	
