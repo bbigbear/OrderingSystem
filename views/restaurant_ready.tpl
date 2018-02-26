@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/canteen">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/dining_room">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/dining_time">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage">管理</a></li>
       </ul>
     </div>
   </div>

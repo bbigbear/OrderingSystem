@@ -22,6 +22,7 @@ func init() {
 	beego.Router("/v1/dining_room/getdata", &controllers.DiningRoomController{}, "*:GetRoomData")
 	beego.Router("/v1/dining_room/edit", &controllers.DiningRoomController{}, "*:EditRoom")
 	beego.Router("/v1/dining_room/del", &controllers.DiningRoomController{}, "*:DelRoom")
+	beego.Router("/v1/dining_room/getroom", &controllers.DiningRoomController{}, "*:GetRoom")
 
 	beego.Router("/v1/dining_time", &controllers.DiningTimeController{})
 	beego.Router("/v1/dining_time/add", &controllers.DiningTimeController{}, "*:AddTime")
@@ -29,5 +30,7 @@ func init() {
 	beego.Router("/v1/dining_time/getdata", &controllers.DiningTimeController{}, "*:GetTimeData")
 	beego.Router("/v1/dining_time/del", &controllers.DiningTimeController{}, "*:DelTime")
 
-	beego.Router("/v1/restaurant", &controllers.RestaurantController{})
+	beego.Router("/v1/restaurant_dish", &controllers.DishController{})
+	beego.Router("/v1/restaurant_manage", &controllers.ManageController{})
+	beego.Router("/v1/restaurant_ready", &controllers.ReadyController{})
 }

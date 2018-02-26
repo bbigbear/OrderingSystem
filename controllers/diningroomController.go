@@ -179,3 +179,22 @@ func (this *DiningRoomController) DelRoom() {
 	this.ajaxMsg("删除餐厅成功", MSG_OK)
 	return
 }
+
+func (this *DiningRoomController) GetRoom() {
+	fmt.Println("获取餐厅信息")
+	o := orm.NewOrm()
+	diningroom := new(models.DiningRoom)
+
+	name := this.Input().Get("name")
+	fmt.Println("name:", name)
+
+	//查询数据库
+	exist := o.QueryTable(diningroom).Filter("Name", name).Exist()
+	if exist {
+		this.ajaxMsg("获取餐厅成功", MSG_OK)
+	} else {
+		this.ajaxMsg("不存在该餐厅", MSG_ERR_Resources)
+	}
+
+	return
+}
