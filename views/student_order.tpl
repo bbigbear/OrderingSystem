@@ -14,7 +14,7 @@
       <li class="layui-nav-item">
         <a href="javascript:;">
           <img src="../static/img/admin.jpg" class="layui-nav-img">
-          餐厅管理员
+          学生
         </a>
         <dl class="layui-nav-child">
           <dd><a href="">基本资料</a></dd>
@@ -29,80 +29,19 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order">我的订单</a></li>
       </ul>
     </div>
   </div>
   <div class="layui-body">
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
-		<div class="layui-tab layui-tab-card">
-		  <ul class="layui-tab-title">
-		    <li class="layui-this">菜品库管理</li>
-		    <li>经营时段管理</li>
-		    <li>综合管理</li>
-		  </ul>
-		  <div class="layui-tab-content" style="height:700px;">
-		    <div class="layui-tab-item layui-show">
-				<blockquote class="layui-elem-quote" style="margin-top:10px;">菜品库分类</blockquote>
-				<div style="padding: 15px;">
-					{{range .canteen_info}}
-				    <button class="layui-btn" id={{.Id}}>
-					  {{.Name}} <i class="layui-icon">&#x1006;</i>
-					</button>
-					{{end}}
-					<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
-				</div>
-				<blockquote class="layui-elem-quote">菜单分类</blockquote>
-				<div style="padding: 15px;">
-					{{range .canteen_info}}
-				    <button class="layui-btn" id={{.Id}}>
-					  {{.Name}} <i class="layui-icon">&#x1006;</i>
-					</button>
-					{{end}}
-					<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
-				</div>	
-			</div>
-		    <div class="layui-tab-item">
-				<blockquote class="layui-elem-quote">经营时段</blockquote>
-				<hr class="layui-bg-green">
-				<table id="timeList" lay-filter="time"></table>
-				<script type="text/html" id="barDemo">
-					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">管理</a>
-				</script>				
-				<hr class="layui-bg-green">
-			</div>
-		    <div class="layui-tab-item">
-				<blockquote class="layui-elem-quote">信息管理</blockquote>
-				<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">				 		
-				  <div class="layui-form-item layui-form-text">
-				    <label class="layui-form-label">餐厅介绍</label>
-				    <div class="layui-input-block">
-				      <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
-				    </div>
-				  </div>
-				  <div class="layui-form-item">
-					<div class="layui-upload">
-					<label class="layui-form-label">餐厅照片</label>
-					<div class="layui-upload-list" id="demo1">
-				    	<button class="layui-btn layui-btn-primary" id="test1" style="width:80px;height:80px;"><i class="layui-icon">&#xe654;</i></button>
-						<input type="file" name="file" id="file[]" class="layui-upload-file">
-					</div>
-					</div>
-				  </div>
-				  </div>
-				  <div class="layui-form-item">
-				    <div class="layui-input-block">
-				      <button class="layui-btn" id="add">确认修改</button>
-				      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
-				    </div>
-				  </div>
-				</form>
-		  </div>
-		</div>		
-	</div>
+		<blockquote class="layui-elem-quote">我的订单</blockquote>		
+		<table id="roomList" lay-filter="room"></table>
+		<script type="text/html" id="barDemo">
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>
+		</script>
   </div>  
   <div class="layui-footer">
     <!-- 底部固定区域 -->
@@ -120,18 +59,13 @@
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
 	//JavaScript代码区域
-	layui.use(['element','layer','jquery','table','layedit'], function(){
+	layui.use(['element','layer','jquery','table'], function(){
 	  var element = layui.element
 		,layer=layui.layer
 		,$=layui.jquery
 		,table=layui.table
-		,form=layui.form
-		,layedit=layui.layedit;
+		,form=layui.form;
 	  //layer.msg("你好");
-	//文本域
-	var index=layedit.build('info',{
-		hideTool:['image','face']
-	});
 	//自动加载
 	$(function(){
 		//layer.msg({{.campus}});

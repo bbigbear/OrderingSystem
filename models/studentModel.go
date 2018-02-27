@@ -1,7 +1,6 @@
 package models
 
-type TempReady struct {
+type Student struct {
 	Id   int64
-	Rid  int64
 	Name string
 }

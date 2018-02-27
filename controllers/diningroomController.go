@@ -177,6 +177,8 @@ func (this *DiningRoomController) DelRoom() {
 	fmt.Println("del canteen reslut num:", num)
 	//list["data"] = maps
 	this.ajaxMsg("删除餐厅成功", MSG_OK)
+	//补充删除联级下的数据，以免出现垃圾数据
+
 	return
 }
 
@@ -196,5 +198,27 @@ func (this *DiningRoomController) GetRoom() {
 		this.ajaxMsg("不存在该餐厅", MSG_ERR_Resources)
 	}
 
+	return
+}
+
+//新建供应时段
+func (this *DiningRoomController) AddTimeAction() {
+	fmt.Println("点击新增时段按钮")
+	//定义
+	o := orm.NewOrm()
+	list := make(map[string]interface{})
+	var timeInterval models.TimeInterval
+	json.Unmarshal(this.Ctx.Input.RequestBody, &timeInterval)
+	fmt.Println("timeInterval_info:", &timeInterval)
+	//插入时段数据库
+	num, err := o.Insert(&timeInterval)
+	if err != nil {
+		log4go.Stdout("新增时段失败", err.Error())
+		this.ajaxMsg("新增失败", MSG_ERR_Resources)
+	}
+	fmt.Println("自增Id(num)", num)
+
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
 	return
 }

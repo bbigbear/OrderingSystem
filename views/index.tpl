@@ -22,7 +22,7 @@
 		<input type="text" name="Name" id="name" placeholder="请输入餐厅名称" style="height:32px;margin-left:10px;">				
 	</div>
 	<div style="padding: 15px;padding-left: 50px;">
-		<a href="" class="layui-btn">学生</a>	
+		<a href="/v1/student_index" class="layui-btn">学生</a>	
 	</div>
   </div>
   

@@ -38,23 +38,102 @@
   <div class="layui-body">
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
-		<blockquote class="layui-elem-quote">校区选择</blockquote>
-		<div  class="layui-form" style="padding: 15px;height:50px;">
-			<select name="campus" id="campus" lay-filter="campus_select" style="height:30px;width:200px;">
-			  <option value="雁塔校区">雁塔校区</option>
-			  <option value="兴庆校区">兴庆校区</option>
-			  <option value="曲江校区">曲江校区</option>
-			</select> 
-		</div>		
-		<blockquote class="layui-elem-quote">食堂开设</blockquote>
-		<div style="padding: 15px;">
-			{{range .canteen_info}}
-		    <button class="layui-btn" id={{.Id}}>
-			  {{.Name}} <i class="layui-icon">&#x1006;</i>
-			</button>
-			{{end}}
-			<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
-		</div>	
+		<div class="layui-tab layui-tab-card">
+		  <ul class="layui-tab-title">
+		    <li class="layui-this">备餐</li>
+		    <li>模板</li>
+		    <li>备餐记录</li>
+		  </ul>
+		  <div class="layui-tab-content" style="height: 500px;">
+		    <div class="layui-tab-item layui-show">
+				<blockquote class="layui-elem-quote" style="margin-top:10px;">备餐</blockquote>	
+				<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
+					<div class="layui-form-item">
+					    <label class="layui-form-label">备餐时间：</label>
+					    <div class="layui-input-inline" style="width: 120px;">
+					        <input type="text" name="Stocks" id="date" autocomplete="off" class="layui-input">		
+					    </div>
+						<div class="layui-input-inline" style="width: 80px;">
+							<select name="Unit" id="unit" lay-verType="tips">
+					          <option value="早餐">早餐</option>
+					          <option value="晚餐">晚餐</option>
+					        </select>
+						</div>
+						<label class="layui-form-label">营业时间：</label>
+					    <div class="layui-input-inline" style="width: 150px;">
+					        <input type="text" name="Stocks" id="time" autocomplete="off" class="layui-input">		
+					    </div>
+					</div>
+					<div class="layui-form-item">
+					    <label class="layui-form-label">选择模板：</label>
+						<div class="layui-input-inline" style="width: 200px;">
+							<select name="Unit" id="unit" lay-verType="tips">
+					          <option value="早餐">早餐</option>
+					          <option value="晚餐">晚餐</option>
+					        </select>
+						</div>					
+					</div>
+					  <div class="layui-form-item">
+					    <div class="layui-input-block">
+					      <button class="layui-btn" id="add_time">备餐</button>
+					    </div>
+					  </div>
+				</form>
+			</div>
+		    <div class="layui-tab-item">
+				<blockquote class="layui-elem-quote" style="margin-top:10px;">预设模板</blockquote>	
+				<table class="layui-table">
+				  <colgroup>
+				    <col width="150">
+				    <col >
+				  </colgroup>
+				  <thead>
+				    <tr>
+				      <th>模板名称</th>
+				      <th>操作</th>
+				    </tr> 
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <td>一周内模板</td>
+				      <td>编辑|删除</td>
+				    </tr>
+				  </tbody>
+				</table>
+				<div>
+					<button class="layui-btn" id="add_time">新增模板</button>
+				</div>			
+			</div>
+		    <div class="layui-tab-item">
+				<blockquote class="layui-elem-quote" style="margin-top:10px;">备餐记录</blockquote>	
+				<div style="padding-bottom:10px;padding-left:10px;">
+					<a style="padding-right:10px;">按类别：</a>
+					<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
+					  <a href="">不限</a>
+					  <a href="">凉菜</a>
+					  <a href="">热菜</a>
+					</span>
+					<div class="layui-input-inline" style="width: 150px;margin-left:100px;">
+					    <input type="text" name="Stocks" id="date1" autocomplete="off" class="layui-input" placeholder="请输入日期">		
+					</div>
+				</div>
+				<div class="layui-collapse">
+				  <div class="layui-colla-item">
+				    <h2 class="layui-colla-title">杜甫</h2>
+				    <div class="layui-colla-content layui-show">内容区域</div>
+				  </div>
+				  <div class="layui-colla-item">
+				    <h2 class="layui-colla-title">李清照</h2>
+				    <div class="layui-colla-content">内容区域</div>
+				  </div>
+				  <div class="layui-colla-item">
+				    <h2 class="layui-colla-title">鲁迅</h2>
+				    <div class="layui-colla-content">内容区域</div>
+				  </div>
+				</div>
+			</div>
+		  </div>
+		</div>			
 	</div>
   </div>
   
@@ -74,13 +153,31 @@
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
 	//JavaScript代码区域
-	layui.use(['element','layer','jquery','table'], function(){
+	layui.use(['element','layer','jquery','table','laydate'], function(){
 	  var element = layui.element
+		,laydate=layui.laydate
 		,layer=layui.layer
 		,$=layui.jquery
 		,table=layui.table
 		,form=layui.form;
 	  //layer.msg("你好");
+	//时间范围
+	  laydate.render({
+	    elem: '#time'
+	    ,type: 'time'
+	    ,range: true
+	  });
+	  
+	  laydate.render({
+	    elem: '#date'
+	    ,type: 'date'
+	  });
+	
+	 laydate.render({
+	    elem: '#date1'
+	    ,type: 'date'
+	  });
+	
 	//自动加载
 	$(function(){
 		//layer.msg({{.campus}});

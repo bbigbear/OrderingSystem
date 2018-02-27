@@ -33,4 +33,7 @@ func init() {
 	beego.Router("/v1/restaurant_dish", &controllers.DishController{})
 	beego.Router("/v1/restaurant_manage", &controllers.ManageController{})
 	beego.Router("/v1/restaurant_ready", &controllers.ReadyController{})
+
+	beego.Router("/v1/student_index", &controllers.OrderController{})
+	beego.Router("/v1/student_order", &controllers.OrderController{}, "*:GetOrder")
 }
