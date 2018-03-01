@@ -19,7 +19,7 @@
 	</div>
 	<div style="padding: 15px;padding-left: 50px;">
 		<a id="room" class="layui-btn">餐厅管理员</a>	
-		<input type="text" name="Name" id="name" placeholder="请输入餐厅名称" style="height:32px;margin-left:10px;">				
+		<input type="text" name="Id" id="id" placeholder="请输入餐厅id" style="height:32px;margin-left:10px;">				
 	</div>
 	<div style="padding: 15px;padding-left: 50px;">
 		<a href="/v1/student_index" class="layui-btn">学生</a>	
@@ -38,14 +38,14 @@
 		,table=layui.table;
 		
 		$('#room').on('click', function(){            
-			var name=$("#name").val();
-			if(name==""){
-				layer.msg("请输入餐厅名称");
+			var id=$("#id").val();
+			if(id==""){
+				layer.msg("请输入餐厅id");
 			}else{				
-				var jsData={'name':name}
+				var jsData={'id':id}
 				$.post('/v1/dining_room/getroom', jsData, function (out) {
 	                if (out.code == 200) {
-	                    window.location.href="/v1/restaurant_dish?name="+name
+	                    window.location.href="/v1/restaurant_dish?id="+id
 	                } else {
 	                    layer.msg(out.message)
 	                }

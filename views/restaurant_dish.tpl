@@ -44,9 +44,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
       </ul>
     </div>
   </div>
@@ -93,8 +93,7 @@
 		</table>-->
 		<table id="roomList" lay-filter="room"></table>
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">新增</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="stop">详情</a>
+			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">详情</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 		</script>
 		<hr class="layui-bg-green">		
@@ -156,7 +155,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/dining_room/add?campus='+cp], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_dish/add?id='+{{.id}}], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 		  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 		    layer.close(index)
@@ -173,26 +172,26 @@
 	  table.render({
 	    elem: '#roomList'
 	    ,height: 315
-	    ,url: '/v1/dining_room/getdata' //数据接口
+	    ,url: '/v1/restaurant_dish/getdata?id={{.id}}'//数据接口
 	    ,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
 		  {type:'checkbox', fixed: 'left'}
-		  ,{field: 'RoomPicPath', title: '菜品图片', width:'11%',height:'20%'
+		  ,{field: 'DishPicPath', title: '菜品图片', width:'11%',height:'20%'
 			,templet:function(d){
-				var list=d.RoomPicPath.split(',')
+				var list=d.DishPicPath.split(',')
 				//alert(list.length)
 				if(list.length!=1){
 					for(var i=0;i<list.length-1;i++){
 						return '<img src="'+'/'+list[i]+'">'				
 					}
 				}else{
-					return ""	
+					return ""
 				}						
 			}}
 	      ,{field:'Name', title:'菜品名称', width:120}
-	      ,{field:'Status',  title:'状态', width:120}
-	      ,{field:'Time', title:'供应时段', width:120}
+		  ,{field:'Price',  title:'价格', width:120}
+	      ,{field:'Detail',  title:'描述', width:120}
 		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
 	    ]]
 	  });		
@@ -213,10 +212,11 @@
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/dining_room/edit?id='+data.Id], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/restaurant_dish/edit?id='+data.Id], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
 			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
+				window.location.reload();
 			  }
 			  return false; 
 			  },
@@ -224,7 +224,7 @@
 	    } else if(layEvent === 'del'){
 	      layer.confirm('真的删除行么', function(index){
 	        var jsData={'id':data.Id}
-			$.post('/v1/dining_room/del', jsData, function (out) {
+			$.post('/v1/restaurant_dish/del', jsData, function (out) {
                 if (out.code == 200) {
                     layer.alert('删除成功了', {icon: 1},function(index){
                         layer.close(index);
@@ -238,27 +238,6 @@
 	        layer.close(index);
 	        //向服务端发送删除指令
 	      });
-	    } else if(layEvent === 'stop'){
-	      layer.msg('编辑操作');
-		  layer.open({
-			  type: 2,
-			  title: '编辑菜品',
-			  //closeBtn: 0, //不显示关闭按钮
-			  shadeClose: true,
-			  shade: false,
-			  area: ['893px', '600px'],
-			 // offset: 'rb', //右下角弹出
-			  //time: 2000, //2秒后自动关闭
-			  maxmin: true,
-			  anim: 2,
-			  content: ['/v1/dish/edit_show?id='+data.Id], //iframe的url，no代表不显示滚动条
-			  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-			  }
-			  return false; 
-			  },
-		});					  
 	    }
 	  });	
 			

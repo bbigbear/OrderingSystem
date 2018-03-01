@@ -53,7 +53,7 @@
 					  {{.Name}} <i class="layui-icon">&#x1006;</i>
 					</button>
 					{{end}}
-					<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
+					<button class="layui-btn layui-btn-primary" id="addDish"><i class="layui-icon">&#xe654;</i></button>
 				</div>
 				<blockquote class="layui-elem-quote">菜单分类</blockquote>
 				<div style="padding: 15px;">
@@ -62,7 +62,7 @@
 					  {{.Name}} <i class="layui-icon">&#x1006;</i>
 					</button>
 					{{end}}
-					<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
+					<button class="layui-btn layui-btn-primary" id="addMenu"><i class="layui-icon">&#xe654;</i></button>
 				</div>	
 			</div>
 		    <div class="layui-tab-item">
@@ -92,7 +92,6 @@
 					</div>
 					</div>
 				  </div>
-				  </div>
 				  <div class="layui-form-item">
 				    <div class="layui-input-block">
 				      <button class="layui-btn" id="add">确认修改</button>
@@ -103,7 +102,7 @@
 		  </div>
 		</div>		
 	</div>
-  </div>  
+  </div> 
   <div class="layui-footer">
     <!-- 底部固定区域 -->
     ©2018 智慧校园. All Rights Reserved
@@ -143,14 +142,14 @@
 		}				
 	});
 	
-	$('#addCanteen').on('click',function(){
+	$('#addDish').on('click',function(){
 		//layer.msg("点击添加按钮");
 		//获取校区
-		var cp=$("#campus").val();
+		//var cp=$("#campus").val();
 		//iframe窗
 		layer.open({
 		  type: 2,
-		  title: '新增食堂',
+		  title: '新增菜品库分类',
 		  //closeBtn: 0, //不显示关闭按钮
 		  shadeClose: true,
 		  area: ['450px', '150px'],
@@ -158,7 +157,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_manage/adddishtype','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -168,6 +167,32 @@
 		  },
 		});
 	});	
+	
+	$('#addMenu').on('click',function(){
+		//layer.msg("点击添加按钮");
+		//获取校区
+		//var cp=$("#campus").val();
+		//iframe窗
+		layer.open({
+		  type: 2,
+		  title: '新增菜单分类',
+		  //closeBtn: 0, //不显示关闭按钮
+		  shadeClose: true,
+		  area: ['450px', '150px'],
+		 // offset: 'rb', //右下角弹出
+		  //time: 2000, //2秒后自动关闭
+		  maxmin: true,
+		  anim: 2,
+		  content: ['/v1/restaurant_manage/addmenutype','no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)
+				window.location.reload();				
+			  }
+			  return false; 
+		  },
+		});
+	});
 	//获取下拉列表
 	form.on('select(campus_select)',function(data){
 		//layer.msg(data)

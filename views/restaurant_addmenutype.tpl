@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>新增食堂</title>
+  <title>新增菜单分类</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -19,9 +19,9 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="">
   <div class="layui-form-item">
-    <label class="layui-form-label">食堂名称</label>
+    <label class="layui-form-label">分类名称</label>
     <div class="layui-input-block">
-	<input type="text" name="Name" id="name" placeholder="请输入食堂名称" autocomplete="off" class="layui-input">
+	<input type="text" name="Name" id="name" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>新增菜品</title>
+  <title>新增餐厅</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -253,14 +253,14 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	}
 	$('#add').on('click',function(){
 	    	
-		//var len=document.querySelector("input[type=file]").files.length;		
-		//if (len==0){
-		//	uploadForm();
-		//}
+		var len=document.querySelector("input[type=file]").files.length;		
+		if (len==0){
+			uploadForm();
+		}
 		//console.log(document.querySelector("input[name='file1']").value);
-		$("input[name='file']").each(function(){ 		
-			console.log($(this).val())
-		}); 
+		//$("input[name='file']").each(function(){ 		
+			//console.log($(this).val())
+		//}); 
 		
 		return false;
 	});

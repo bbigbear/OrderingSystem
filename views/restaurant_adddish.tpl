@@ -19,18 +19,18 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
   <div class="layui-form-item">
-    <label class="layui-form-label">餐厅名称</label>
+    <label class="layui-form-label">菜品名称</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过20个汉字" autocomplete="off" class="layui-input">-->
-	  <input type="text" name="Name" id="name" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
+	  <input type="text" name="Name" id="name" placeholder="请输入菜品名称" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">经营食堂</label>
+      <label class="layui-form-label">菜品种类</label>
       <div class="layui-input-block">
-        <select name="canteen" id="canteen" lay-filter="canteen_select">
-          {{range .canteen_info}}
+        <select name="DishType" id="dishType" lay-filter="dishType_select">
+          {{range .map}}
 		    <option value= {{.Name}} > {{.Name}} </option>
 		  {{end}}
         </select>
@@ -38,21 +38,13 @@ body{padding: 10px;}
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">经营时段</label>
-    <div class="layui-input-block">
-	  {{range .time_info}}
-      <input type="checkbox" name={{.Type}} title={{.Type}} value={{.Type}}>
-      {{end}}
-    </div>
-  </div>
-<!--  <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">经营时段</label>
+      <label class="layui-form-label">菜品售价</label>
       <div class="layui-input-inline" style="width: 100px;">
-        <input type="text" name="Original_price" id="original_price" autocomplete="off" class="layui-input">
+        <input type="text" name="Sell_price" id="sell_price" placeholder="￥" autocomplete="off" class="layui-input">
       </div>
     </div>
-  </div>-->
+  </div>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">菜品描述</label>
     <div class="layui-input-block">
@@ -61,26 +53,16 @@ body{padding: 10px;}
   </div>
   <div class="layui-form-item">
 	<div class="layui-upload">
-	<label class="layui-form-label">营业执照</label>
+	<label class="layui-form-label">菜品照片</label>
 	<div class="layui-upload-list" id="demo1">
     	<button class="layui-btn layui-btn-primary" id="test1" style="width:80px;height:80px;"><i class="layui-icon">&#xe654;</i></button>
 		<input type="file" name="file" id="file[]" class="layui-upload-file">
 	</div>
 	</div>
   </div>
-
-  <div class="layui-form-item">
-	<div class="layui-upload">
-	<label class="layui-form-label">餐厅照片</label>
-	<div class="layui-upload-list" id="demo2">
-    	<button class="layui-btn layui-btn-primary" id="test2" style="width:80px;height:80px;"><i class="layui-icon">&#xe654;</i></button>
-		<input type="file" name="file" id="file[]" class="layui-upload-file">
-	</div>
-	</div>
-  </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" id="add">确认</button>
+      <button class="layui-btn" id="add">确认提交</button>
 <!--	  <input type="hidden" id="pic_path">-->
       <button type="reset" class="layui-btn layui-btn-primary">取消</button>
     </div>
@@ -106,8 +88,9 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		elem:'#time'
 		,type: 'datetime'
 	});
-	//营业执照图片上传
-	  var path_src1=""
+	
+	//餐厅图片上传
+	  var path_src=""
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -116,7 +99,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		,auto:false
 	    ,number: 1
 	    ,size: 3*1024
-		,bindAction: '#add1'
+		,bindAction: '#add'
 		//,field:'myfile'
 	    ,choose: function(obj){
 	      //预读本地文件示例，不支持ie8
@@ -124,52 +107,6 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		  var files = obj.pushFile();
 	      obj.preview(function(index, file, result){
 	        $('#demo1').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
-	      	$("#upload_img_"+index).bind('click',function(){
-                delete files[index];//删除对应的文件
-                $(this).remove();
-				uploadList.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选			
-             });
-		});
-	    }
-	    ,done: function(res){
-	      //上传完毕
-			//alert("上传完毕")
-			console.log(res);
-			if (res.code==200){
-				path_src1=path_src1+res.data.src+',';	
-			}else{
-				layer.msg(res.message);
-			}			
-	    }
-	    ,allDone: function(obj){
-	      	//alert(path_src)
-			console.log(obj)
-			//post json
-			//uploadForm();	
-			$('#add1').on('click',function(){				
-				return false;
-			});					
-	    }
-	  });
-	
-	//餐厅图片上传
-	  var path_src=""
-	  var uploadList=upload.render({
-	    elem: '#test2'
-	    ,url: '/v1/put_img'
-	    ,multiple: true
-		,exts: 'jpg|png|gif|bmp|jpeg'
-		,auto:false
-	    ,number: 1
-	    ,size: 3*1024
-		,bindAction: '#add1'
-		//,field:'myfile'
-	    ,choose: function(obj){
-	      //预读本地文件示例，不支持ie8
-		  //alert(obj);
-		  var files = obj.pushFile();
-	      obj.preview(function(index, file, result){
-	        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
 	      	$("#upload_img_"+index).bind('click',function(){
                 delete files[index];//删除对应的文件
                 $(this).remove();
@@ -191,7 +128,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      	//alert(path_src)
 			console.log(obj)
 			//post json
-			//uploadForm();						
+			uploadForm();						
 	    }
 	  }); 
 	//文本域
@@ -203,9 +140,6 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		return false;//禁止form自动提交
 	});
 	
-	$('#test2').on('click',function(){
-		return false;//禁止form自动提交
-	});
 	
 	//复选框
 	//var checkbox_src=""
@@ -215,27 +149,19 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			//checkbox_src=checkbox_src+data.elem.title+',';	
 		//}
 	//});
-	function uploadForm(){
-		//alert(path_src)
-		var checkbox_src=""
-		{{range .time_info}}
-		if($("input[name={{.Type}}]:checked").val()!=undefined){
-			checkbox_src=checkbox_src+$("input[name={{.Type}}]:checked").val()+',';
-		}		
-		{{end}}	 		
+	function uploadForm(){	 		
 		var data={
+			'rid':parseInt({{.id}}),
 			'name':$("#name").val(),
-			'canteenName':$("#canteen").val(),
-			'time':checkbox_src,
-			'businessPicPath':path_src1,
-			'roomPicPath':path_src,
+			'price':parseFloat($("#sell_price").val()),
+			'dishType':$("#dishType").val(),
+			'dishPicPath':path_src,
 			'detail':layedit.getContent(index),
-			'status':"营业中"
 			};
 			$.ajax({
 				type:"POST",
 				contentType:"application/json;charset=utf-8",
-				url:"/v1/dining_room/add_action",
+				url:"/v1/restaurant_dish/add_action",
 				data:JSON.stringify(data),
 				async:false,
 				error:function(request){
@@ -253,15 +179,10 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	}
 	$('#add').on('click',function(){
 	    	
-		//var len=document.querySelector("input[type=file]").files.length;		
-		//if (len==0){
-		//	uploadForm();
-		//}
-		//console.log(document.querySelector("input[name='file1']").value);
-		$("input[name='file']").each(function(){ 		
-			console.log($(this).val())
-		}); 
-		
+		var len=document.querySelector("input[type=file]").files.length;		
+		if (len==0){
+			uploadForm();
+		}				
 		return false;
 	});
 	

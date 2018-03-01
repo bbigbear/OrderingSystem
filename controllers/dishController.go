@@ -16,9 +16,9 @@ type DishController struct {
 
 func (this *DishController) Get() {
 	//获取name
-	name := this.Input().Get("name")
-	fmt.Println("name:", name)
-	this.Data["name"] = name
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
 
 	this.TplName = "restaurant_dish.tpl"
 }
@@ -26,10 +26,21 @@ func (this *DishController) Get() {
 func (this *DishController) AddDish() {
 
 	//获取name
-	name := this.Input().Get("name")
-	fmt.Println("name:", name)
-	this.Data["name"] = name
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
 
+	//种类获取
+	o := orm.NewOrm()
+	var maps []orm.Params
+	dishtype := new(models.DishType)
+	num, err := o.QueryTable(dishtype).Filter("Id", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取菜品种类失败", err.Error())
+		this.ajaxMsg("获取菜品总类失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get dishType result num:", num)
+	this.Data["map"] = maps
+	this.Data["id"] = id
 	this.TplName = "restaurant_adddish.tpl"
 }
 
@@ -81,34 +92,33 @@ func (this *DishController) EditDish() {
 }
 
 func (this *DishController) EditDishAction() {
-	fmt.Println("点击编辑菜品按钮")
-	//定义
+	fmt.Println("更新菜品编辑")
 	o := orm.NewOrm()
-	list := make(map[string]interface{})
-	var dish models.Dish
-	json.Unmarshal(this.Ctx.Input.RequestBody, &dish)
-	fmt.Println("diningroom_info:", &dish)
-	//插入餐厅数据库
-	num, err := o.Insert(&dish)
+	var dish_info models.Dish
+	json.Unmarshal(this.Ctx.Input.RequestBody, &dish_info)
+	fmt.Println("dish_info:", &dish_info)
+	num, err := o.Update(&dish_info)
+	fmt.Println("updata dish reslut num:", num)
 	if err != nil {
-		log4go.Stdout("新增菜品失败", err.Error())
-		this.ajaxMsg("新增失败", MSG_ERR_Resources)
+		log4go.Stdout("更新菜品失败", err.Error())
+		this.ajaxMsg("更新失败", MSG_ERR_Resources)
 	}
-	fmt.Println("自增Id(num)", num)
-
-	list["id"] = num
-	this.ajaxList("新增成功", MSG_OK, 1, list)
+	if num == 0 {
+		this.ajaxMsg("更新失败", MSG_ERR_Param)
+	}
+	this.ajaxMsg("修改成功", MSG_OK)
 	return
 }
 
 func (this *DishController) GetDishData() {
-	fmt.Println("获取餐厅信息")
+	fmt.Println("获取菜品信息")
 	o := orm.NewOrm()
 	var maps []orm.Params
 	dish := new(models.Dish)
-
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
 	//查询数据库
-	num, err := o.QueryTable(dish).Values(&maps)
+	num, err := o.QueryTable(dish).Filter("Id", id).Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取菜品失败", err.Error())
 		this.ajaxMsg("获取菜品失败", MSG_ERR_Resources)

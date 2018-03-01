@@ -4,6 +4,7 @@ import (
 	"OrderingSystem/models"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/alecthomas/log4go"
@@ -86,6 +87,35 @@ func (this *DiningRoomController) AddRoomAction() {
 		this.ajaxMsg("新增失败", MSG_ERR_Resources)
 	}
 	fmt.Println("自增Id(num)", num)
+	//获取时段类型，存储到timeInterval
+
+	Rid := diningroom.Id
+	time := diningroom.Time
+	timeList := strings.Split(time, ",")
+	time_count := len(timeList) - 1
+	for i := 0; i < time_count; i++ {
+		//insert
+		var ti models.TimeInterval
+		var dt models.DiningTime
+		diningtime := new(models.DiningTime)
+		ti.Rid = Rid
+		ti.Name = timeList[i]
+
+		//先查询
+		err := o.QueryTable(diningtime).Filter("Type", timeList[i]).One(&dt)
+		if err != nil {
+			log4go.Stdout("新增时段失败", err.Error())
+			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+		}
+		ti.Time = dt.Time
+
+		num, err := o.Insert(&ti)
+		if err != nil {
+			log4go.Stdout("新增时段失败", err.Error())
+			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+		}
+		fmt.Println("新增时段Id(num)", num)
+	}
 
 	list["id"] = num
 	this.ajaxList("新增成功", MSG_OK, 1, list)
@@ -187,11 +217,11 @@ func (this *DiningRoomController) GetRoom() {
 	o := orm.NewOrm()
 	diningroom := new(models.DiningRoom)
 
-	name := this.Input().Get("name")
-	fmt.Println("name:", name)
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
 
 	//查询数据库
-	exist := o.QueryTable(diningroom).Filter("Name", name).Exist()
+	exist := o.QueryTable(diningroom).Filter("Id", id).Exist()
 	if exist {
 		this.ajaxMsg("获取餐厅成功", MSG_OK)
 	} else {

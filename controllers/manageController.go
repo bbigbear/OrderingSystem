@@ -23,7 +23,7 @@ func (this *ManageController) Get() {
 //新建菜品类型
 func (this *ManageController) AddDishType() {
 
-	this.TplName = "restaurant_manage.tpl"
+	this.TplName = "restaurant_adddishtype.tpl"
 }
 
 func (this *ManageController) AddDishTypeAction() {
@@ -74,7 +74,7 @@ func (this *ManageController) DelDishType() {
 //新建菜单类型
 func (this *ManageController) AddMenuType() {
 
-	this.TplName = "restaurant_manage.tpl"
+	this.TplName = "restaurant_addmenutype.tpl"
 }
 
 func (this *ManageController) AddMenuTypeAction() {
