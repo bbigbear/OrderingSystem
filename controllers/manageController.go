@@ -16,12 +16,43 @@ type ManageController struct {
 
 //加载管理界面
 func (this *ManageController) Get() {
+	//获取name
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
+
+	//获取菜品库类型
+	//查询数据库
+	o := orm.NewOrm()
+	var maps []orm.Params
+	dt := new(models.DishType)
+	num, err := o.QueryTable(dt).Filter("Rid", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取菜品类型失败", err.Error())
+		this.ajaxMsg("获取菜品类型失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get dishtype reslut num:", num)
+	this.Data["dt_info"] = maps
+	//获取菜单类型
+	var maps_mt []orm.Params
+	mt := new(models.MenuType)
+	num1, err := o.QueryTable(mt).Filter("Rid", id).Values(&maps_mt)
+	if err != nil {
+		log4go.Stdout("获取菜单类型失败", err.Error())
+		this.ajaxMsg("获取菜单类型失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get menutype reslut num:", num1)
+	this.Data["mt_info"] = maps_mt
 
 	this.TplName = "restaurant_manage.tpl"
 }
 
 //新建菜品类型
 func (this *ManageController) AddDishType() {
+	//获取rid
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
 
 	this.TplName = "restaurant_adddishtype.tpl"
 }
@@ -73,6 +104,10 @@ func (this *ManageController) DelDishType() {
 
 //新建菜单类型
 func (this *ManageController) AddMenuType() {
+	//获取rid
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
 
 	this.TplName = "restaurant_addmenutype.tpl"
 }
@@ -135,14 +170,47 @@ func (this *ManageController) GetTimeInterval() {
 	o := orm.NewOrm()
 	var maps []orm.Params
 	timeInterval := new(models.TimeInterval)
-	num, err := o.QueryTable(timeInterval).Filter("Id", id).Values(&maps)
+	num, err := o.QueryTable(timeInterval).Filter("Rid", id).Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取时间类型失败", err.Error())
 		this.ajaxMsg("获取时间类型失败", MSG_ERR_Resources)
 	}
 	fmt.Println("del canteen reslut num:", num)
 	//list["data"] = maps
-	this.Data["time_info"] = maps
-	this.TplName = "restaurant_manage.tpl"
+	//this.Data["time_info"] = maps
+	//	this.TplName = "restaurant_manage.tpl"
+	this.ajaxList("获取菜品成功", 0, num, maps)
+	return
 
+}
+
+//
+func (this *ManageController) EditTimeInterval() {
+	//获取name
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
+
+	this.TplName = "restaurant_edittime.tpl"
+}
+
+func (this *ManageController) EditTimeIntervalAction() {
+	fmt.Println("点击更新时段按钮")
+	o := orm.NewOrm()
+	var time_info models.TimeInterval
+	json.Unmarshal(this.Ctx.Input.RequestBody, &time_info)
+	fmt.Println("time_info:", &time_info)
+
+	//更新数据库,只更新time
+	num, err := o.Update(&time_info, "Time")
+	fmt.Println("updata time reslut num:", num)
+	if err != nil {
+		log4go.Stdout("更新时段失败")
+		this.ajaxMsg("更新失败", MSG_ERR_Resources)
+	}
+	if num == 0 {
+		this.ajaxMsg("更新失败", MSG_ERR_Param)
+	}
+	this.ajaxMsg("修改成功", MSG_OK)
+	return
 }

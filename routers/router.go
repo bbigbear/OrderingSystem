@@ -37,12 +37,19 @@ func init() {
 	beego.Router("/v1/restaurant_dish/edit", &controllers.DishController{}, "*:EditDish")
 	beego.Router("/v1/restaurant_dish/edit_action", &controllers.DishController{}, "*:EditDishAction")
 	beego.Router("/v1/restaurant_dish/del", &controllers.DishController{}, "*:DelDish")
+	beego.Router("/v1/restaurant_dish/delmulti", &controllers.DishController{}, "*:DelMultiData")
 
 	beego.Router("/v1/restaurant_manage", &controllers.ManageController{})
 	beego.Router("/v1/restaurant_manage/adddishtype", &controllers.ManageController{}, "*:AddDishType")
 	beego.Router("/v1/restaurant_manage/adddishtype_action", &controllers.ManageController{}, "*:AddDishTypeAction")
+	beego.Router("/v1/restaurant_manage/deldishtype", &controllers.ManageController{}, "*:DelDishType")
 	beego.Router("/v1/restaurant_manage/addmenutype", &controllers.ManageController{}, "*:AddMenuType")
 	beego.Router("/v1/restaurant_manage/addmenutype_action", &controllers.ManageController{}, "*:AddMenuTypeAction")
+	beego.Router("/v1/restaurant_manage/delmenutype", &controllers.ManageController{}, "*:DelMenuType")
+	beego.Router("/v1/restaurant_manage/gettimedata", &controllers.ManageController{}, "*:GetTimeInterval")
+	beego.Router("/v1/restaurant_manage/edittime", &controllers.ManageController{}, "*:EditTimeInterval")
+	beego.Router("/v1/restaurant_manage/edittime_action", &controllers.ManageController{}, "*:EditTimeIntervalAction")
+
 	beego.Router("/v1/restaurant_ready", &controllers.ReadyController{})
 
 	beego.Router("/v1/student_index", &controllers.OrderController{})

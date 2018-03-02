@@ -15,6 +15,22 @@ type ReadyController struct {
 }
 
 func (this *ReadyController) Get() {
+	//获取name
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	this.Data["id"] = id
+
+	o := orm.NewOrm()
+	var maps []orm.Params
+	timeInterval := new(models.TimeInterval)
+	num, err := o.QueryTable(timeInterval).Filter("Rid", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取时间类型失败", err.Error())
+		this.ajaxMsg("获取时间类型失败", MSG_ERR_Resources)
+	}
+	fmt.Println("del canteen reslut num:", num)
+	//list["data"] = maps
+	this.Data["time"] = maps
 
 	this.TplName = "restaurant_ready.tpl"
 }

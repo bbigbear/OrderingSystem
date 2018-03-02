@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
       </ul>
     </div>
   </div>
@@ -55,8 +55,9 @@
 					    </div>
 						<div class="layui-input-inline" style="width: 80px;">
 							<select name="Unit" id="unit" lay-verType="tips">
-					          <option value="早餐">早餐</option>
-					          <option value="晚餐">晚餐</option>
+					       	  {{range .time}}
+							  <option value={{.Name}}>{{.Name}}</option>
+							  {{end}}
 					        </select>
 						</div>
 						<label class="layui-form-label">营业时间：</label>

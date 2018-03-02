@@ -151,13 +151,17 @@ func (this *DiningRoomController) EditRoom() {
 }
 
 func (this *DiningRoomController) EditRoomAction() {
-	fmt.Println("点击新增餐厅按钮")
+	fmt.Println("点击更新餐厅按钮")
 	//定义
 	o := orm.NewOrm()
 	list := make(map[string]interface{})
 	var diningroom models.DiningRoom
+	//	dr:=new(models.DiningRoom)
 	json.Unmarshal(this.Ctx.Input.RequestBody, &diningroom)
 	fmt.Println("diningroom_info:", &diningroom)
+
+	//先查询再更新
+
 	//插入餐厅数据库
 	num, err := o.Insert(&diningroom)
 	if err != nil {

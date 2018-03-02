@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>新增菜品</title>
+  <title>编辑菜品</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -17,7 +17,6 @@ body{padding: 10px;}
 </style>
 </head>
 <body>
-{{range .dish_info}}
 <form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
   <div class="layui-form-item">
     <label class="layui-form-label">菜品名称</label>
@@ -30,8 +29,8 @@ body{padding: 10px;}
     <div class="layui-inline">
       <label class="layui-form-label">菜品种类</label>
       <div class="layui-input-block">
-        <select name="DishType" id="dishType" value="{{.DishType}}" lay-filter="dishType_select">
-          {{range .map}}
+        <select name="DishType" id="dishType" lay-filter="dishType_select">
+          {{range .map_dt}}
 		    <option value= {{.Name}} > {{.Name}} </option>
 		  {{end}}
         </select>
@@ -69,7 +68,7 @@ body{padding: 10px;}
     </div>
   </div>
 </form>
-{{end}}
+
 <br><br><br>
 
 
@@ -91,6 +90,8 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	});
 	    	//初始化
  	$(function(){
+		$("#name").val({{.n}})
+		$("#sell_price").val({{.p}})		
 		$("#dishType").val({{.t}})
 		$("#detail").val({{.d}})
 		layedit.build('detail'); 

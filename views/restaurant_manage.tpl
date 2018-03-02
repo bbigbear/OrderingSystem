@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
       </ul>
     </div>
   </div>
@@ -48,8 +48,8 @@
 		    <div class="layui-tab-item layui-show">
 				<blockquote class="layui-elem-quote" style="margin-top:10px;">菜品库分类</blockquote>
 				<div style="padding: 15px;">
-					{{range .canteen_info}}
-				    <button class="layui-btn" id={{.Id}}>
+					{{range .dt_info}}
+				    <button class="layui-btn" id="dt_{{.Id}}">
 					  {{.Name}} <i class="layui-icon">&#x1006;</i>
 					</button>
 					{{end}}
@@ -57,8 +57,8 @@
 				</div>
 				<blockquote class="layui-elem-quote">菜单分类</blockquote>
 				<div style="padding: 15px;">
-					{{range .canteen_info}}
-				    <button class="layui-btn" id={{.Id}}>
+					{{range .mt_info}}
+				    <button class="layui-btn" id="mt_{{.Id}}">
 					  {{.Name}} <i class="layui-icon">&#x1006;</i>
 					</button>
 					{{end}}
@@ -70,7 +70,7 @@
 				<hr class="layui-bg-green">
 				<table id="timeList" lay-filter="time"></table>
 				<script type="text/html" id="barDemo">
-					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">管理</a>
+					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">管理</a>
 				</script>				
 				<hr class="layui-bg-green">
 			</div>
@@ -157,7 +157,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_manage/adddishtype','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_manage/adddishtype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -183,7 +183,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_manage/addmenutype','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_manage/addmenutype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -200,20 +200,20 @@
 		window.location.href="/v1/canteen?campus="+data.value;
 		
 	});
-	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
+	//菜品类型
+	{{range .dt_info}}
+	$('#dt_{{.Id}}').on('click',function(){
 		//var dc=$("#delCanteen").val();
 		//layer.msg({{.Name}});
-		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
+		if(confirm('确定要删除该菜品？')){ //只有当点击confirm框的确定时，该层才会关闭
 			//layer.close(index)
 			//window.location.reload();
 			//layer.msg({{.Name}});
 			//window.location.href="/v1/canteen/del?id="+{{.Id}};
 			var jsData={'id':{{.Id}}}
-			$.post('/v1/canteen/del', jsData, function (out) {
+			$.post('/v1/restaurant_manage/deldishtype', jsData, function (out) {
                 if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
+                    window.location.reload();
                 } else {
                     layer.msg(out.message)
                 }
@@ -222,6 +222,73 @@
 		}
 	});
 	{{end}}
+	//菜单类型
+	{{range .mt_info}}
+	$('#mt_{{.Id}}').on('click',function(){
+		//var dc=$("#delCanteen").val();
+		//layer.msg({{.Name}});
+		if(confirm('确定要删除该菜单？')){ //只有当点击confirm框的确定时，该层才会关闭
+			//layer.close(index)
+			//window.location.reload();
+			//layer.msg({{.Name}});
+			//window.location.href="/v1/canteen/del?id="+{{.Id}};
+			var jsData={'id':{{.Id}}}
+			$.post('/v1/restaurant_manage/delmenutype', jsData, function (out) {
+                if (out.code == 200) {
+                    window.location.reload();
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");	
+	        //向服务端发送删除指令
+		}
+	});
+	{{end}}
+	
+	//时间管理
+	 //table 渲染
+	  table.render({
+	    elem: '#timeList'
+	    ,height: 315
+	    ,url: '/v1/restaurant_manage/gettimedata?id={{.id}}' //数据接口
+	    //,page: true //开启分页
+		,id: 'listReload2'
+	    ,cols: [[ //表头		  
+	      {field:'Name', title:'供应类型', width:100}
+	      ,{field:'Time', title:'时间区间',  width:200}
+		  ,{fixed: 'right', title:'管理',width:200, align:'center', toolbar: '#barDemo'}
+	    ]]
+	  });
+	//
+	//监听工具条
+		table.on('tool(time)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		    var data = obj.data //获得当前行数据
+		    ,layEvent = obj.event; //获得 lay-event 对应的值
+		    if(layEvent === 'edit'){
+		    // layer.msg(data.Id);		
+			layer.open({
+			  type: 2,
+			  title: '编辑时段',
+			  //closeBtn: 0, //不显示关闭按钮
+			  shadeClose: true,
+			  shade: false,
+			  area: ['600px', '450px'],
+			 // offset: 'rb', //右下角弹出
+			  //time: 2000, //2秒后自动关闭
+			  maxmin: true,
+			  anim: 2,
+			  content: ['/v1/restaurant_manage/edittime?id='+data.Id], //iframe的url，no代表不显示滚动条
+			  cancel: function(index, layero){ 
+				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+				    layer.close(index)
+					//window.location.reload();	
+					table.reload({});			
+				  }
+				  return false; 
+			  },
+			});
+	    } 
+	  });
   });
 
 	

@@ -50,14 +50,14 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   
 	$('#add').on('click',function(){
 		var data={
-			'campusName':{{.campus_name}},
+			'rid':parseInt({{.id}}),
 			'name':$("#name").val()
 			};
 		console.log(data)
 		$.ajax({
 			type:"POST",
 			contentType:"application/json;charset=utf-8",
-			url:"/v1/canteen/add_action",
+			url:"/v1/restaurant_manage/addmenutype_action",
 			data:JSON.stringify(data),
 			async:false,
 			error:function(request){

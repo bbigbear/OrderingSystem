@@ -10,21 +10,6 @@
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
     <div class="layui-logo">订餐系统</div>
-    <!-- 头部区域（可配合layui已有的水平导航） -->
-    <!--<ul class="layui-nav layui-layout-left">
-      <li class="layui-nav-item"><a href="">个人中心</a></li>
-      <li class="layui-nav-item"><a href="">内容管理</a></li>
-      <li class="layui-nav-item"><a href="">统计报表</a></li>
-	  <li class="layui-nav-item"><a href="">客服管理</a></li>
-      <li class="layui-nav-item">
-        <a href="javascript:;">系统管理</a>
-        <dl class="layui-nav-child">
-          <dd><a href="">邮件管理</a></dd>
-          <dd><a href="">消息管理</a></dd>
-          <dd><a href="">授权管理</a></dd>
-        </dl>
-      </li>
-    </ul>-->
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
@@ -56,9 +41,10 @@
 		<div style="padding-bottom:50px;">
 			<a style="padding-right:10px;">按类别：</a>
 			<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
-			  <a href="">不限</a>
-			  <a href="">凉菜</a>
-			  <a href="">热菜</a>
+			  <a id="all">不限</a>
+			  {{range .map}}
+			  <a id="{{.Id}}">{{.Name}}</a>
+			  {{end}}
 			</span>
 		</div>
 		<blockquote class="layui-elem-quote">菜品信息</blockquote>
@@ -67,31 +53,10 @@
 		<div>
 			<span class="layui-breadcrumb" lay-separator="|">										  					
 				<i class="layui-icon">&#xe640;</i>
-				<a id="soldout_del">删除</a>
+				<a id="dish_del">删除</a>
 			</span>
 		</div>
-		<!--<table class="layui-table">
-		  <colgroup>
-		    <col width="150">
-		    <col width="200">
-		    <col >
-		  </colgroup>
-		  <thead>
-		    <tr>
-		      <th>供应类型</th>
-		      <th>时间区间</th>
-		      <th>操作</th>
-		    </tr> 
-		  </thead>
-		  <tbody>
-		    <tr>
-		      <td>早餐</td>
-		      <td>2016-11-29</td>
-		      <td>人生就像是一场修行</td>
-		    </tr>
-		  </tbody>
-		</table>-->
-		<table id="roomList" lay-filter="room"></table>
+		<table id="dishList" lay-filter="room"></table>
 		<script type="text/html" id="barDemo">
 			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">详情</a>
 			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -161,7 +126,8 @@
 		    layer.close(index)
 			//window.parent.location.reload();
 			//重载表格
-			table.reload('listReload', {});
+			//table.reload('listReload', {});
+			window.location.reload();
 		  }
 		  return false; 
 		  },
@@ -170,7 +136,7 @@
 	
 	  //table 渲染
 	  table.render({
-	    elem: '#roomList'
+	    elem: '#dishList'
 	    ,height: 315
 	    ,url: '/v1/restaurant_dish/getdata?id={{.id}}'//数据接口
 	    ,page: true //开启分页
@@ -192,6 +158,7 @@
 	      ,{field:'Name', title:'菜品名称', width:120}
 		  ,{field:'Price',  title:'价格', width:120}
 	      ,{field:'Detail',  title:'描述', width:120}
+		  ,{field:'DishType',  title:'类型', width:120}
 		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
 	    ]]
 	  });		
@@ -212,7 +179,7 @@
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/restaurant_dish/edit?id='+data.Id], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/restaurant_dish/edit?id='+data.Id+"&rid={{.id}}"], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
 			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -239,8 +206,64 @@
 	        //向服务端发送删除指令
 	      });
 	    }
-	  });	
-			
+	  });
+	//点击不限
+	$('#all').on('click',function(){
+		window.location.reload();
+	});	
+	//点击检索按钮
+	{{range .map}}
+	$('#{{.Id}}').on('click',function(){
+		//layer.msg({{.Name}})
+                table.reload('listReload', {
+                    where: {
+                        dt: {{.Name}},
+                    }
+                });
+
+	});	
+	{{end}}
+	
+	//批量删除
+	$('#dish_del').on('click',function(){				
+		var str="";
+		var checkStatus=table.checkStatus('listReload')
+		,data=checkStatus.data;
+		if(data.length==0){
+			alert("请选择要删除的菜品")
+		}else{
+			for(var i=0;i<data.length;i++){
+				str+=data[i].Id+",";
+			}
+			layer.confirm('是否删除这'+data.length+'条数据?',{icon:3,title:'提示'},function(index){
+				//window.location.href="/v1/delmultidata?id="+str+"";
+				$.ajax({
+					type:"POST",
+					url:"/v1/restaurant_dish/delmulti",
+					data:{
+						id:str	
+					},
+					async:false,
+					error:function(request){
+						alert("post error")						
+					},
+					success:function(res){
+						if(res.code==200){
+							alert("删除成功")	
+							//重载表格
+							table.reload('listReload', {							  
+							});												
+						}else{
+							alert("删除失败")
+						}						
+					}					
+				});				
+				layer.close(index);
+			});
+		}
+		return false;
+	});
+	
   });
 
 	

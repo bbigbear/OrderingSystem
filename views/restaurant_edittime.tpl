@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>新增菜品分类</title>
+  <title>编辑时段</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -19,14 +19,16 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="">
   <div class="layui-form-item">
-    <label class="layui-form-label">分类名称</label>
-    <div class="layui-input-block">
-	<input type="text" name="Name" id="name" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
-    </div>
+	<div class="layui-inline">
+      <label class="layui-form-label">经营时段</label>
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="time" placeholder=" - ">
+      </div>
+    </div>  
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" id="add">确认</button>
+      <button class="layui-btn" id="add_time">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->
       <button type="reset" class="layui-btn layui-btn-primary">取消</button>
     </div>
@@ -48,16 +50,17 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   ,layedit=layui.layedit
   ,element=layui.element;
   
-	$('#add').on('click',function(){
+	//点击上传
+	$('#add_time').on('click',function(){
 		var data={
-			'rid':parseInt({{.id}}),
-			'name':$("#name").val()
+			'id':parseInt({{.id}}),
+			'time':$("#time").val()
 			};
 		console.log(data)
 		$.ajax({
 			type:"POST",
 			contentType:"application/json;charset=utf-8",
-			url:"/v1/restaurant_manage/adddishtype_action",
+			url:"/v1/restaurant_manage/edittime_action",
 			data:JSON.stringify(data),
 			async:false,
 			error:function(request){
@@ -65,15 +68,23 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 			},
 			success:function(res){
 				if(res.code==200){
-					alert("新增成功")
+					alert("更新成功")
 					window.location.reload();					
 				}else{
-					alert("新增失败")
+					alert("更新失败")
 				}						
 			}
 		});
 		return false;
 	});
+
+	//时间范围
+	  laydate.render({
+	    elem: '#time'
+	    ,type: 'time'
+	    ,range: true
+	  });
+	  
 });
 </script>
 
