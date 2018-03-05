@@ -102,7 +102,7 @@
 				  </tbody>
 				</table>
 				<div>
-					<button class="layui-btn" id="add_time">新增模板</button>
+					<button class="layui-btn" id="add_temp">新增模板</button>
 				</div>			
 			</div>
 		    <div class="layui-tab-item">
@@ -244,6 +244,11 @@
 		}
 	});
 	{{end}}
+	
+	//点击新增模板
+	$('#add_temp').on('click',function(){
+		window.location.href="/v1/restaurant_ready/addtemp?id="+{{.id}};
+	});
   });
 
 	

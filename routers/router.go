@@ -51,7 +51,9 @@ func init() {
 	beego.Router("/v1/restaurant_manage/edittime_action", &controllers.ManageController{}, "*:EditTimeIntervalAction")
 
 	beego.Router("/v1/restaurant_ready", &controllers.ReadyController{})
-
+	beego.Router("/v1/restaurant_ready/addtemp", &controllers.ReadyController{}, "*:AddTemp")
+	beego.Router("/v1/restaurant_ready/addreadydish", &controllers.ReadyController{}, "*:AddReadyDish")
+	beego.Router("/v1/restaurant_ready/AddMultiReadyDish", &controllers.ReadyController{}, "*:AddMultiReadyDish")
 	beego.Router("/v1/student_index", &controllers.OrderController{})
 	beego.Router("/v1/student_order", &controllers.OrderController{}, "*:GetOrder")
 }
