@@ -7,4 +7,5 @@ type Ready struct {
 	TimeInterval string
 	Time         string
 	Tname        string
+	Tid          int64
 }

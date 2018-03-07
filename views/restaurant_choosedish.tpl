@@ -173,6 +173,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 					type:"POST",
 					url:"/v1/restaurant_ready/AddMultiReadyDish",
 					data:{
+						tid:{{.tid}},
 						dname:str,
 						mname:{{.mname}},
 						number:parseInt(number),						

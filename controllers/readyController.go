@@ -4,6 +4,7 @@ import (
 	"OrderingSystem/models"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
@@ -29,24 +30,145 @@ func (this *ReadyController) Get() {
 		log4go.Stdout("获取时间类型失败", err.Error())
 		this.ajaxMsg("获取时间类型失败", MSG_ERR_Resources)
 	}
-	fmt.Println("del canteen reslut num:", num)
+	fmt.Println("get time reslut num:", num)
 	//list["data"] = maps
 	this.Data["time"] = maps
+
+	//获取模板下拉列表
+	var temp_maps []orm.Params
+	temp := new(models.TempReady)
+	num1, err := o.QueryTable(temp).Filter("Rid", id).Values(&temp_maps)
+	if err != nil {
+		log4go.Stdout("获取模板类型失败", err.Error())
+		this.ajaxMsg("获取模板类型失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get temp reslut num:", num1)
+	this.Data["temp"] = temp_maps
+	//时间种类获取
+	var maps_ti []orm.Params
+	ti := new(models.TimeInterval)
+	num2, err := o.QueryTable(ti).Filter("Rid", id).Values(&maps_ti)
+	if err != nil {
+		log4go.Stdout("获取时间类型失败", err.Error())
+		this.ajaxMsg("获取时间类型失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get dishType result num:", num2)
+	this.Data["maps_ti"] = maps_ti
+	//获取备份内容
+	var maps_ready []orm.Params
+	ready := new(models.Ready)
+	num3, err := o.QueryTable(ready).Filter("Rid", id).Values(&maps_ready)
+	if err != nil {
+		log4go.Stdout("获取备份失败", err.Error())
+		this.ajaxMsg("获取备份失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get ready result num:", num3)
+	this.Data["maps_ready"] = maps_ready
+
+	//获取备份食材
+	var maps_rd []orm.Params
+	readydish := new(models.ReadyDish)
+	num4, err := o.QueryTable(readydish).Values(&maps_rd)
+	if err != nil {
+		log4go.Stdout("获取备份食材失败", err.Error())
+		this.ajaxMsg("获取备份食材失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get readydish result num:", num4)
+	this.Data["maps_rd"] = maps_rd
 
 	this.TplName = "restaurant_ready.tpl"
 }
 
-//模板
-func (this *ReadyController) AddTemp() {
+//新增模板
+func (this *ReadyController) AddTempReady() {
 	//获取id
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
 	this.Data["id"] = id
+
+	this.TplName = "restaurant_addtemp.tpl"
+}
+
+func (this *ReadyController) AddTempReadyAction() {
+	fmt.Println("点击新增模板按钮")
+	//定义
+	o := orm.NewOrm()
+	list := make(map[string]interface{})
+	var temp models.TempReady
+	json.Unmarshal(this.Ctx.Input.RequestBody, &temp)
+	fmt.Println("temp_info:", &temp)
+	//插入模板数据库
+	num, err := o.Insert(&temp)
+	if err != nil {
+		log4go.Stdout("新增模板失败", err.Error())
+		this.ajaxMsg("新增失败", MSG_ERR_Resources)
+	}
+	fmt.Println("自增Id(num)", num)
+
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
+	return
+}
+
+//获取模板信息
+func (this *ReadyController) GetTempData() {
+	fmt.Println("获取模板信息")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	temp := new(models.TempReady)
+	query := o.QueryTable(temp)
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	//查询数据库
+	num, err := query.Filter("Rid", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取模板失败", err.Error())
+		this.ajaxMsg("获取模板失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get temp reslut num:", num)
+	this.ajaxList("获取模板成功", 0, num, maps)
+	return
+}
+
+//删除模板信息
+func (this *ReadyController) DelTemp() {
+	fmt.Println("点击删除模板按钮")
+	//获取id
+	id, err := this.GetInt("id")
+	if err != nil {
+		log4go.Stdout("删除模板id失败", err.Error())
+		this.ajaxMsg("删除模板id失败", MSG_ERR_Param)
+	}
+	fmt.Println("删除模板id:", id)
+	o := orm.NewOrm()
+	temp := new(models.TempReady)
+	num, err := o.QueryTable(temp).Filter("Id", id).Delete()
+	if err != nil {
+		log4go.Stdout("删除模板失败", err.Error())
+		this.ajaxMsg("删除模板失败", MSG_ERR_Resources)
+	}
+	fmt.Println("del temp reslut num:", num)
+	//list["data"] = maps
+	this.ajaxMsg("删除模板成功", MSG_OK)
+	return
+}
+
+//编辑模板
+func (this *ReadyController) EditTemp() {
+	//获取rid
+	rid := this.Input().Get("rid")
+	fmt.Println("rid:", rid)
+	this.Data["id"] = rid
+	//获取tid
+	id := this.Input().Get("id")
+	fmt.Println("tid:", id)
+	this.Data["tid"] = id
+
 	//获取菜单类型
 	o := orm.NewOrm()
 	var maps_mt []orm.Params
 	mt := new(models.MenuType)
-	num1, err := o.QueryTable(mt).Filter("Rid", id).Values(&maps_mt)
+	num1, err := o.QueryTable(mt).Filter("Rid", rid).Values(&maps_mt)
 	if err != nil {
 		log4go.Stdout("获取菜单类型失败", err.Error())
 		this.ajaxMsg("获取菜单类型失败", MSG_ERR_Resources)
@@ -58,7 +180,8 @@ func (this *ReadyController) AddTemp() {
 	//获取每个菜单下的菜品
 	var maps_rd []orm.Params
 	rd := new(models.ReadyDish)
-	num, err := o.QueryTable(rd).Values(&maps_rd)
+	//
+	num, err := o.QueryTable(rd).Filter("Tid", id).Values(&maps_rd)
 	if err != nil {
 		log4go.Stdout("获取菜品失败", err.Error())
 		this.ajaxMsg("获取菜品失败", MSG_ERR_Resources)
@@ -67,7 +190,7 @@ func (this *ReadyController) AddTemp() {
 	this.Data["rd_info"] = maps_rd
 	fmt.Println("rd_info:", maps_rd)
 
-	this.TplName = "restaurant_addtemp.tpl"
+	this.TplName = "restaurant_edittemp.tpl"
 }
 
 func (this *ReadyController) AddTempAction() {
@@ -102,6 +225,10 @@ func (this *ReadyController) AddReadyDish() {
 	mname := this.Input().Get("mname")
 	fmt.Println("mname:", mname)
 	this.Data["mname"] = mname
+	//获取tid
+	tid := this.Input().Get("tid")
+	fmt.Println("tid:", tid)
+	this.Data["tid"] = tid
 
 	//种类获取
 	o := orm.NewOrm()
@@ -122,6 +249,16 @@ func (this *ReadyController) AddReadyDish() {
 func (this *ReadyController) AddMultiReadyDish() {
 	fmt.Println("添加准备菜品数据")
 
+	//获取rid
+	tid := this.Input().Get("tid")
+	fmt.Println("tid:", tid)
+	this.Data["tid"] = tid
+	//string转为int64
+	t, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		log4go.Stdout("获取tid失败", err.Error())
+		this.ajaxMsg("tid必须为string类型", MSG_ERR_Param)
+	}
 	//rd := new(models.ReadyDish)
 	//list := make(map[string]interface{})
 	dname := this.Input().Get("dname")
@@ -143,11 +280,12 @@ func (this *ReadyController) AddMultiReadyDish() {
 	for i := 0; i < name_len; i++ {
 		rd := new(models.ReadyDish)
 		var rd_info models.ReadyDish
+		rd_info.Tid = t
 		rd_info.Dname = nameList[i]
 		rd_info.Number = number
 		rd_info.Mname = mname
 		//查询是否重复
-		count, err := o.QueryTable(rd).Filter("Dname", nameList[i]).Filter("Mname", mname).Count()
+		count, err := o.QueryTable(rd).Filter("Dname", nameList[i]).Filter("Mname", mname).Filter("Tid", tid).Count()
 		if err != nil {
 			log4go.Stdout("查询菜品失败", err.Error())
 		}
@@ -185,5 +323,60 @@ func (this *ReadyController) AddReadyDishAction1() {
 	list["id"] = num
 	this.ajaxList("新增成功", MSG_OK, 1, list)
 	//this.ajaxMsg("新增成功", MSG_OK)
+	return
+}
+
+//添加备餐
+func (this *ReadyController) AddReadyAction() {
+	fmt.Println("点击备餐按钮")
+	//定义
+	o := orm.NewOrm()
+	list := make(map[string]interface{})
+	var ready models.Ready
+	json.Unmarshal(this.Ctx.Input.RequestBody, &ready)
+	fmt.Println("ready_info:", &ready)
+	//获取tid
+	tr := new(models.TempReady)
+	var temp models.TempReady
+	err := o.QueryTable(tr).Filter("Name", ready.Tname).One(&temp)
+	if err == orm.ErrMultiRows {
+		// 多条的时候报错
+		fmt.Printf("Returned Multi Rows Not One")
+	}
+	if err == orm.ErrNoRows {
+		// 没有找到记录
+		fmt.Printf("Not row found")
+	}
+	ready.Tid = temp.Id
+	//插入备餐数据库
+	num, err := o.Insert(&ready)
+	if err != nil {
+		log4go.Stdout("新增备餐失败", err.Error())
+		this.ajaxMsg("新增失败", MSG_ERR_Resources)
+	}
+	fmt.Println("自增Id(num)", num)
+
+	list["id"] = num
+	this.ajaxList("新增成功", MSG_OK, 1, list)
+	return
+}
+
+//获取模板信息
+func (this *ReadyController) GetReadyDishData() {
+	fmt.Println("获取备份食材信息")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	rd := new(models.ReadyDish)
+	query := o.QueryTable(rd)
+	id := this.Input().Get("id")
+	fmt.Println("id:", id)
+	//查询数据库
+	num, err := query.Filter("Tid", id).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取备份食材失败", err.Error())
+		this.ajaxMsg("获取备份食材失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get readydish reslut num:", num)
+	this.ajaxList("获取备份食材成功", 0, num, maps)
 	return
 }

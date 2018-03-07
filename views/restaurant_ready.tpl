@@ -51,10 +51,10 @@
 					<div class="layui-form-item">
 					    <label class="layui-form-label">备餐时间：</label>
 					    <div class="layui-input-inline" style="width: 120px;">
-					        <input type="text" name="Stocks" id="date" autocomplete="off" class="layui-input">		
+					        <input type="text" name="date" id="date" autocomplete="off" class="layui-input">		
 					    </div>
 						<div class="layui-input-inline" style="width: 80px;">
-							<select name="Unit" id="unit" lay-verType="tips">
+							<select name="timeinterval" id="timeinterval" lay-verType="tips">
 					       	  {{range .time}}
 							  <option value={{.Name}}>{{.Name}}</option>
 							  {{end}}
@@ -62,45 +62,33 @@
 						</div>
 						<label class="layui-form-label">营业时间：</label>
 					    <div class="layui-input-inline" style="width: 150px;">
-					        <input type="text" name="Stocks" id="time" autocomplete="off" class="layui-input">		
+					        <input type="text" name="time" id="time" autocomplete="off" class="layui-input">		
 					    </div>
 					</div>
 					<div class="layui-form-item">
 					    <label class="layui-form-label">选择模板：</label>
 						<div class="layui-input-inline" style="width: 200px;">
-							<select name="Unit" id="unit" lay-verType="tips">
-					          <option value="早餐">早餐</option>
-					          <option value="晚餐">晚餐</option>
+							<select name="tname" id="tname" lay-verType="tips">
+					          {{range .temp}}
+							  <option value={{.Name}}>{{.Name}}</option>
+							  {{end}}
 					        </select>
 						</div>					
 					</div>
 					  <div class="layui-form-item">
 					    <div class="layui-input-block">
-					      <button class="layui-btn" id="add_time">备餐</button>
+					      <button class="layui-btn" id="add_ready">备餐</button>
 					    </div>
 					  </div>
 				</form>
 			</div>
 		    <div class="layui-tab-item">
 				<blockquote class="layui-elem-quote" style="margin-top:10px;">预设模板</blockquote>	
-				<table class="layui-table">
-				  <colgroup>
-				    <col width="150">
-				    <col >
-				  </colgroup>
-				  <thead>
-				    <tr>
-				      <th>模板名称</th>
-				      <th>操作</th>
-				    </tr> 
-				  </thead>
-				  <tbody>
-				    <tr>
-				      <td>一周内模板</td>
-				      <td>编辑|删除</td>
-				    </tr>
-				  </tbody>
-				</table>
+				<table id="tempList" lay-filter="temp"></table>
+				<script type="text/html" id="barDemo">
+					<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑菜品</a>
+					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+				</script>
 				<div>
 					<button class="layui-btn" id="add_temp">新增模板</button>
 				</div>			
@@ -110,19 +98,48 @@
 				<div style="padding-bottom:10px;padding-left:10px;">
 					<a style="padding-right:10px;">按类别：</a>
 					<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
-					  <a href="">不限</a>
-					  <a href="">凉菜</a>
-					  <a href="">热菜</a>
+					  <a id="all">不限</a>
+					  {{range .maps_ti}}
+					  <a id="{{.Id}}">{{.Name}}</a>
+					  {{end}}
 					</span>
 					<div class="layui-input-inline" style="width: 150px;margin-left:100px;">
 					    <input type="text" name="Stocks" id="date1" autocomplete="off" class="layui-input" placeholder="请输入日期">		
 					</div>
 				</div>
 				<div class="layui-collapse">
+				{{range $i,$e:=.maps_ready}}
 				  <div class="layui-colla-item">
-				    <h2 class="layui-colla-title">杜甫</h2>
-				    <div class="layui-colla-content layui-show">内容区域</div>
+				    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}} <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="undo" style="margin-left:100px;" id="undo">撤销</a></h2>
+				    <div class="layui-colla-content layui-show">
+						<table class="layui-table" lay-size="sm">
+						  <colgroup>
+						    <col width="150">
+						    <col width="200">
+						    <col >
+						  </colgroup>
+						  <thead>							
+						    <tr>
+						      <th>菜品</th>
+						      <th>份数</th>
+						      <th>所在分类</th>
+						    </tr>							
+						  </thead>
+						  <tbody>
+							{{range $.maps_rd}}
+								{{if eq .Tid $e.Tid}}
+							    <tr>
+							      <td>{{.Dname}}</td>
+							      <td>{{.Number}}</td>
+							      <td>{{.Mname}}</td>
+							    </tr>
+								{{end}}
+							{{end}}						    
+						  </tbody>
+						</table>
+					</div>
 				  </div>
+				{{end}}
 				  <div class="layui-colla-item">
 				    <h2 class="layui-colla-title">李清照</h2>
 				    <div class="layui-colla-content">内容区域</div>
@@ -189,6 +206,36 @@
 			form.render('select');	
 		}				
 	});
+	//点击备餐
+	$('#add_ready').on('click',function(){
+		
+		var data={
+			'rid':parseInt({{.id}}),
+			'date':$("#date").val(),
+			'timeInterval':$("#timeinterval").val(),
+			'time':$("#time").val(),
+			'tname':$("#tname").val(),
+			};
+			$.ajax({
+				type:"POST",
+				contentType:"application/json;charset=utf-8",
+				url:"/v1/restaurant_ready/addready_action",
+				data:JSON.stringify(data),
+				async:false,
+				error:function(request){
+					alert("post error")						
+				},
+				success:function(res){
+					if(res.code==200){
+						alert("备餐成功")
+						window.location.reload();						
+					}else{
+						alert("备餐失败")
+					}						
+				}
+			});		
+	});
+	
 	
 	$('#addCanteen').on('click',function(){
 		//layer.msg("点击添加按钮");
@@ -247,8 +294,102 @@
 	
 	//点击新增模板
 	$('#add_temp').on('click',function(){
-		window.location.href="/v1/restaurant_ready/addtemp?id="+{{.id}};
+		//iframe窗
+		layer.open({
+		  type: 2,
+		  title: '新增模板',
+		  //closeBtn: 0, //不显示关闭按钮
+		  shadeClose: true,
+		  area: ['450px', '150px'],
+		 // offset: 'rb', //右下角弹出
+		  //time: 2000, //2秒后自动关闭
+		  maxmin: true,
+		  anim: 2,
+		  content: ['/v1/restaurant_ready/addtempready?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)
+				window.location.reload();				
+			  }
+			  return false; 
+		  },
+		});		
+		//window.location.href="/v1/restaurant_ready/addtempready?id="+{{.id}};
+		//window.location.href="/v1/restaurant_ready/addtemp?id="+{{.id}};
+		
 	});
+	//temp 渲染table
+	table.render({
+	    elem: '#tempList'
+	    ,height: 315
+	    ,url: '/v1/restaurant_ready/gettempdata?id={{.id}}' //数据接口
+	    //,page: true //开启分页
+		,id: 'listReload'
+	    ,cols: [[ //表头		  
+	      {field:'Name', title:'模板名称', width:200}
+		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
+	    ]]
+	  });			//监听工具条
+		table.on('tool(temp)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+		    var data = obj.data //获得当前行数据
+		    ,layEvent = obj.event; //获得 lay-event 对应的值
+		    if(layEvent === 'del'){
+		       layer.confirm('真的删除行么', function(index){
+		        var jsData={'id':data.Id}
+				$.post('/v1/restaurant_ready/deltemp', jsData, function (out) {
+	                if (out.code == 200) {
+	                    layer.alert('删除成功了', {icon: 1},function(index){
+	                        layer.close(index);
+	                        table.reload({});
+	                    });
+	                } else {
+	                    layer.msg(out.message)
+	                }
+	            }, "json");
+				obj.del(); //删除对应行（tr）的DOM结构
+		        layer.close(index);
+		        //向服务端发送删除指令
+		      });
+	    	}else if(layEvent==='edit'){
+				 layer.open({
+				  type: 2,
+				  title: '编辑菜品',
+				  //closeBtn: 0, //不显示关闭按钮
+				  shadeClose: true,
+				  shade: false,
+				  area: ['900px', '780px'],
+				 // offset: 'rb', //右下角弹出
+				  //time: 2000, //2秒后自动关闭
+				  maxmin: true,
+				  anim: 2,
+				  content: ['/v1/restaurant_ready/edittemp?id='+data.Id+"&rid={{.id}}"], //iframe的url，no代表不显示滚动条
+				  cancel: function(index, layero){ 
+				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+				    layer.close(index)
+					window.location.reload();
+				  }
+				  	return false; 
+				  },
+				});
+			} 	    
+	  });
+	//撤销备餐
+	$('#undo').on('click',function(){
+		layer.msg("撤销")
+	});
+	//ready 渲染table
+	table.render({
+	    elem: '#readyList'
+	    ,height: 315
+	    ,url: '/v1/restaurant_ready/getreadydishdata?id={{.id}}' //数据接口
+	    //,page: true //开启分页
+		,id: 'listReload2'
+	    ,cols: [[ //表头		  
+	      {field:'Name', title:'模板名称', width:200}
+		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
+	    ]]
+	  });
+	
   });
 
 	
