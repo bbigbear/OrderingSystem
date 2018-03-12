@@ -110,7 +110,7 @@
 				<div class="layui-collapse">
 				{{range $i,$e:=.maps_ready}}
 				  <div class="layui-colla-item">
-				    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}} <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="undo" style="margin-left:100px;" id="undo">撤销</a></h2>
+				    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="undo" style="margin-left:100px;" id="undo">撤销</a></h2>
 				    <div class="layui-colla-content layui-show">
 						<table class="layui-table" lay-size="sm">
 						  <colgroup>
@@ -215,6 +215,7 @@
 			'timeInterval':$("#timeinterval").val(),
 			'time':$("#time").val(),
 			'tname':$("#tname").val(),
+			'stauts':"未开始",
 			};
 			$.ajax({
 				type:"POST",

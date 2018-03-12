@@ -10,6 +10,7 @@ import (
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/alecthomas/log4go"
 	"github.com/astaxie/beego/orm"
+	//	"github.com/astaxie/beego/toolbox"
 )
 
 type ReadyController struct {
@@ -328,6 +329,7 @@ func (this *ReadyController) AddReadyDishAction1() {
 
 //添加备餐
 func (this *ReadyController) AddReadyAction() {
+	//记得备餐名字不能相同
 	fmt.Println("点击备餐按钮")
 	//定义
 	o := orm.NewOrm()
@@ -355,6 +357,8 @@ func (this *ReadyController) AddReadyAction() {
 		this.ajaxMsg("新增失败", MSG_ERR_Resources)
 	}
 	fmt.Println("自增Id(num)", num)
+	//开启定时
+	//	this.StartReadyTask(ready.Time,ready.Date,strconv.FormatInt(num,10))
 
 	list["id"] = num
 	this.ajaxList("新增成功", MSG_OK, 1, list)
@@ -380,3 +384,29 @@ func (this *ReadyController) GetReadyDishData() {
 	this.ajaxList("获取备份食材成功", 0, num, maps)
 	return
 }
+
+//定时
+//func (this *ReadyController) StartReadyTask(times string,date string,tk string) {
+//	fmt.Println("定时执行")
+//	//times date
+//	//去空格
+//	times=strings.Replace(times," ","",-1)
+//	time_list:=strings.Split(times,"-")
+//	fmt.Println("time_list:",time_list)
+
+//	var t string
+//	t=fmt.Sprintf("%s %s %s %s %s %s *",s,)
+//	o := orm.NewOrm()
+//	ot := new(models.OrderTime)
+//	var maps []orm.Params
+//	var dish_info models.Dish
+//	tk1 := toolbox.NewTask(tk, t, func() error {
+//		//fmt.Println("tk1")
+//		nt := time.Now().Format("2016-01-02 15:04:05")
+
+//		return nil
+//	})
+//	toolbox.AddTask(tk, tk1)
+//	toolbox.StartTask()
+
+//}

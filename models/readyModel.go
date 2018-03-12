@@ -8,4 +8,5 @@ type Ready struct {
 	Time         string
 	Tname        string
 	Tid          int64
+	Status       string
 }
