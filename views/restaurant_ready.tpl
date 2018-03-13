@@ -215,7 +215,7 @@
 			'timeInterval':$("#timeinterval").val(),
 			'time':$("#time").val(),
 			'tname':$("#tname").val(),
-			'stauts':"未开始",
+			'status':"未开始",
 			};
 			$.ajax({
 				type:"POST",

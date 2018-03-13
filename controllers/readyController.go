@@ -10,7 +10,7 @@ import (
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/alecthomas/log4go"
 	"github.com/astaxie/beego/orm"
-	//	"github.com/astaxie/beego/toolbox"
+	"github.com/astaxie/beego/toolbox"
 )
 
 type ReadyController struct {
@@ -358,7 +358,7 @@ func (this *ReadyController) AddReadyAction() {
 	}
 	fmt.Println("自增Id(num)", num)
 	//开启定时
-	//	this.StartReadyTask(ready.Time,ready.Date,strconv.FormatInt(num,10))
+	this.StartReadyTask(ready.Time, ready.Date, strconv.FormatInt(num, 10))
 
 	list["id"] = num
 	this.ajaxList("新增成功", MSG_OK, 1, list)
@@ -386,27 +386,61 @@ func (this *ReadyController) GetReadyDishData() {
 }
 
 //定时
-//func (this *ReadyController) StartReadyTask(times string,date string,tk string) {
-//	fmt.Println("定时执行")
-//	//times date
-//	//去空格
-//	times=strings.Replace(times," ","",-1)
-//	time_list:=strings.Split(times,"-")
-//	fmt.Println("time_list:",time_list)
+func (this *ReadyController) StartReadyTask(times string, date string, tk string) {
+	fmt.Println("定时执行")
+	//times date
+	//去空格
+	times = strings.Replace(times, " ", "", -1)
+	time_list := strings.Split(times, "-")
+	fmt.Println("time_list:", time_list)
 
-//	var t string
-//	t=fmt.Sprintf("%s %s %s %s %s %s *",s,)
-//	o := orm.NewOrm()
-//	ot := new(models.OrderTime)
-//	var maps []orm.Params
-//	var dish_info models.Dish
-//	tk1 := toolbox.NewTask(tk, t, func() error {
-//		//fmt.Println("tk1")
-//		nt := time.Now().Format("2016-01-02 15:04:05")
+	left_time := strings.Split(time_list[0], ":")
+	right_time := strings.Split(time_list[1], ":")
+	date_list := strings.Split(date, "-")
+	fmt.Println("time:", left_time, right_time)
 
-//		return nil
-//	})
-//	toolbox.AddTask(tk, tk1)
-//	toolbox.StartTask()
+	var t, t1 string
+	t = fmt.Sprintf("%s %s %s %s %s *", left_time[2], left_time[1], left_time[0], date_list[2], date_list[1])
+	t1 = fmt.Sprintf("%s %s %s %s %s *", right_time[2], right_time[1], right_time[0], date_list[2], date_list[1])
+	fmt.Println("t:", t)
 
-//}
+	id, err := strconv.ParseInt(tk, 10, 64)
+	if err != nil {
+		fmt.Println("get id err")
+	}
+	//ready model
+	o := orm.NewOrm()
+	var ready models.Ready
+
+	tk1 := toolbox.NewTask("start"+tk, t, func() error {
+		fmt.Println("开启任务修改状态", t)
+		//		nt := time.Now().Format("2016-01-02 15:04:05")
+		ready.Id = id
+		ready.Status = "正在点餐"
+		num, err := o.Update(&ready, "Status")
+		if err != nil {
+			fmt.Println("跟新失败")
+		}
+		fmt.Println("更新成功", num)
+		return nil
+	})
+	tk2 := toolbox.NewTask("stop"+tk, t1, func() error {
+		//fmt.Println("tk1")
+		fmt.Println("开启任务修改状态", t1)
+		ready.Id = id
+		ready.Status = "已完成"
+		num, err := o.Update(&ready, "Status")
+		if err != nil {
+			fmt.Println("跟新失败")
+		}
+		fmt.Println("更新成功", num)
+		//删除任务
+		toolbox.DeleteTask("start" + tk)
+		toolbox.DeleteTask("stop" + tk)
+		return nil
+	})
+	toolbox.AddTask("start"+tk, tk1)
+	toolbox.AddTask("stop"+tk, tk2)
+	toolbox.StartTask()
+
+}
