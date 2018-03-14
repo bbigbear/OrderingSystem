@@ -2,9 +2,10 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="renderer" content="webkit">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>智慧校园订餐系统</title>
-<link rel="stylesheet" href="/static/css/layui.css">
+<link rel="stylesheet" href="/static/css/layui.css"  media="all">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -42,23 +43,22 @@
 		  <div class="layui-form-item">
 			<label class="layui-form-label">选择食堂</label>
 		    <div class="layui-input-inline">
-				<select name="campus" id="campus" lay-filter="campus_select">
+				<select name="cname" id="cname" lay-filter="campus_select">
 		          <option value="第一食堂">第一食堂</option>
 		          <option value="第二食堂">第二食堂</option>
 		        </select>
 			</div>
 			<div class="layui-input-inline" style="margin-left:100px;">
-				<input type="text" name="Name" id="name" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
+				<input type="text" name="rname" id="rname" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
 			</div>
 			<div class="layui-input-inline" >
-		      <button class="layui-btn" id="add">搜索</button>
-		  	</div>		
+		      <button class="layui-btn" id="search">搜索</button>
+		  	</div>
 		  </div>
+		<div class="layui-input-block" id="demo" style="padding-top:20px;"></div>
 		</form>
-		<table id="roomList" lay-filter="room"></table>
-		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>
-		</script>
+<!--		<ul class="flow-default" id="LAY_demo1"></ul>-->
+		
   </div>  
   <div class="layui-footer">
     <!-- 底部固定区域 -->
@@ -76,49 +76,32 @@
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
 	//JavaScript代码区域
-	layui.use(['element','layer','jquery','table'], function(){
+	layui.use(['element','layer','jquery','table','flow'], function(){
 	  var element = layui.element
 		,layer=layui.layer
 		,$=layui.jquery
 		,table=layui.table
-		,form=layui.form;
+		,form=layui.form
+		,flow=layui.flow;
 	  //layer.msg("你好");
-	//自动加载
-	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
-			form.render('select');	
-		}				
+	//初始化
+ 	$(function(){		
+		{{range .map}}
+			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+{{.RoomPicPath}}+'" id="room_img_'+{{.Id}}+'" style="width:100px;height:100px;"></div><div><p><b>{{.Name}}</b></p></div></div>')
+			$("#room_img_"+{{.Id}}).bind('click',function(){             
+               // layer.msg({{.Id}})
+				window.location.href="/v1/student_index/getroomdetail?rid={{.Id}}";				
+             });		
+		{{end}}
 	});
+		
+	$('#search').on('click',function(){
+		layer.msg("点击搜索按钮");
+		  var cname=$("#cname").val();
+		  var rname=$("#rname").val();
+		  window.location.href="/v1/student_index?cname="+cname+"&rname="+rname;		  		
+		});	
 	
-	$('#addCanteen').on('click',function(){
-		//layer.msg("点击添加按钮");
-		//获取校区
-		var cp=$("#campus").val();
-		//iframe窗
-		layer.open({
-		  type: 2,
-		  title: '新增食堂',
-		  //closeBtn: 0, //不显示关闭按钮
-		  shadeClose: true,
-		  area: ['450px', '150px'],
-		 // offset: 'rb', //右下角弹出
-		  //time: 2000, //2秒后自动关闭
-		  maxmin: true,
-		  anim: 2,
-		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
-		  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-				window.location.reload();				
-			  }
-			  return false; 
-		  },
-		});
-	});	
 	//获取下拉列表
 	form.on('select(campus_select)',function(data){
 		//layer.msg(data)

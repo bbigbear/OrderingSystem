@@ -180,9 +180,30 @@ func (this *DiningRoomController) GetRoomData() {
 	o := orm.NewOrm()
 	var maps []orm.Params
 	diningroom := new(models.DiningRoom)
+	query := o.QueryTable(diningroom)
+	filters := make([]interface{}, 0)
+	//食堂
+	cname := this.Input().Get("cname")
+	if cname != "" {
+		filters = append(filters, "CanteenName", cname)
+	}
+	fmt.Println("get cname:", cname)
+	//餐厅
+	rname := this.Input().Get("rname")
+	if rname != "" {
+		filters = append(filters, "Name", rname)
+	}
+	fmt.Println("get rname:", rname)
+
+	if len(filters) > 0 {
+		l := len(filters)
+		for k := 0; k < l; k += 2 {
+			query = query.Filter(filters[k].(string), filters[k+1])
+		}
+	}
 
 	//查询数据库
-	num, err := o.QueryTable(diningroom).Values(&maps)
+	num, err := query.Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取餐厅失败", err.Error())
 		this.ajaxMsg("获取餐厅失败", MSG_ERR_Resources)
@@ -212,7 +233,6 @@ func (this *DiningRoomController) DelRoom() {
 	//list["data"] = maps
 	this.ajaxMsg("删除餐厅成功", MSG_OK)
 	//补充删除联级下的数据，以免出现垃圾数据
-
 	return
 }
 
@@ -231,7 +251,6 @@ func (this *DiningRoomController) GetRoom() {
 	} else {
 		this.ajaxMsg("不存在该餐厅", MSG_ERR_Resources)
 	}
-
 	return
 }
 

@@ -1,0 +1,2 @@
+[2018/03/14 19:13:54.110 CST] [INFO] (main.init.0:20) log4go init ok
+[2018/03/14 19:27:38.547 CST] [INFO] (OrderingSystem/controllers.(*OrderController).GetRoomDetail:67) 获取准备菜单失败 <QuerySeter> no row found
