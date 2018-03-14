@@ -267,6 +267,18 @@ func (this *ReadyController) AddMultiReadyDish() {
 	nameList := strings.Split(dname, ",")
 	fmt.Println("nameList:", nameList)
 	name_len := len(nameList) - 1
+	//pic
+	pic := this.Input().Get("pic")
+	fmt.Println("add pic:", pic)
+	picList := strings.Split(dname, ",")
+	fmt.Println("picList:", picList)
+	//pic_len := len(picList) - 1
+	//price
+	price := this.Input().Get("price")
+	fmt.Println("add price:", price)
+	priceList := strings.Split(price, ",")
+	fmt.Println("priceList:", priceList)
+	//price_len := len(priceList) - 1
 	//get number
 	number, err := this.GetInt("number")
 	if err != nil {
@@ -279,10 +291,16 @@ func (this *ReadyController) AddMultiReadyDish() {
 	fmt.Println("add mname:", mname)
 	o := orm.NewOrm()
 	for i := 0; i < name_len; i++ {
+		p, err := strconv.ParseFloat(priceList[i], 64)
+		if err != nil {
+			log4go.Stdout("string 转 float64 失败", err.Error())
+		}
 		rd := new(models.ReadyDish)
 		var rd_info models.ReadyDish
 		rd_info.Tid = t
 		rd_info.Dname = nameList[i]
+		rd_info.Pic = picList[i]
+		rd_info.Price = p
 		rd_info.Number = number
 		rd_info.Mname = mname
 		//查询是否重复

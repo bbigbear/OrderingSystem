@@ -63,9 +63,9 @@
 							<div class="layui-inline">
 <!--							    <label class="layui-form-label">{{.Dname}}</label>-->
 							    <div class="layui-input-inline" style="width:100px;height:100px;">
-									<div><img src="" id="room_img_'+{{.Id}}+'" style="width:80px;height:80px;"></div>
+									<div><img src="/{{.Pic}}" id="room_img_'+{{.Id}}+'" id="room_img_'+{{.Id}}+'" style="width:80px;height:80px;"></div>
 									<div><p>{{.Dname}}</p></div>
-									<div><p>￥10 <i class="layui-icon">&#xe654;</i></p></div>
+									<div><p>￥{{.Price}} <i class="layui-icon">&#xe654;</i></p></div>
 							    </div>
 							</div>			  
 						{{end}}									
@@ -73,6 +73,16 @@
 					</div>
 			{{end}}
 		</form>
+		<div class="runtest">
+		  <textarea class="site-demo-text" id="testmain">
+			layer.open({
+			  title: '在线调试'
+			  ,content: '可以填写任意的layer代码'
+			});     
+		  </textarea>
+		  <a href="javascript:;" class="layui-btn layui-btn-normal" onclick="try{new Function(testmain.value)();}catch(e){alert('语句异常：'+e.message)}" class="btns">确认下单</a>
+		</div>
+		
 <!--		<ul class="flow-default" id="LAY_demo1"></ul>-->
 		
   </div>  
@@ -86,6 +96,9 @@
 		display: none;
 		disabled:true
 	}
+	.runtest{position: relative; display:none;}
+	.runtest textarea{display:block; width: 300px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #3F3F3F; color: #eee; font-size:12px; font-family:Courier New;}
+	.runtest a{position: absolute; right: 20px; bottom: 20px;}
 </style>
 
 <script src="/static/layui.js"></script>
@@ -146,6 +159,32 @@
 		}
 	});
 	{{end}}
+	
+	var debug = $('#L_layerDebug'), popDebug = function(){
+    layer.open({
+      type: 1
+      ,title: '购物车'
+      ,id: 'Lay_layer_debug'
+      ,content: $('.runtest')
+      ,shade: false
+      ,offset: 'rb'
+	  ,closeBtn: 0
+      ,resize: false
+      ,success: function(layero, index){
+        layer.style(index, {
+          marginLeft: 0
+        });
+        debug.hide();
+      }
+      ,end: function(){
+        debug.show();
+      }
+    });
+    	testmain.focus();
+  	};
+  
+  	 debug.on('click', popDebug);
+	 popDebug();
   });
 
 	

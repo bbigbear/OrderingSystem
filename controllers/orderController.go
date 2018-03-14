@@ -33,7 +33,6 @@ func (this *OrderController) Get() {
 		filters = append(filters, "Name", rname)
 	}
 	fmt.Println("get rname:", rname)
-
 	if len(filters) > 0 {
 		l := len(filters)
 		for k := 0; k < l; k += 2 {
@@ -42,7 +41,7 @@ func (this *OrderController) Get() {
 	}
 
 	//查询数据库
-	num, err := query.Values(&maps)
+	num, err := query.Filter("status", "营业中").Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取餐厅失败", err.Error())
 		this.ajaxMsg("获取餐厅失败", MSG_ERR_Resources)

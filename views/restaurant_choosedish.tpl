@@ -156,6 +156,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 	$('#add').on('click',function(){
 		//layer.msg({{.mname}})		
 		var str="";
+		var str_img="";
+		var str_price="";
 		var number=$("#number").val();		
 		var checkStatus=table.checkStatus('listReload')
 		,data=checkStatus.data;
@@ -166,6 +168,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		}else{
 			for(var i=0;i<data.length;i++){
 				str+=data[i].Name+",";
+				str_img+=data[i].DishPicPath+",";
+				str_price+=data[i].Price+",";
 			}
 			layer.confirm('是否添加这'+data.length+'个菜品?',{icon:3,title:'提示'},function(index){
 				//window.location.href="/v1/delmultidata?id="+str+"";
@@ -176,7 +180,9 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 						tid:{{.tid}},
 						dname:str,
 						mname:{{.mname}},
-						number:parseInt(number),						
+						number:parseInt(number),
+						pic:str_img,
+						price:str_price,						
 					},
 					async:false,
 					error:function(request){

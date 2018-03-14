@@ -6,4 +6,6 @@ type ReadyDish struct {
 	Mname  string
 	Dname  string
 	Number int
+	Price  float64
+	Pic    string
 }
