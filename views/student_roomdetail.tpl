@@ -65,7 +65,7 @@
 							    <div class="layui-input-inline" style="width:100px;height:100px;">
 									<div><img src="/{{.Pic}}" id="room_img_'+{{.Id}}+'" id="room_img_'+{{.Id}}+'" style="width:80px;height:80px;"></div>
 									<div><p>{{.Dname}}</p></div>
-									<div><p>￥{{.Price}} <i class="layui-icon">&#xe654;</i></p></div>
+									<div><p>￥{{.Price}} <i class="layui-icon" id="{{.Id}}">&#xe654;</i></p></div>
 							    </div>
 							</div>			  
 						{{end}}									
@@ -74,14 +74,35 @@
 			{{end}}
 		</form>
 		<div class="runtest">
-		  <textarea class="site-demo-text" id="testmain">
+		  <!--<textarea class="site-demo-text" id="testmain">
 			layer.open({
 			  title: '在线调试'
 			  ,content: '可以填写任意的layer代码'
 			});     
-		  </textarea>
-		  <a href="javascript:;" class="layui-btn layui-btn-normal" onclick="try{new Function(testmain.value)();}catch(e){alert('语句异常：'+e.message)}" class="btns">确认下单</a>
-		</div>
+		  </textarea>-->
+			<div class="site-demo-text" id="testmain">
+				<table>
+					<thead>
+					    <tr>
+					    <td>商品</td>
+					    <td>单价</td>
+					    <td>数量</td>
+					    <td>金额</td>
+					    <td>删除</td>
+					    </tr>
+					</thead>
+					<tbody id="goods">
+					</tbody>
+					<tfoot>
+					    <tr>
+					       <td colspan="3" align="right">总计</td>
+					       <td>￥</td>
+					       <td ><input id="sum" type='text'/></td>
+					    </tr>
+					</tfoot>
+					</table>
+		  	<a href="javascript:;" class="layui-btn layui-btn-normal" onclick="try{new Function(testmain.value)();}catch(e){alert('语句异常：'+e.message)}" class="btns">确认下单</a>
+			</div>
 		
 <!--		<ul class="flow-default" id="LAY_demo1"></ul>-->
 		
@@ -97,7 +118,7 @@
 		disabled:true
 	}
 	.runtest{position: relative; display:none;}
-	.runtest textarea{display:block; width: 300px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #3F3F3F; color: #eee; font-size:12px; font-family:Courier New;}
+	.site-demo-text{display:block; width: 300px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #f2f2f2;  font-size:12px; font-family:Courier New;}
 	.runtest a{position: absolute; right: 20px; bottom: 20px;}
 </style>
 
@@ -112,8 +133,9 @@
 		,table=layui.table
 		,form=layui.form
 		,flow=layui.flow;
-	  //layer.msg("你好");
-	    	//初始化
+	 //layer.msg("你好");
+	
+	//初始化
  	$(function(){		
 		{{range .map}}
 			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+{{.RoomPicPath}}+'" id="room_img_'+{{.Id}}+'" style="width:100px;height:100px;"></div><div><p><b>{{.Name}}</b></p></div></div>')
@@ -122,6 +144,40 @@
              });		
 		{{end}}
 	});
+	var sum=0
+	{{range $i,$e:=.mt_info}}													
+			{{range $.rd_info}}
+				{{if eq .Mname $e.Name}}										
+					$('#{{.Id}}').on('click',function(){
+						layer.msg({{.Id}})
+						var html = $("<tr id='tr_{{.Id}}'>"    //开始拼接HTML元素，将取到的东西展示到对用的input中
+				        +"<td>"+{{.Dname}}+"</td>"
+				        +"<td>"+{{.Price}}+"</td>"
+				        +"<td>"
+				        +"<input type='button' value='-'/>"
+				        +"<input type='text' size='3' value='1' id='num_{{.Id}}'/>"
+				        +"<input type='button' value='+'/>"
+				        +"</td>"
+				        +"<td>"+{{.Price}}+"</td>"
+				        +"<td align='center'>"
+				        +"<input type='button' value='*' id='del_{{.Id}}'/>"
+				        +"</td></tr>");
+				        $("#goods").append(html);						
+						sum+=parseFloat({{.Price}})*parseFloat($("#num_{{.Id}}").val())
+						//移除
+						$("#del_{{.Id}}").bind('click',function(){             
+			                sum-=parseFloat({{.Price}})*parseFloat($("#num_{{.Id}}").val())
+							$("#tr_{{.Id}}").remove();
+							//alert(sum)
+							//alert($("#num_{{.Id}}").val())							
+							$("#sum").val(sum)
+			             });
+						//总计				
+						$("#sum").val(sum)				        
+					});
+				{{end}}									
+			{{end}}
+	{{end}}
 		
 	$('#search').on('click',function(){
 		layer.msg("点击搜索按钮");
@@ -130,36 +186,9 @@
 		  window.location.href="/v1/student_index?cname="+cname+"&rname="+rname;		  		
 		});	
 	
-	//获取下拉列表
-	form.on('select(campus_select)',function(data){
-		//layer.msg(data)
-		console.log(data.value);
-		window.location.href="/v1/canteen?campus="+data.value;
-		
-	});
-	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
-		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
-		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
-			//layer.close(index)
-			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
-			$.post('/v1/canteen/del', jsData, function (out) {
-                if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
-                } else {
-                    layer.msg(out.message)
-                }
-            }, "json");	
-	        //向服务端发送删除指令
-		}
-	});
-	{{end}}
 	
+
+	//悬浮窗口
 	var debug = $('#L_layerDebug'), popDebug = function(){
     layer.open({
       type: 1

@@ -5,7 +5,10 @@ type Order struct {
 	Ostatus string
 	Oid     string
 	Sid     int64
+	Sname   string
+	Rid     int64
 	Otype   string
 	Otime   string
 	Rname   string
+	Total   float64
 }
