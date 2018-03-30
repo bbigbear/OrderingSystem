@@ -81,7 +81,7 @@
 			});     
 		  </textarea>-->
 			<div class="site-demo-text" id="testmain">
-				<table>
+				<table border="2">
 					<thead>
 					    <tr>
 					    <td>商品</td>
@@ -97,11 +97,11 @@
 					    <tr>
 					       <td colspan="3" align="right">总计</td>
 					       <td>￥</td>
-					       <td ><input id="sum" type='text'/></td>
+					       <td ><input id="sum" type='text' style="disabled:true;"/></td>
 					    </tr>
 					</tfoot>
 					</table>
-		  	<a href="javascript:;" class="layui-btn layui-btn-normal" onclick="try{new Function(testmain.value)();}catch(e){alert('语句异常：'+e.message)}" class="btns">确认下单</a>
+		  	<a href="javascript:;" class="layui-btn layui-btn-normal" id="btns">确认下单</a>
 			</div>
 		
 <!--		<ul class="flow-default" id="LAY_demo1"></ul>-->
@@ -184,10 +184,32 @@
 		  var cname=$("#cname").val();
 		  var rname=$("#rname").val();
 		  window.location.href="/v1/student_index?cname="+cname+"&rname="+rname;		  		
-		});	
-	
-	
-
+	});	
+	//
+	$('#btns').on('click',function(){
+		layer.msg("点击下单按钮")
+		//iframe窗
+		layer.open({
+		  type: 2,
+		  title: '订单确认',
+		  //closeBtn: 0, //不显示关闭按钮
+		  shadeClose: true,
+		  area: ['450px', '400px'],
+		 // offset: 'rb', //右下角弹出
+		  //time: 2000, //2秒后自动关闭
+		  maxmin: true,
+		  anim: 2,
+		  content: ['/v1/student_ordersure','no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)
+				window.location.reload();				
+			  }
+			  return false; 
+		  },
+		});
+	});
+		
 	//悬浮窗口
 	var debug = $('#L_layerDebug'), popDebug = function(){
     layer.open({
@@ -211,12 +233,9 @@
     });
     	testmain.focus();
   	};
-  
   	 debug.on('click', popDebug);
 	 popDebug();
   });
-
-	
 	
 </script>
 

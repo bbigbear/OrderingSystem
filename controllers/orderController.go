@@ -99,3 +99,8 @@ func (this *OrderController) GetOrder() {
 
 	this.TplName = "student_order.tpl"
 }
+
+func (this *OrderController) SureOrder() {
+
+	this.TplName = "student_ordersure.tpl"
+}
