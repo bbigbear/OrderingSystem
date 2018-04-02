@@ -209,7 +209,7 @@
 							sum+=data[i]["sum"]
 						}	
 						console.log(sum)			
-						$("#sum").text("合计:"+sum)									
+						$("#sum").text("合计:"+sum+"元")									
 									        
 					});
 				{{end}}									

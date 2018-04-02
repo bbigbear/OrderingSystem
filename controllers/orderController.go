@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"OrderingSystem/models"
+	"encoding/json"
 	"fmt"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
@@ -108,4 +109,16 @@ func (this *OrderController) SureOrder() {
 	fmt.Println("name:", name)
 	this.Data["data"] = price
 	this.TplName = "student_ordersure.tpl"
+}
+
+func (this *OrderController) AddOrder() {
+	//获取data
+	fmt.Println("点击确认订单")
+	//
+	//o := orm.NewOrm()
+	var os models.Os
+	json.Unmarshal(this.Ctx.Input.RequestBody, &os)
+	fmt.Println("order_info:", &os)
+
+	//
 }

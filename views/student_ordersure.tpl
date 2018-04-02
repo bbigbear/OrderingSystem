@@ -45,7 +45,7 @@ body{padding: 10px;}
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" id="add">确认下单</button>
+      <button class="layui-btn" id="sure">确认下单</button>
 <!--	  <input type="hidden" id="pic_path">-->
       <button type="reset" class="layui-btn layui-btn-primary">取消</button>
     </div>
@@ -75,7 +75,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
             if (r != null) return  decodeURIComponent(r[2]); return null; //返回参数值
         }		   
 	//初始化
- 	$(function(){
+ 	//$(function(){
 		var l=[]
 		//var data =getUrlParam('data')
 		var price =getUrlParam('price');
@@ -120,20 +120,21 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 			console.log(sum)			
 			$("#sum").text("合计:"+sum+"元")
 		
-	});
+	//});
 	//var a=[{"name":"宫保鸡丁","price":1,"num":2,"sum":2}]
 	
  
-	$('#add').on('click',function(){
+	$('#sure').on('click',function(){
 		var data={
-			'campusName':{{.campus_name}},
-			'name':$("#name").val()
+			'name':name,
+			'price':price,
+			'num':num
 			};
 		console.log(data)
 		$.ajax({
 			type:"POST",
 			contentType:"application/json;charset=utf-8",
-			url:"/v1/canteen/add_action",
+			url:"/v1/student_addorder",
 			data:JSON.stringify(data),
 			async:false,
 			error:function(request){

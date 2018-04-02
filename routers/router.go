@@ -65,4 +65,5 @@ func init() {
 	beego.Router("/v1/student_index/getroomdetail", &controllers.OrderController{}, "*:GetRoomDetail")
 	beego.Router("/v1/student_order", &controllers.OrderController{}, "*:GetOrder")
 	beego.Router("/v1/student_ordersure", &controllers.OrderController{}, "*:SureOrder")
+	beego.Router("/v1/student_addorder", &controllers.OrderController{}, "post:AddOrder")
 }
