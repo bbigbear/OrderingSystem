@@ -81,24 +81,29 @@
 			});     
 		  </textarea>-->
 			<div class="site-demo-text" id="testmain">
-				<table class="layui-table" id="List">
-					<!--<thead>
+				<table class="layui-table" lay-size="sm" lay-skin="line" lay-data="{id: 'idTest'}">
+					<thead>
 					    <tr>
-						<th lay-data="{checkbox:true}"></th>
-					    <th lay-data="{field:'name', width:80}">商品</th>
-					    <th lay-data="{field:'price', width:60}">单价</th>
-					    <th lay-data="{field:'num', width:60}">数量</th>
-					    <th lay-data="{field:'sum', width:60}">金额</th>
-					    <th lay-data="{fixed:'right',toolbar:'#barDemo'}">删除</th> 
+					    <th>商品</th>
+					    <th>单价</th>
+					    <th>数量</th>
+					    <th>金额</th>
+					    <th>删除</th>
 					    </tr>
-					</thead>-->					
-				</table>
-				<script type="text/html" id="bar">
-				  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>				  				
-				</script>
-				<label class="layui-form-label" id="sum">合计:</label>
+					</thead>
+					<tbody id="goods">
+					</tbody>
+					<tfoot>
+					    <tr>
+					       <th colspan="3" align="right">总计</th>
+					       <th>￥</th>
+					       <th ><input id="sum" type='text' style="disabled:true;"/></th>
+					    </tr>
+					</tfoot>
+					</table>
 		  	<a href="javascript:;" class="layui-btn layui-btn-normal" id="btns">确认下单</a>
-			</div>		
+			</div>
+		
 <!--		<ul class="flow-default" id="LAY_demo1"></ul>-->
 		
   </div>  
@@ -140,161 +145,73 @@
 		{{end}}
 	});
 	var sum=0
-	//var list_map = new Array();
-	var a={"name":"宫保鸡丁","price":1,"num":2,"sum":2}
-	//var b={"name":"宫保鸡丁","price":1,"num":2,"sum":2}
-	var data = []
-	var name_data = []
-		
-	function jQstringify( obj ) {
-		var arr = [];
-		$.each( obj, function( key, val ) {
-		var next = key + ": ";
-		next += $.isPlainObject( val ) ? printObj( val ) : val;
-		arr.push( next );
-		});
-		return "{ " + arr.join( ", " ) + " }";
-	};
-	//判断是否相同
-	function isInArray(arr,value){
-	    for(var i = 0; i < arr.length; i++){
-	        if(value === arr[i]){
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-	
 	{{range $i,$e:=.mt_info}}													
 			{{range $.rd_info}}
 				{{if eq .Mname $e.Name}}										
-					$('#{{.Id}}').on('click',function(){						
-						//console.log(name_data)
-						var dname={{.Dname}}
-						var sum=0
-						if (isInArray(name_data,dname)){
-							console.log("相同")
-							for(var i=0;i<data.length;i++){
-								if(dname==data[i]["name"]){
-									data[i]["num"]+=1
-									data[i]["sum"]=data[i]["num"]*data[i]["price"]
-								}
-								sum+=data[i]["sum"]
-							}
-							table.reload('listReload',{
-								data:data
-							});
-							console.log(data)
-							console.log(sum)
-							$("#sum").text("合计:"+sum)	
-							return							
-						}
-						name_data.push({{.Dname}})
-						//console.log(name_data)
-						var arr  =
-					     {
-					         "name" : {{.Dname}},
-					         "price" : {{.Price}},
-							 "num" : 1,
-							 "sum" : {{.Price}}
-					     }
-						//var json = jQstringify(student);
-						data.push(arr)
-						console.log(data)
-						table.reload('listReload',{
-							data:data
-						});
-						//总计
-						for(var i=0;i<data.length;i++){
-							sum+=data[i]["sum"]
-						}	
-						console.log(sum)			
-						$("#sum").text("合计:"+sum)									
-									        
+					$('#{{.Id}}').on('click',function(){
+						layer.msg({{.Id}})
+						var html = $("<tr id='tr_{{.Id}}'>"    //开始拼接HTML元素，将取到的东西展示到对用的input中
+				        +"<th>"+{{.Dname}}+"</th>"
+				        +"<th>"+{{.Price}}+"</th>"
+				        +"<th>"
+				        +"<input type='button' value='-'/>"
+				        +"<input type='text' size='3' value='1' id='num_{{.Id}}'/>"
+				        +"<input type='button' value='+'/>"
+				        +"</th>"
+				        +"<th>"+{{.Price}}+"</th>"
+				        +"<th align='center'>"
+				        +"<input type='button' value='*' id='del_{{.Id}}'/>"
+				        +"</th></tr>");
+				        $("#goods").append(html);						
+						sum+=parseFloat({{.Price}})*parseFloat($("#num_{{.Id}}").val())
+						//移除
+						$("#del_{{.Id}}").bind('click',function(){             
+			                sum-=parseFloat({{.Price}})*parseFloat($("#num_{{.Id}}").val())
+							$("#tr_{{.Id}}").remove();
+							//alert(sum)
+							//alert($("#num_{{.Id}}").val())							
+							$("#sum").val(sum)
+			             });
+						//总计				
+						$("#sum").val(sum)				        
 					});
 				{{end}}									
 			{{end}}
 	{{end}}
-	//
-	//table 渲染
-	  table.render({
-	    elem: '#List'
-		,id: 'listReload'
-		,data: a
-	    ,cols: [[ //表头
-		  {type:'checkbox', fixed: 'left'}
-	      ,{field:'name', width:80, title:'商品'}
-		  ,{field:'price', width:60, title:'单价'}
-	      ,{field:'num', width:60, title:'数量'}
-		  ,{field:'sum', width:60, title:'金额'}
-		  ,{fixed:'right', title:'删除', toolbar: '#bar'}
-	    ]]
-		,size:'sm'
-	  });
-	//监听工具条
-	table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
-	  var data = obj.data; //获得当前行数据
-	  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-	  var tr = obj.tr; //获得当前行 tr 的DOM对象	 
-	  if(layEvent === 'del'){ //删除
-	    layer.confirm('真的删除行么', function(index){
-	      obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-	      layer.close(index);
-	      //向服务端发送删除指令
-	    });
-	  }
-	});
 		
 	$('#search').on('click',function(){
-		//layer.msg("点击搜索按钮");
-		 // var cname=$("#cname").val();
-		  //var rname=$("#rname").val();
-		  //window.location.href="/v1/student_index?cname="+cname+"&rname="+rname;		  		
+		layer.msg("点击搜索按钮");
+		  var cname=$("#cname").val();
+		  var rname=$("#rname").val();
+		  window.location.href="/v1/student_index?cname="+cname+"&rname="+rname;		  		
 	});	
-	
 	//
 	$('#btns').on('click',function(){
 		layer.msg("点击下单按钮")
-		var str="";
-		var str_name="";
-		var str_price="";
-		var str_num="";
-		var checkStatus=table.checkStatus('listReload')
-		,data=checkStatus.data;		
-		console.log(data)
-		if(data.length==0){
-			alert("请选择要结账的菜品")
-		}else{
-			//iframe窗
-			for(var i=0;i<data.length;i++){
-				str+=JSON.stringify(data[i])+"|";
-				str_name+=data[i]["name"]+"|";
-				str_price+=data[i]["price"]+"|";
-				str_num+=data[i]["num"]+"|";
-			}
-			console.log("str:"+str)
-			//window.location.href="/v1/student_ordersure?data="+str;		
-			//str={\"name\":\"青瓜炒肉\",\"price\":4,\"num\":1,\"sum\":4}|
-			layer.open({
-			  type: 2,
-			  title: '订单确认',
-			  //closeBtn: 0, //不显示关闭按钮
-			  shadeClose: true,
-			  area: ['450px', '400px'],
-			 // offset: 'rb', //右下角弹出
-			  //time: 2000, //2秒后自动关闭
-			  maxmin: true,
-			  anim: 2,
-			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'','no'], //iframe的url，no代表不显示滚动条
-			  cancel: function(index, layero){ 
-				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-				    layer.close(index)				
-				  }
-				  return false; 
-			  },
-			});
-		}
-		
+		table.on('checkbox(test)', function(obj){
+		  console.log(obj.checked); //当前是否选中状态
+		  console.log(obj.data); //选中行的相关数据
+		  console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+		});
+		//iframe窗
+		layer.open({
+		  type: 2,
+		  title: '订单确认',
+		  //closeBtn: 0, //不显示关闭按钮
+		  shadeClose: true,
+		  area: ['450px', '400px'],
+		 // offset: 'rb', //右下角弹出
+		  //time: 2000, //2秒后自动关闭
+		  maxmin: true,
+		  anim: 2,
+		  content: ['/v1/student_ordersure','no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)				
+			  }
+			  return false; 
+		  },
+		});
 	});
 		
 	//悬浮窗口

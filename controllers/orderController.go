@@ -101,6 +101,11 @@ func (this *OrderController) GetOrder() {
 }
 
 func (this *OrderController) SureOrder() {
-
+	//获取data
+	price := this.Input().Get("price")
+	fmt.Println("price:", price)
+	name := this.Input().Get("name")
+	fmt.Println("name:", name)
+	this.Data["data"] = price
 	this.TplName = "student_ordersure.tpl"
 }

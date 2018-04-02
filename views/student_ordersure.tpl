@@ -17,7 +17,7 @@ body{padding: 10px;}
 </style>
 </head>
 <body>
-<form class="layui-form layui-form-pane1" action="">
+<form class="layui-form layui-form-pane1">
 	<div class="layui-form-item">
 	    <span class="layui-breadcrumb" lay-separator="-">
 		  <a href="">选购菜品</a>
@@ -26,26 +26,21 @@ body{padding: 10px;}
 		</span>
 	</div>	
   <div class="layui-form-item">
-    <table lay-filter="demo">
+    <table class="layui-table" id="List">					
+	</table>
+    <!--<table class="layui-table" lay-filter="demo" lay-data="{id: 'idTest'}">
 	  <thead>
 	    <tr>
-	      <th lay-data="{field:'dish', width:100}">菜品</th>
+	      <th lay-data="{field:'name', width:100}">菜品</th>
 	      <th lay-data="{field:'num', width:100}">份数</th>
 	      <th lay-data="{field:'price'}">单价</th>
 	    </tr> 
 	  </thead>
-	  <tbody>
-	    <tr>
-	      <td>宫保鸡丁</td>
-	      <td>1</td>
-	      <td>￥10</td>
-	    </tr>
-	  </tbody>
-	</table>
+	</table>-->
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
-      <label class="layui-form-label">合计:</label>
+      <label class="layui-form-label" id="sum">合计:</label>
     </div>
   </div>
   <div class="layui-form-item">
@@ -72,7 +67,63 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
   ,layedit=layui.layedit
   ,element=layui.element
   ,table=layui.table;
-  
+
+  //获取url中的参数
+        function getUrlParam(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+            var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+            if (r != null) return  decodeURIComponent(r[2]); return null; //返回参数值
+        }		   
+	//初始化
+ 	$(function(){
+		var l=[]
+		//var data =getUrlParam('data')
+		var price =getUrlParam('price');
+		var name =getUrlParam('name');
+		var num =getUrlParam('num');
+		var sum=0;
+		var a=[{"name":"宫保鸡丁","price":1,"num":2,"sum":2}]
+		var list= price.split('|');
+		var list1= name.split('|');
+		var list2= num.split('|');
+		//data=data.replace(/\"/g,"%22");
+    	//console.log("data:"+JSON.parse(list[0]))
+		for(var i=0;i<list.length-1;i++){
+				//l.push(JSON.parse(list[i]));
+				//l.push(list[i]);
+				var arr  =
+					     {
+					         "name" : list1[i],
+					         "price" : list[i],
+							 "num":list2[i],
+					     }
+						//var json = jQstringify(student);
+				l.push(arr)
+				
+			}
+		  console.log("l:"+l)
+		  table.render({
+		    elem: '#List'
+			,id: 'listReload'
+			,data: l
+		    ,cols: [[ //表头
+		      {field:'name', width:80, title:'商品'}
+			  ,{field:'price', width:60, title:'单价'}
+		      ,{field:'num', width:60, title:'数量'}
+		    ]]
+			,size:'sm'
+		  });
+		 //总计
+			for(var i=0;i<l.length;i++){
+				sum+=list[i]*list2[i]
+			}	
+			console.log(sum)			
+			$("#sum").text("合计:"+sum+"元")
+		
+	});
+	//var a=[{"name":"宫保鸡丁","price":1,"num":2,"sum":2}]
+	
+ 
 	$('#add').on('click',function(){
 		var data={
 			'campusName':{{.campus_name}},
@@ -99,12 +150,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		});
 		return false;
 	});
-	//转换静态表格
-	table.init('demo', {
-	  height: 120 //设置高度
-	  ,limit: 10 //注意：请务必确保 limit 参数（默认：10）是与你服务端限定的数据条数一致
-	  //支持所有基础参数
-	});
+	
 });
 </script>
 
