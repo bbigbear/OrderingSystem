@@ -38,9 +38,9 @@
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
 		<blockquote class="layui-elem-quote">我的订单</blockquote>		
-		<table id="roomList" lay-filter="room"></table>
+		<table id="orderList" lay-filter="order"></table>
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">订单详情</a>
 		</script>
   </div>  
   <div class="layui-footer">
@@ -65,76 +65,52 @@
 		,$=layui.jquery
 		,table=layui.table
 		,form=layui.form;
-	  //layer.msg("你好");
-	//自动加载
-	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
-			form.render('select');	
-		}				
+	 
+	//table 渲染
+	  table.render({
+	    elem: '#orderList'
+	    ,height: 315
+	    ,url: '/v1/student_order/getdata?sid=1'//数据接口
+	    ,page: true //开启分页
+		,id: 'listReload'
+	    ,cols: [[ //表头	  
+	      {field:'Oid', title:'订单号', width:120}
+		  ,{field:'Otime', title:'订单时间', width:120}
+		  ,{field:'Rname', title:'商家', width:120}
+	      ,{field:'Ostatus',  title:'状态', width:120}
+		  ,{field:'Total',  title:'金额', width:120}
+		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
+	    ]]
+	  });
+	//监听工具条
+	table.on('tool(order)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+	  var data = obj.data; //获得当前行数据
+	  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+	  var tr = obj.tr; //获得当前行 tr 的DOM对象	 
+	  if(layEvent === 'edit'){ //
+	    layer.open({
+			  type: 2,
+			  title: '订单详情',
+			  //closeBtn: 0, //不显示关闭按钮
+			  shadeClose: true,
+			  area: ['800px', '600px'],
+			 // offset: 'rb', //右下角弹出
+			  //time: 2000, //2秒后自动关闭
+			  maxmin: true,
+			  anim: 2,
+			  content: ['/v1/student_orderdetail?oid='+data.Oid,'no'], //iframe的url，no代表不显示滚动条
+			  cancel: function(index, layero){
+				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+				    layer.close(index)				
+				  }
+				  return false; 
+			  },
+			});
+	  }
 	});
 	
-	$('#addCanteen').on('click',function(){
-		//layer.msg("点击添加按钮");
-		//获取校区
-		var cp=$("#campus").val();
-		//iframe窗
-		layer.open({
-		  type: 2,
-		  title: '新增食堂',
-		  //closeBtn: 0, //不显示关闭按钮
-		  shadeClose: true,
-		  area: ['450px', '150px'],
-		 // offset: 'rb', //右下角弹出
-		  //time: 2000, //2秒后自动关闭
-		  maxmin: true,
-		  anim: 2,
-		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
-		  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-				window.location.reload();				
-			  }
-			  return false; 
-		  },
-		});
-	});	
-	//获取下拉列表
-	form.on('select(campus_select)',function(data){
-		//layer.msg(data)
-		console.log(data.value);
-		window.location.href="/v1/canteen?campus="+data.value;
-		
-	});
-	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
-		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
-		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
-			//layer.close(index)
-			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
-			$.post('/v1/canteen/del', jsData, function (out) {
-                if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
-                } else {
-                    layer.msg(out.message)
-                }
-            }, "json");	
-	        //向服务端发送删除指令
-		}
-	});
-	{{end}}
   });
-
-	
-	
+  	
 </script>
 
 </body>

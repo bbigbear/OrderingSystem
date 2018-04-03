@@ -12,4 +12,6 @@ type Os struct {
 	Name  string
 	Num   string
 	Price string
+	Sid   int64
+	Rid   int64
 }

@@ -10,6 +10,9 @@ import (
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/astaxie/beego/orm"
 
+	//"crypto/rand"
+	"math/rand"
+
 	"github.com/alecthomas/log4go"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/toolbox"
@@ -155,4 +158,41 @@ func TimeTask() {
 	toolbox.AddTask("tk1", tk1)
 	toolbox.StartTask()
 
+}
+
+//生成随机数
+func (this *BaseController) randStr(strSize int, randType string) string {
+
+	var dictionary string
+
+	if randType == "alphanum" {
+		dictionary = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	}
+
+	if randType == "alpha" {
+		dictionary = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	}
+
+	if randType == "number" {
+		dictionary = "0123456789"
+	}
+
+	var bytes = make([]byte, strSize)
+	rand.Read(bytes)
+	for k, v := range bytes {
+		bytes[k] = dictionary[v%byte(len(dictionary))]
+	}
+	return string(bytes)
+}
+
+//随机字符
+func (this *BaseController) GetRandomString(l int) string {
+	str := "0123456789"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < l; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
 }

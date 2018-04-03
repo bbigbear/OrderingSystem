@@ -79,6 +79,13 @@ body{padding: 10px;}
 	</div>
   </div>
   <div class="layui-form-item">
+    <label class="layui-form-label">手机号码</label>
+    <div class="layui-input-block">
+<!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过11个汉字" autocomplete="off" class="layui-input">-->
+	  <input type="text" name="Phone" id="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
     <div class="layui-input-block">
       <button class="layui-btn" id="add">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->

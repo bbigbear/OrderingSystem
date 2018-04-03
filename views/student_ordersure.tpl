@@ -77,6 +77,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 	//初始化
  	//$(function(){
 		var l=[]
+		var rid=getUrlParam('rid');
+		var sid=getUrlParam('sid');
 		//var data =getUrlParam('data')
 		var price =getUrlParam('price');
 		var name =getUrlParam('name');
@@ -128,7 +130,9 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		var data={
 			'name':name,
 			'price':price,
-			'num':num
+			'num':num,
+			'rid':parseInt(rid),
+			'sid':parseInt(sid)
 			};
 		console.log(data)
 		$.ajax({

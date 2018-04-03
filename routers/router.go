@@ -8,6 +8,8 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
+	beego.Router("/login", &controllers.LoginController{})
+	beego.Router("/login_action", &controllers.LoginController{}, "post:LoginAction")
 	//get img
 	beego.Router("/v1/put_img", &controllers.BaseController{}, "*:PutFileImg")
 
@@ -64,6 +66,10 @@ func init() {
 	beego.Router("/v1/student_index", &controllers.OrderController{})
 	beego.Router("/v1/student_index/getroomdetail", &controllers.OrderController{}, "*:GetRoomDetail")
 	beego.Router("/v1/student_order", &controllers.OrderController{}, "*:GetOrder")
+	beego.Router("/v1/student_order/getdata", &controllers.OrderController{}, "*:GetOrderData")
 	beego.Router("/v1/student_ordersure", &controllers.OrderController{}, "*:SureOrder")
 	beego.Router("/v1/student_addorder", &controllers.OrderController{}, "post:AddOrder")
+	beego.Router("/v1/student_orderdetail", &controllers.OrderController{}, "*:GetOrderDetail")
+	beego.Router("/v1/student_orderdetail/getlist", &controllers.OrderController{}, "*:GetOrderList")
+
 }

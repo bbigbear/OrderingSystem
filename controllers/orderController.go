@@ -4,6 +4,10 @@ import (
 	"OrderingSystem/models"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
+
+	"time"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/alecthomas/log4go"
@@ -97,8 +101,32 @@ func (this *OrderController) GetRoomDetail() {
 }
 
 func (this *OrderController) GetOrder() {
-
+	//t := time.Now().Format("20060102150405")
+	the_time, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		fmt.Println("err!")
+	}
+	fmt.Println(the_time)
 	this.TplName = "student_order.tpl"
+}
+
+func (this *OrderController) GetOrderData() {
+	fmt.Println("获取订单信息")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	order := new(models.Order)
+	query := o.QueryTable(order)
+	sid := this.Input().Get("sid")
+	fmt.Println("sid:", sid)
+	//查询数据库
+	num, err := query.Filter("Sid", sid).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取订单失败", err.Error())
+		this.ajaxMsg("获取订单失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get OrderInfo reslut num:", num)
+	this.ajaxList("获取订单成功", 0, num, maps)
+	return
 }
 
 func (this *OrderController) SureOrder() {
@@ -112,13 +140,118 @@ func (this *OrderController) SureOrder() {
 }
 
 func (this *OrderController) AddOrder() {
-	//获取data
+	//订单
 	fmt.Println("点击确认订单")
-	//
-	//o := orm.NewOrm()
+	o := orm.NewOrm()
 	var os models.Os
 	json.Unmarshal(this.Ctx.Input.RequestBody, &os)
 	fmt.Println("order_info:", &os)
+	//生成订单号  日期+随机四位
+	t := time.Now().Format("20060102150405")
+	r := this.GetRandomString(4)
+	oid := fmt.Sprintf("%s%s", t, r)
+	//fmt.Println(f)
 
-	//
+	nameList := strings.Split(os.Name, "|")
+	priceList := strings.Split(os.Price, "|")
+	numList := strings.Split(os.Num, "|")
+	l := len(nameList) - 1
+	var sum = float64(0)
+	for i := 0; i < l; i++ {
+		var status models.OrderStauts
+		status.Name = nameList[i]
+		status.Oid = oid
+		num, err := strconv.ParseInt(numList[i], 10, 64)
+		if err != nil {
+			fmt.Println("err!")
+			this.ajaxMsg("num格式有误", MSG_ERR_Param)
+		}
+		status.Num = num
+		price, err := strconv.ParseFloat(priceList[i], 64)
+		if err != nil {
+			fmt.Println("err!")
+			this.ajaxMsg("price格式有误", MSG_ERR_Param)
+		}
+		status.Price = price
+		insert_num, err := o.Insert(&status)
+		if err != nil {
+			fmt.Println("err!")
+			this.ajaxMsg("插入失败", MSG_ERR_Resources)
+		}
+		fmt.Println("insert num", insert_num)
+
+		sum += price * float64(num)
+	}
+	//rname,sname
+	dr := new(models.DiningRoom)
+	var dr_info models.DiningRoom
+	err1 := o.QueryTable(dr).Filter("Id", os.Rid).One(&dr_info)
+	if err1 != nil {
+		this.ajaxMsg("rid格式有误", MSG_ERR_Param)
+	}
+
+	student := new(models.Student)
+	var stu_info models.Student
+	err2 := o.QueryTable(student).Filter("Id", os.Sid).One(&stu_info)
+	if err2 != nil {
+		this.ajaxMsg("sid格式有误", MSG_ERR_Param)
+	}
+	//获取
+	var order models.Order
+	order.Oid = oid
+	order.Ostatus = "未取餐"
+	order.Otime = time.Now()
+	order.Otype = "午餐"
+	order.Rid = os.Rid
+	order.Rname = dr_info.Name
+	order.Sid = os.Sid
+	order.Sname = stu_info.Name
+	order.Total = sum
+	insert_order, err := o.Insert(&order)
+	if err != nil {
+		fmt.Println("err!")
+		this.ajaxMsg("插入失败", MSG_ERR_Resources)
+	}
+	fmt.Println("insert order", insert_order)
+	this.ajaxMsg("下订单成功", MSG_OK)
+}
+
+//订单详情
+func (this *OrderController) GetOrderDetail() {
+	fmt.Println("获取订单详情")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	order := new(models.Order)
+	query := o.QueryTable(order)
+	oid := this.Input().Get("oid")
+	fmt.Println("oid:", oid)
+	this.Data["oid"] = oid
+	//查询数据库
+	num, err := query.Filter("Oid", oid).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取订单失败", err.Error())
+		this.ajaxMsg("获取订单失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get OrderInfo reslut num:", num)
+	this.Data["map"] = maps
+	this.TplName = "student_orderdetail.tpl"
+}
+
+func (this *OrderController) GetOrderList() {
+	fmt.Println("获取订单列表")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	order := new(models.OrderStauts)
+	query := o.QueryTable(order)
+	oid := this.Input().Get("oid")
+	fmt.Println("oid:", oid)
+	//查询数据库
+	num, err := query.Filter("Oid", oid).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取订单失败", err.Error())
+		this.ajaxMsg("获取订单失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get OrderInfo reslut num:", num)
+	this.ajaxList("获取订单成功", 0, num, maps)
+	return
 }
