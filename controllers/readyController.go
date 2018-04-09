@@ -57,6 +57,7 @@ func (this *ReadyController) Get() {
 	this.Data["maps_ti"] = maps_ti
 	//获取备份内容
 	var maps_ready []orm.Params
+	var new_maps_ready []map[string]interface{}
 	ready := new(models.Ready)
 	num3, err := o.QueryTable(ready).Filter("Rid", id).Values(&maps_ready)
 	if err != nil {
@@ -64,7 +65,14 @@ func (this *ReadyController) Get() {
 		this.ajaxMsg("获取备份失败", MSG_ERR_Resources)
 	}
 	fmt.Println("get ready result num:", num3)
-	this.Data["maps_ready"] = maps_ready
+
+	l := len(maps_ready) - 1
+	//fmt.Println("maps_ready:", l, maps_ready)
+	//倒叙map
+	for i := l; i >= 0; i-- {
+		new_maps_ready = append(new_maps_ready, maps_ready[i])
+	}
+	this.Data["maps_ready"] = new_maps_ready
 
 	//获取备份食材
 	var maps_rd []orm.Params
@@ -76,7 +84,6 @@ func (this *ReadyController) Get() {
 	}
 	fmt.Println("get readydish result num:", num4)
 	this.Data["maps_rd"] = maps_rd
-
 	this.TplName = "restaurant_ready.tpl"
 }
 
@@ -151,6 +158,60 @@ func (this *ReadyController) DelTemp() {
 	fmt.Println("del temp reslut num:", num)
 	//list["data"] = maps
 	this.ajaxMsg("删除模板成功", MSG_OK)
+	return
+}
+
+//删除备餐记录
+func (this *ReadyController) DelReady() {
+	fmt.Println("点击删除")
+	//获取id
+	id, err := this.GetInt("id")
+	if err != nil {
+		log4go.Stdout("删除菜品id失败", err.Error())
+		this.ajaxMsg("删除菜品id失败", MSG_ERR_Param)
+	}
+	fmt.Println("删除备餐记录id:", id)
+	o := orm.NewOrm()
+	ready := new(models.Ready)
+	num, err := o.QueryTable(ready).Filter("Id", id).Delete()
+	if err != nil {
+		log4go.Stdout("删除备餐失败", err.Error())
+		this.ajaxMsg("删除备餐失败", MSG_ERR_Resources)
+	}
+	fmt.Println("del canteen reslut num:", num)
+	//list["data"] = maps
+	this.ajaxMsg("删除备餐记录成功", MSG_OK)
+	return
+}
+
+//
+func (this *ReadyController) GetOrder() {
+	fmt.Println("查看订单")
+	//获取id
+	readyid := this.Input().Get("readyid")
+	fmt.Println("readyid:", readyid)
+	this.Data["readyid"] = readyid
+
+	this.TplName = "restaurant_getorder.tpl"
+}
+
+//查看订单
+func (this *ReadyController) GetOrderAction() {
+	fmt.Println("查看订单")
+	o := orm.NewOrm()
+	var maps []orm.Params
+	order := new(models.Order)
+	query := o.QueryTable(order)
+	readyid := this.Input().Get("readyid")
+	fmt.Println("readyid:", readyid)
+	//查询数据库
+	num, err := query.Filter("Readyid", readyid).Values(&maps)
+	if err != nil {
+		log4go.Stdout("获取订单失败", err.Error())
+		this.ajaxMsg("获取订单失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get OrderInfo reslut num:", num)
+	this.ajaxList("获取订单成功", 0, num, maps)
 	return
 }
 

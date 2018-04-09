@@ -23,7 +23,9 @@ func init() {
 	beego.Router("/v1/dining_room/add_action", &controllers.DiningRoomController{}, "post:AddRoomAction")
 	beego.Router("/v1/dining_room/getdata", &controllers.DiningRoomController{}, "*:GetRoomData")
 	beego.Router("/v1/dining_room/edit", &controllers.DiningRoomController{}, "*:EditRoom")
+	beego.Router("/v1/dining_room/edit_action", &controllers.DiningRoomController{}, "post:EditRoomAction")
 	beego.Router("/v1/dining_room/del", &controllers.DiningRoomController{}, "post:DelRoom")
+	beego.Router("/v1/dining_room/stop", &controllers.DiningRoomController{}, "post:StopRoom")
 	beego.Router("/v1/dining_room/getroom", &controllers.DiningRoomController{}, "post:GetRoom")
 
 	beego.Router("/v1/dining_time", &controllers.DiningTimeController{})
@@ -53,6 +55,9 @@ func init() {
 	beego.Router("/v1/restaurant_manage/edittime_action", &controllers.ManageController{}, "post:EditTimeIntervalAction")
 
 	beego.Router("/v1/restaurant_ready", &controllers.ReadyController{})
+	beego.Router("/v1/restaurant_ready/del", &controllers.ReadyController{}, "post:DelReady")
+	beego.Router("/v1/restaurant_ready/getorder", &controllers.ReadyController{}, "*:GetOrder")
+	beego.Router("/v1/restaurant_ready/getorder_action", &controllers.ReadyController{}, "*:GetOrderAction")
 	beego.Router("/v1/restaurant_ready/addtempready", &controllers.ReadyController{}, "*:AddTempReady")
 	beego.Router("/v1/restaurant_ready/addtempready_action", &controllers.ReadyController{}, "post:AddTempReadyAction")
 	beego.Router("/v1/restaurant_ready/gettempdata", &controllers.ReadyController{}, "*:GetTempData")

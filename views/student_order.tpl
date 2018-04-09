@@ -21,7 +21,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/">退出</a></li>
+      <li class="layui-nav-item"><a href="/login">退出</a></li>
     </ul>
   </div>
   
@@ -29,8 +29,8 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/student_index">订餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/student_order">我的订单</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index?sid={{.sid}}">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order?sid={{.sid}}">我的订单</a></li>
       </ul>
     </div>
   </div>
@@ -70,7 +70,7 @@
 	  table.render({
 	    elem: '#orderList'
 	    ,height: 315
-	    ,url: '/v1/student_order/getdata?sid=1'//数据接口
+	    ,url: '/v1/student_order/getdata?sid='+{{.sid}}//数据接口
 	    ,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头	  

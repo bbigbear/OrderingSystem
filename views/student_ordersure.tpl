@@ -25,7 +25,7 @@ body{padding: 10px;}
 		  <a href="">线下取餐</a>		 
 		</span>
 	</div>	
-  <div class="layui-form-item">
+  <div class="layui-form-item" style="width:270px;">
     <table class="layui-table" id="List">					
 	</table>
     <!--<table class="layui-table" lay-filter="demo" lay-data="{id: 'idTest'}">
@@ -79,6 +79,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		var l=[]
 		var rid=getUrlParam('rid');
 		var sid=getUrlParam('sid');
+		var readyid=getUrlParam('readyid');
 		//var data =getUrlParam('data')
 		var price =getUrlParam('price');
 		var name =getUrlParam('name');
@@ -109,9 +110,9 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 			,id: 'listReload'
 			,data: l
 		    ,cols: [[ //表头
-		      {field:'name', width:80, title:'商品'}
+		      {field:'name', width:100, title:'商品'}
 			  ,{field:'price', width:60, title:'单价'}
-		      ,{field:'num', width:60, title:'数量'}
+		      ,{field:'num', width:100, title:'数量'}
 		    ]]
 			,size:'sm'
 		  });
@@ -132,7 +133,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 			'price':price,
 			'num':num,
 			'rid':parseInt(rid),
-			'sid':parseInt(sid)
+			'sid':sid,
+			'readyid':parseInt(readyid)
 			};
 		console.log(data)
 		$.ajax({

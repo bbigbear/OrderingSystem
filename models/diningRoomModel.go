@@ -6,6 +6,7 @@ type DiningRoom struct {
 	Name            string
 	Phone           string
 	CanteenName     string `orm:"index"`
+	CampusName      string `orm:"index"`
 	Time            string
 	Detail          string
 	BusinessPicPath string

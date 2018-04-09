@@ -21,7 +21,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/">退出</a></li>
+      <li class="layui-nav-item"><a href="/login">退出</a></li>
     </ul>
   </div>
   
@@ -44,7 +44,7 @@
 		    <li>模板</li>
 		    <li>备餐记录</li>
 		  </ul>
-		  <div class="layui-tab-content" style="height: 500px;">
+		  <div class="layui-tab-content" style="height: auto;">
 		    <div class="layui-tab-item layui-show">
 				<blockquote class="layui-elem-quote" style="margin-top:10px;">备餐</blockquote>	
 				<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
@@ -107,11 +107,18 @@
 					    <input type="text" name="Stocks" id="date1" autocomplete="off" class="layui-input" placeholder="请输入日期">		
 					</div>
 				</div>
+				
 				<div class="layui-collapse">
 				{{range $i,$e:=.maps_ready}}
 				  <div class="layui-colla-item">
-				    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="undo" style="margin-left:100px;" id="undo">撤销</a></h2>
-				    <div class="layui-colla-content layui-show">
+					{{if eq $e.Status "未开始"}}
+						<h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs" style="margin-left:100px;" id="{{$e.Id}}_undo">撤销</a></h2>	
+					{{else if eq $e.Status "已完成"}}
+					    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="{{$e.Id}}_order">查看订单</a></h2>
+					{{else}}
+					    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="{{$e.Id}}_order">查看订单<span class="layui-badge-dot layui-bg-red"></span></a></h2>
+					{{end}}				    			    
+					<div class="layui-colla-content">
 						<table class="layui-table" lay-size="sm">
 						  <colgroup>
 						    <col width="150">
@@ -140,14 +147,14 @@
 					</div>
 				  </div>
 				{{end}}
-				  <div class="layui-colla-item">
+				  <!--<div class="layui-colla-item">
 				    <h2 class="layui-colla-title">李清照</h2>
 				    <div class="layui-colla-content">内容区域</div>
 				  </div>
 				  <div class="layui-colla-item">
 				    <h2 class="layui-colla-title">鲁迅</h2>
 				    <div class="layui-colla-content">内容区域</div>
-				  </div>
+				  </div>-->
 				</div>
 			</div>
 		  </div>
@@ -209,7 +216,12 @@
 	//点击备餐
 	$('#add_ready').on('click',function(){
 		
-		var data={
+		if($("#date").val()==""){
+			alert("备餐时间不能为空")
+		}else if($("#time").val()==""){
+			alert("营业时间不能为空")
+		}else{
+			var data={
 			'rid':parseInt({{.id}}),
 			'date':$("#date").val(),
 			'timeInterval':$("#timeinterval").val(),
@@ -234,7 +246,9 @@
 						alert("备餐失败")
 					}						
 				}
-			});		
+			});	
+		}
+			
 	});
 	
 	
@@ -374,10 +388,52 @@
 				});
 			} 	    
 	  });
-	//撤销备餐
-	$('#undo').on('click',function(){
-		layer.msg("撤销")
+	//撤销备餐,点击查看订单
+	{{range $i,$e:=.maps_ready}}
+	$('#{{$e.Id}}_undo').on('click',function(){
+		//layer.msg({{$e.Status}})		
+		//alert("撤销")
+		if(confirm('确定要撤销么')){ //只有当点击confirm框的确定时，该层才会关闭
+			var jsData={'id':{{$e.Id}}}
+				$.post('/v1/restaurant_ready/del', jsData, function (out) {
+	                if (out.code == 200) {
+	                    layer.alert('撤销成功了', {icon: 1},function(index){
+	                        layer.close(index);
+	                        //table.reload({});
+							window.location.reload();
+	                    });
+	                } else {
+	                    layer.msg(out.message)
+	                }
+	            }, "json");
+		}
+				
 	});
+	$('#{{$e.Id}}_order').on('click',function(){
+		layer.msg({{$e.Id}})
+		layer.open({
+		  type: 2,
+		  title: '查看订单',
+		  //closeBtn: 0, //不显示关闭按钮
+		  shadeClose: true,
+		  area: ['900px', '700px'],
+		 // offset: 'rb', //右下角弹出
+		  //time: 2000, //2秒后自动关闭
+		  maxmin: true,
+		  anim: 2,
+		  content: ['/v1/restaurant_ready/getorder?readyid='+{{$e.Id}},'no'], //iframe的url，no代表不显示滚动条
+		  cancel: function(index, layero){ 
+			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			    layer.close(index)
+				//window.location.reload();				
+			  }
+			  return false; 
+		  },
+		});
+	});
+	{{end}}
+	
+	
 	//ready 渲染table
 	table.render({
 	    elem: '#readyList'

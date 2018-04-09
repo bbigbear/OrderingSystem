@@ -36,7 +36,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="">退出</a></li>
+      <li class="layui-nav-item"><a href="/login">退出</a></li>
     </ul>
   </div>
   
@@ -76,7 +76,7 @@
 		  <div class="layui-form-item">
 		    <label class="layui-form-label">是否营业</label>
 		    <div class="layui-input-block">
-		      <input type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" checked>
+		      <input  lay-filter="iswork" type="checkbox" name="switch" lay-skin="switch" lay-text="是|否" checked>
 		    </div>
 		  </div> 	
 		</form>
@@ -142,16 +142,16 @@
 		if({{.campus}}!=""){
 			$("#campus").val({{.campus}});			
 			form.render('select');	
-		}				
+		}
 	});
 	
 	//获取下拉列表
-	form.on('select(campus_select)',function(data){
+	//form.on('select(campus_select)',function(data){
 		//layer.msg(data)
-		console.log(data.value);
-		window.location.href="/v1/dining_room?campus="+data.value;
+		//console.log(data.value);
+		//window.location.href="/v1/dining_room?campus="+data.value;
 		
-	});
+	//});
 	
 	//点击新增按钮
 	$('#addroom').on('click',function(){
@@ -251,29 +251,47 @@
 	        //向服务端发送删除指令
 	      });
 	    } else if(layEvent === 'stop'){
-	      layer.msg('编辑操作');
-		  layer.open({
-			  type: 2,
-			  title: '编辑菜品',
-			  //closeBtn: 0, //不显示关闭按钮
-			  shadeClose: true,
-			  shade: false,
-			  area: ['893px', '600px'],
-			 // offset: 'rb', //右下角弹出
-			  //time: 2000, //2秒后自动关闭
-			  maxmin: true,
-			  anim: 2,
-			  content: ['/v1/dish/edit_show?id='+data.Id], //iframe的url，no代表不显示滚动条
-			  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-			  }
-			  return false; 
-			  },
-		});					  
+	      layer.confirm('真的停业么', function(index){
+	        var jsData={'id':data.Id}
+			$.post('/v1/dining_room/stop', jsData, function (out) {
+                if (out.code == 200) {
+                    layer.alert('停业成功了', {icon: 1},function(index){
+                        layer.close(index);
+                        table.reload({});
+                    });
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");
+			//obj.del(); //删除对应行（tr）的DOM结构
+	        layer.close(index);
+	        //向服务端发送删除指令
+	      });					  
 	    }
 	  });	
-			
+		
+		//重新加载
+		//点击检索按钮
+		form.on('switch(iswork)', function(data){
+		 // console.log(data.elem); //得到checkbox原始DOM对象
+		  console.log(data.elem.checked); //开关是否开启，true或者false
+		 // console.log(data.value); //开关value值，也可以通过data.elem.value得到
+		  //console.log(data.othis); //得到美化后的DOM对象
+		var status		
+		if(data.elem.checked){
+			status="营业中"
+		}else{
+			status="未营业"
+		}
+		table.reload('listReload', {
+                    where: {
+                        status: status,
+						cname:$("#campus").val(),
+						rname:$("#canteen").val(),
+                    }
+                });
+		}); 
+		
   });
 
 	

@@ -21,6 +21,11 @@ type OrderController struct {
 func (this *OrderController) Get() {
 
 	fmt.Println("获取餐厅信息")
+	//获取sid
+	sid := this.Input().Get("sid")
+	fmt.Println("sid:", sid)
+	this.Data["sid"] = sid
+
 	o := orm.NewOrm()
 	var maps []orm.Params
 	diningroom := new(models.DiningRoom)
@@ -44,14 +49,28 @@ func (this *OrderController) Get() {
 			query = query.Filter(filters[k].(string), filters[k+1])
 		}
 	}
-
-	//查询数据库
-	num, err := query.Filter("status", "营业中").Values(&maps)
+	//获取正在点餐的rid
+	ready := new(models.Ready)
+	var ready_maps []orm.Params
+	var list []int64
+	ready_num, err := o.QueryTable(ready).Filter("Status", "正在点餐").Values(&ready_maps)
 	if err != nil {
-		log4go.Stdout("获取餐厅失败", err.Error())
-		this.ajaxMsg("获取餐厅失败", MSG_ERR_Resources)
+		fmt.Println("get rid in ready err!")
 	}
-	fmt.Println("get diningroom reslut num:", num)
+	if ready_num != 0 {
+		for _, m := range ready_maps {
+			list = append(list, m["Rid"].(int64))
+		}
+		fmt.Println("rid list:", list)
+		//查询数据库
+		num, err := query.Filter("Id__in", list).Filter("status", "营业中").Values(&maps)
+		if err != nil {
+			log4go.Stdout("获取餐厅失败", err.Error())
+			this.ajaxMsg("获取餐厅失败", MSG_ERR_Resources)
+		}
+		fmt.Println("get diningroom reslut num:", num)
+
+	}
 	this.Data["map"] = maps
 	this.TplName = "student_index.tpl"
 }
@@ -61,6 +80,11 @@ func (this *OrderController) GetRoomDetail() {
 	rid := this.Input().Get("rid")
 	fmt.Println("rid:", rid)
 	this.Data["id"] = rid
+
+	//获取sid
+	sid := this.Input().Get("sid")
+	fmt.Println("sid:", sid)
+	this.Data["sid"] = sid
 
 	//获取ready
 	o := orm.NewOrm()
@@ -72,6 +96,8 @@ func (this *OrderController) GetRoomDetail() {
 		this.ajaxMsg("获取准备菜单失败", MSG_ERR_Resources)
 	}
 	tid := maps_ready.Tid
+	//传入readyId
+	this.Data["readyId"] = maps_ready.Id
 
 	//获取菜单类型
 	var maps_mt []orm.Params
@@ -88,8 +114,8 @@ func (this *OrderController) GetRoomDetail() {
 	//获取ready dish
 	var maps_rd []orm.Params
 	rd := new(models.ReadyDish)
-	//
-	num, err := o.QueryTable(rd).Filter("Tid", tid).Values(&maps_rd)
+	//只获取数量大于0的菜品
+	num, err := o.QueryTable(rd).Filter("Tid", tid).Filter("Number__gt", 0).Values(&maps_rd)
 	if err != nil {
 		log4go.Stdout("获取菜品失败", err.Error())
 		this.ajaxMsg("获取菜品失败", MSG_ERR_Resources)
@@ -101,12 +127,11 @@ func (this *OrderController) GetRoomDetail() {
 }
 
 func (this *OrderController) GetOrder() {
-	//t := time.Now().Format("20060102150405")
-	the_time, err := time.Parse("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"))
-	if err != nil {
-		fmt.Println("err!")
-	}
-	fmt.Println(the_time)
+	//获取sid
+	sid := this.Input().Get("sid")
+	fmt.Println("sid:", sid)
+	this.Data["sid"] = sid
+
 	this.TplName = "student_order.tpl"
 }
 
@@ -179,7 +204,35 @@ func (this *OrderController) AddOrder() {
 			this.ajaxMsg("插入失败", MSG_ERR_Resources)
 		}
 		fmt.Println("insert num", insert_num)
+		//减少数量 同一时间段 一个卖家只能限制一个窗口点餐
+		ready := new(models.Ready)
+		ready_dish := new(models.ReadyDish)
+		var ready_maps []orm.Params
+		var dish_maps []orm.Params
+		var dish models.ReadyDish
+		ready_num, err := o.QueryTable(ready).Filter("Status", "正在点餐").Filter("Rid", os.Rid).Values(&ready_maps)
+		if err != nil {
+			fmt.Println("get tid from ready err!")
+		}
+		if ready_num == 1 {
+			for _, m := range ready_maps {
+				num, err := o.QueryTable(ready_dish).Filter("Tid", m["Tid"].(int64)).Filter("Dname", nameList[i]).Values(&dish_maps)
+				if err != nil {
+					fmt.Println("get ready ")
+				}
+				fmt.Println("get ready_dish num", num)
+				for _, d := range dish_maps {
+					dish.Id = d["Id"].(int64)
+					dish.Number = int(d["Number"].(int64)) - int(status.Num)
+					num, err := o.Update(&dish, "Number")
+					if err != nil {
+						fmt.Println("update ready_dish number err!")
+					}
+					fmt.Println("update num", num)
+				}
 
+			}
+		}
 		sum += price * float64(num)
 	}
 	//rname,sname
@@ -192,7 +245,7 @@ func (this *OrderController) AddOrder() {
 
 	student := new(models.Student)
 	var stu_info models.Student
-	err2 := o.QueryTable(student).Filter("Id", os.Sid).One(&stu_info)
+	err2 := o.QueryTable(student).Filter("Sid", os.Sid).One(&stu_info)
 	if err2 != nil {
 		this.ajaxMsg("sid格式有误", MSG_ERR_Param)
 	}
@@ -203,6 +256,7 @@ func (this *OrderController) AddOrder() {
 	order.Otime = time.Now()
 	order.Otype = "午餐"
 	order.Rid = os.Rid
+	order.Readyid = os.Readyid
 	order.Rname = dr_info.Name
 	order.Sid = os.Sid
 	order.Sname = stu_info.Name

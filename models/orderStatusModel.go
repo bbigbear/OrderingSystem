@@ -9,9 +9,10 @@ type OrderStauts struct {
 }
 
 type Os struct {
-	Name  string
-	Num   string
-	Price string
-	Sid   int64
-	Rid   int64
+	Name    string
+	Num     string
+	Price   string
+	Sid     string
+	Rid     int64
+	Readyid int64
 }

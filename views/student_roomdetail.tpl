@@ -14,7 +14,7 @@
     <ul class="layui-nav layui-layout-right">
       <li class="layui-nav-item">
         <a href="javascript:;">
-          <img src="../static/img/admin.jpg" class="layui-nav-img">
+<!--          <img src="../static/img/admin.jpg" class="layui-nav-img">-->
           学生
         </a>
         <dl class="layui-nav-child">
@@ -22,7 +22,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/">退出</a></li>
+      <li class="layui-nav-item"><a href="/login">退出</a></li>
     </ul>
   </div>
   
@@ -30,17 +30,17 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/student_index">订餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/student_order">我的订单</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index?sid={{.sid}}">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order?sid={{.sid}}">我的订单</a></li>
       </ul>
     </div>
   </div>
   <div class="layui-body">
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
-		<blockquote class="layui-elem-quote">食堂选择</blockquote>
+<!--		<blockquote class="layui-elem-quote">食堂选择</blockquote>-->
 		<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">		
-		  <div class="layui-form-item">
+		  <!--<div class="layui-form-item">
 			<label class="layui-form-label">选择类型</label>
 		    <div class="layui-input-inline">
 				<select name="cname" id="cname" lay-filter="campus_select">
@@ -54,7 +54,7 @@
 			<div class="layui-input-inline" >
 		      <button class="layui-btn" id="search">搜索</button>
 		  	</div>
-		  </div>
+		  </div>-->
 		  {{range $i,$e:=.mt_info}}
 					<blockquote class="layui-elem-quote">{{$e.Name}}</blockquote>	
 					<div class="layui-form-item">									
@@ -81,19 +81,15 @@
 			});     
 		  </textarea>-->
 			<div class="site-demo-text" id="testmain">
-				<table class="layui-table" id="List">
-					<!--<thead>
-					    <tr>
-						<th lay-data="{checkbox:true}"></th>
-					    <th lay-data="{field:'name', width:80}">商品</th>
-					    <th lay-data="{field:'price', width:60}">单价</th>
-					    <th lay-data="{field:'num', width:60}">数量</th>
-					    <th lay-data="{field:'sum', width:60}">金额</th>
-					    <th lay-data="{fixed:'right',toolbar:'#barDemo'}">删除</th> 
-					    </tr>
-					</thead>-->					
+				<div>
+					<span class="layui-breadcrumb" lay-separator="|">										  					
+						<i class="layui-icon">&#xe640;</i>
+						<a id="dish_del">删除</a>
+					</span>
+				</div>
+				<table id="List" lay-filter="bar">				
 				</table>
-				<script type="text/html" id="bar">
+				<script type="text/html" id="barDemo">
 				  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>				  				
 				</script>
 				<label class="layui-form-label" id="sum">合计:</label>
@@ -113,8 +109,8 @@
 		disabled:true
 	}
 	.runtest{position: relative; display:none;}
-	.site-demo-text{display:block; width: 300px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #f2f2f2;  font-size:12px; font-family:Courier New;}
-	.runtest a{position: absolute; right: 20px; bottom: 20px;}
+	.site-demo-text{display:block; width: 320px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #f2f2f2;  font-size:12px; font-family:Courier New;}
+	#btns{position: absolute; right: 20px; bottom: 20px;}
 </style>
 
 <script src="/static/layui.js"></script>
@@ -227,12 +223,12 @@
 		  ,{field:'price', width:60, title:'单价'}
 	      ,{field:'num', width:60, title:'数量'}
 		  ,{field:'sum', width:60, title:'金额'}
-		  ,{fixed:'right', title:'删除', toolbar: '#bar'}
+		 // ,{fixed:'right', title:'删除', toolbar: '#barDemo'}
 	    ]]
 		,size:'sm'
 	  });
 	//监听工具条
-	table.on('tool(test)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+	table.on('tool(bar)', function(obj){ //注：tool是工具条 事件名，test是table原始容器的属性 lay-filter="对应的值"
 	  var data = obj.data; //获得当前行数据
 	  var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 	  var tr = obj.tr; //获得当前行 tr 的DOM对象	 
@@ -285,7 +281,7 @@
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'&rid='+{{.id}}+'&sid=1','no'], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'&rid='+{{.id}}+'&sid='+{{.sid}}+'&readyid='+{{.readyId}},'no'], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){
 				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)				
@@ -296,7 +292,32 @@
 		}
 		
 	});
-		
+	//点击删除
+	$('#dish_del').on('click',function(){
+		//alert("删除")
+		var str="";
+		var checkStatus=table.checkStatus('listReload')
+		,data1=checkStatus.data;		
+		console.log(data1)
+		if(data1.length==0){
+			alert("请选择要删除的菜品")
+		}else{
+			for(var i=0;i<data1.length;i++){
+				//数据剔除
+				data.splice(i,1);
+				//名字也去除
+				name_data.splice(data[i]["name"],1);
+			}
+			console.log(data)
+			layer.confirm('是否删除这'+data1.length+'条数据?',{icon:3,title:'提示'},function(index){								
+				table.reload('listReload',{
+							data:data
+						});
+				layer.close(index);
+			});			
+		}
+		return false;
+	});
 	//悬浮窗口
 	var debug = $('#L_layerDebug'), popDebug = function(){
     layer.open({

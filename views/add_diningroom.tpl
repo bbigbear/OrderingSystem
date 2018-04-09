@@ -27,6 +27,18 @@ body{padding: 10px;}
   </div>
   <div class="layui-form-item">
     <div class="layui-inline">
+      <label class="layui-form-label">经营校区</label>
+      <div class="layui-input-block">
+        <select name="campus" id="campus" lay-filter="campus_select">
+          {{range .canteen_info}}
+		    <option value= {{.CampusName}} > {{.CampusName}} </option>
+		  {{end}}
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
       <label class="layui-form-label">经营食堂</label>
       <div class="layui-input-block">
         <select name="canteen" id="canteen" lay-filter="canteen_select">
@@ -59,7 +71,7 @@ body{padding: 10px;}
       <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
     </div>
   </div>
-  <div class="layui-form-item">
+<!--  <div class="layui-form-item">
 	<div class="layui-upload">
 	<label class="layui-form-label">营业执照</label>
 	<div class="layui-upload-list" id="demo1">
@@ -67,8 +79,7 @@ body{padding: 10px;}
 		<input type="file" name="file" id="file[]" class="layui-upload-file">
 	</div>
 	</div>
-  </div>
-
+  </div>-->
   <div class="layui-form-item">
 	<div class="layui-upload">
 	<label class="layui-form-label">餐厅照片</label>
@@ -169,7 +180,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		,auto:false
 	    ,number: 1
 	    ,size: 3*1024
-		,bindAction: '#add1'
+		,bindAction: '#add'
 		//,field:'myfile'
 	    ,choose: function(obj){
 	      //预读本地文件示例，不支持ie8
@@ -198,7 +209,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      	//alert(path_src)
 			console.log(obj)
 			//post json
-			//uploadForm();						
+			uploadForm();						
 	    }
 	  }); 
 	//文本域
@@ -234,10 +245,12 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			'name':$("#name").val(),
 			'canteenName':$("#canteen").val(),
 			'time':checkbox_src,
-			'businessPicPath':path_src1,
+			//'businessPicPath':path_src1,
 			'roomPicPath':path_src,
 			'detail':layedit.getContent(index),
-			'status':"营业中"
+			'status':"营业中",
+			'phone':$("#phone").val(),
+			'campusName':$("#campus").val()
 			};
 			$.ajax({
 				type:"POST",
@@ -259,7 +272,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			});		
 	}
 	$('#add').on('click',function(){
-	    	
+	    //alert("点击确认")	
 		var len=document.querySelector("input[type=file]").files.length;		
 		if (len==0){
 			uploadForm();
@@ -267,8 +280,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		//console.log(document.querySelector("input[name='file1']").value);
 		//$("input[name='file']").each(function(){ 		
 			//console.log($(this).val())
-		//}); 
-		
+		//}); 		
 		return false;
 	});
 	

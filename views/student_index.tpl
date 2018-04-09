@@ -22,7 +22,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/">退出</a></li>
+      <li class="layui-nav-item"><a href="/login">退出</a></li>
     </ul>
   </div>
   
@@ -30,8 +30,8 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/student_index">订餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/student_order">我的订单</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index?sid={{.sid}}">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order?sid={{.sid}}">我的订单</a></li>
       </ul>
     </div>
   </div>
@@ -85,12 +85,13 @@
 		,flow=layui.flow;
 	  //layer.msg("你好");
 	//初始化
- 	$(function(){		
+ 	$(function(){
+		var sid={{.sid}}		
 		{{range .map}}
 			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+{{.RoomPicPath}}+'" id="room_img_'+{{.Id}}+'" style="width:100px;height:100px;"></div><div><p><b>{{.Name}}</b></p></div></div>')
 			$("#room_img_"+{{.Id}}).bind('click',function(){             
                // layer.msg({{.Id}})
-				window.location.href="/v1/student_index/getroomdetail?rid={{.Id}}";				
+				window.location.href="/v1/student_index/getroomdetail?rid={{.Id}}&sid="+sid;				
              });		
 		{{end}}
 	});
@@ -106,7 +107,7 @@
 	form.on('select(campus_select)',function(data){
 		//layer.msg(data)
 		console.log(data.value);
-		window.location.href="/v1/canteen?campus="+data.value;
+		//window.location.href="/v1/canteen?campus="+data.value;
 		
 	});
 	//
