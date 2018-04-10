@@ -1,9 +1,8 @@
 package main
 
 import (
-	_ "OrderingSystem/routers"
-
 	"OrderingSystem/models"
+	_ "OrderingSystem/routers"
 	"fmt"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
@@ -28,6 +27,7 @@ func init() {
 func main() {
 	orm.Debug = true
 	orm.RunSyncdb("default", false, true)
+
 	beego.Run()
 
 }

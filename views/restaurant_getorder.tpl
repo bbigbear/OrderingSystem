@@ -18,7 +18,7 @@ body{padding: 10px;}
 </head>
 <body>
 <form class="layui-form layui-form-pane1">	
-  <div class="layui-form-item" style="width:auto;">
+  <div class="layui-form-item" style="width:425px;">
     <table id="List" lay-filter="order"></table>
 	<script type="text/html" id="barDemo">
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>

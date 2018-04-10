@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	//"fmt"
+
 	"github.com/astaxie/beego"
 )
 
@@ -9,7 +11,9 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
-	c.TplName = "index.tpl"
+	//websocket.Handler(Echo)
+	c.TplName = "login.tpl"
 	//	c.TplName = "dining_room.tpl"
 	//	c.TplName = "dining_time.tpl"
+
 }

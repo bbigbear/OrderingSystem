@@ -89,6 +89,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		,type: 'datetime'
 	});
 	    	//初始化
+	var list = []
  	$(function(){
 		$("#name").val({{.n}})
 		$("#sell_price").val({{.p}})		
@@ -96,19 +97,29 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		$("#detail").val({{.d}})
 		layedit.build('detail'); 
 
-		var list={{.dp}}.split(',')
+		list={{.dp}}.split(',')
+		if(list[0]==""){
+			list=[]
+		}
 		//alert(list[0])
 		for(var i=0;i<list.length-1;i++){
-			$('#demo1').append('<img src="'+"/"+list[i]+'" id="upload_img_'+i+'" style="width:80px;height:80px;padding-left:10px;">')
-			$("#upload_img_"+i).bind('click',function(){             
+			$('#demo1').append('<img src="'+"/"+list[i]+'" id="'+i+'" style="width:80px;height:80px;padding-left:10px;">')
+			$("#"+i).bind('click',function(){             
                 $(this).remove();
-             });
+				console.log("this",$(this)[0].id);
+				console.log("i",i);
+				//list.splice($(this)[0].id,1)
+				delete list[$(this)[0].id]
+				console.log("list",list);
+				//console.log("list",list[0]);
+				//console.log("list",list[3]);
+            });
 		}		
 		form.render();
 	});
 	
 	//餐厅图片上传
-	  var path_src={{.dp}}
+	  //var path_src={{.dp}}
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -126,7 +137,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      obj.preview(function(index, file, result){
 	        $('#demo1').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
 	      	$("#upload_img_"+index).bind('click',function(){
-                path_src="";
+                //path_src="";
 				delete files[index];//删除对应的文件
                 $(this).remove();
 				uploadList.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选			
@@ -138,7 +149,13 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			//alert("上传完毕")
 			console.log(res);
 			if (res.code==200){
-				path_src=path_src+res.data.src+',';	
+				var index= $.inArray(res.data.src,list)
+				console.log("index",index)
+				if(index==-1){
+					list.push(res.data.src)
+				}
+				console.log("list",list)			
+				//path_src=path_src+res.data.src+',';	
 			}else{
 				layer.msg(res.message);
 			}			
@@ -147,7 +164,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      	//alert(path_src)
 			console.log(obj)
 			//post json
-			uploadForm();						
+			uploadForm();				
 	    }
 	  }); 
 	//文本域
@@ -168,9 +185,21 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			//checkbox_src=checkbox_src+data.elem.title+',';	
 		//}
 	//});
-	function uploadForm(){	 		
+	function uploadForm(){
+		var path_src=''
+		for(var i=0;i<list.length;i++){
+			if(list[i]==undefined){
+				//alert("undefined")
+			}else if(list[i]==""){
+				//alert("为空")
+			}else{
+				path_src=path_src+list[i]+',';
+			}
+		}
+		console.log("path_src",path_src)
 		var data={
 			'id':parseInt({{.id}}),
+			'rid':parseInt({{.rid}}),
 			'name':$("#name").val(),
 			'price':parseFloat($("#sell_price").val()),
 			'dishType':$("#dishType").val(),

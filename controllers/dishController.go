@@ -89,6 +89,7 @@ func (this *DishController) EditDish() {
 	//rid
 	rid := this.Input().Get("rid")
 	fmt.Println("rid:", rid)
+	this.Data["rid"] = rid
 	//菜品类型获取
 	var maps_dt []orm.Params
 	dishtype := new(models.DishType)

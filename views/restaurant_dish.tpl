@@ -75,6 +75,10 @@
 		display: none;
 		disabled:true
 	}
+	.laytable-cell-1-DishPicPath{  /*最后的pic为字段的field*/
+      height: 100%;
+      max-width: 100%;
+    } 
 </style>
 
 <script src="/static/layui.js"></script>
@@ -142,8 +146,8 @@
 	    ,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
-		  {type:'checkbox', fixed: 'left'}
-		  ,{field: 'DishPicPath', title: '菜品图片', width:'11%',height:'20%'
+		  {type:'checkbox'}
+		  ,{field: 'DishPicPath', title: '菜品图片', width:120,height:80
 			,templet:function(d){
 				var list=d.DishPicPath.split(',')
 				//alert(list.length)

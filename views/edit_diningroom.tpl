@@ -126,6 +126,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		,type: 'datetime'
 	});
 	    	//初始化
+	var list = []		
  	$(function(){
 		$("#name").val({{.n}})
 		$("#canteen").val({{.cn}})		
@@ -133,19 +134,25 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		$("#info").val({{.d}})
 		$("#phone").val({{.phone}})
 		layedit.build('info'); 
-		var list={{.rp}}.split(',')
+		list={{.rp}}.split(',')
+		if(list[0]==""){
+			list=[]
+		}
 		//alert(list[0])
 		for(var i=0;i<list.length-1;i++){
-			$('#demo2').append('<img src="'+"/"+list[i]+'" id="upload_img_'+i+'" style="width:80px;height:80px;padding-left:10px;">')
-			$("#upload_img_"+i).bind('click',function(){             
+			$('#demo2').append('<img src="'+"/"+list[i]+'" id="'+i+'" style="width:80px;height:80px;padding-left:10px;">')
+			$("#"+i).bind('click',function(){             
                 $(this).remove();
+				//list.splice(i,1)
+				delete list[$(this)[0].id]
+				console.log("list",list);
              });
 		}		
 		form.render();
 	});
 	
 	//餐厅图片上传
-	  var path_src={{.rp}}
+	  //var path_src={{.rp}}
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -163,7 +170,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      obj.preview(function(index, file, result){
 	        $('#demo2').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
 	      	$("#upload_img_"+index).bind('click',function(){
-                path_src="";
+                //path_src="";
 				delete files[index];//删除对应的文件
                 $(this).remove();
 				uploadList.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选			
@@ -175,7 +182,13 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			//alert("上传完毕")
 			console.log(res);
 			if (res.code==200){
-				path_src=path_src+res.data.src+',';	
+				//path_src=path_src+res.data.src+',';	
+				var index= $.inArray(res.data.src,list)
+				console.log("index",index)
+				if(index==-1){
+					list.push(res.data.src)
+				}
+				console.log("list",list)	
 			}else{
 				layer.msg(res.message);
 			}			
@@ -188,7 +201,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    }
 	  }); 
 	//文本域
-	var index=layedit.build('detail',{
+	var index=layedit.build('info',{
 		hideTool:['image','face']
 	});
 	//添加图片
@@ -212,6 +225,16 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			checkbox_src=checkbox_src+$("input[name={{.Type}}]:checked").val()+',';
 		}		
 		{{end}}
+		var path_src=''
+		for(var i=0;i<list.length;i++){
+			if(list[i]==undefined){
+				//alert("undefined")
+			}else if(list[i]==""){
+				//alert("为空")
+			}else{
+				path_src=path_src+list[i]+',';
+			}
+		}
 		var data={
 			'id':parseInt({{.id}}),
 			'name':$("#name").val(),

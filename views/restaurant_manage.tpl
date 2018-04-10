@@ -119,19 +119,18 @@
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
 	//JavaScript代码区域
-	layui.use(['element','layer','jquery','table','layedit'], function(){
+	layui.use(['element','layer','jquery','table','layedit','upload'], function(){
 	  var element = layui.element
 		,layer=layui.layer
 		,$=layui.jquery
 		,table=layui.table
+		,upload = layui.upload
 		,form=layui.form
 		,layedit=layui.layedit;
 	  //layer.msg("你好");
-	//文本域
-	var index=layedit.build('info',{
-		hideTool:['image','face']
-	});
+	
 	//自动加载
+	var list =[]
 	$(function(){
 		//layer.msg({{.campus}});
 		if({{.campus}}!=""){
@@ -139,8 +138,128 @@
 			$("#campus").val({{.campus}});
 			//$("select[name=campus_select]").val({{.campus}});
 			form.render('select');	
-		}				
+		}	
+		$("#info").val({{.d}})
+		layedit.build('info');
+		
+		list={{.rp}}.split(',')
+		for(var i=0;i<list.length-1;i++){
+			$('#demo1').append('<img src="'+"/"+list[i]+'" id="'+i+'" style="width:80px;height:80px;padding-left:10px;">')
+			$("#"+i).bind('click',function(){             
+                $(this).remove();
+				delete list[$(this)[0].id]
+             });
+		}		
+		form.render();			
 	});
+	//文本域
+	var index=layedit.build('info',{
+		hideTool:['image','face']
+	});
+	//图片上传
+	  var path_src={{.rp}}
+	  var uploadList=upload.render({
+	    elem: '#test1'
+	    ,url: '/v1/put_img'
+	    ,multiple: true
+		,exts: 'jpg|png|gif|bmp|jpeg'
+		,auto:false
+	    ,number: 1
+	    ,size: 3*1024
+		,bindAction: '#add'
+		//,field:'myfile'
+	    ,choose: function(obj){
+	      //预读本地文件示例，不支持ie8
+		  //alert(obj);
+		  var files = obj.pushFile();
+	      obj.preview(function(index, file, result){
+	        $('#demo1').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
+	      	$("#upload_img_"+index).bind('click',function(){
+                //path_src="";
+				delete files[index];//删除对应的文件
+                $(this).remove();
+				uploadList.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选			
+             });
+		});
+	    }
+	    ,done: function(res){
+	      //上传完毕
+			//alert("上传完毕")
+			console.log(res);
+			if (res.code==200){
+				//path_src=path_src+res.data.src+',';	
+				var index= $.inArray(res.data.src,list)
+				console.log("index",index)
+				if(index==-1){
+					list.push(res.data.src)
+				}
+				console.log("list",list)	
+			}else{
+				layer.msg(res.message);
+			}			
+	    }
+	    ,allDone: function(obj){
+	      	//alert(path_src)
+			console.log(obj)
+			//post json
+			uploadForm();						
+	    }
+	  }); 
+	//添加图片
+	$('#test1').on('click',function(){
+		return false;//禁止form自动提交
+	});
+	//
+	function uploadForm(){			
+		var path_src=''
+		for(var i=0;i<list.length;i++){
+			if(list[i]==undefined){
+				//alert("undefined")
+			}else if(list[i]==""){
+				//alert("为空")
+			}else{
+				path_src=path_src+list[i]+',';
+			}
+		}
+		var data={
+			'id':parseInt({{.id}}),
+			'name':{{.n}},
+			'canteenName':{{.cn}},
+			'time':{{.t}},
+			//'businessPicPath':path_src1,
+			'roomPicPath':path_src,
+			'detail':layedit.getContent(index),
+			'phone':{{.phone}},
+			'campusName':{{.cam}}
+			};
+			$.ajax({
+				type:"POST",
+				contentType:"application/json;charset=utf-8",
+				url:"/v1/dining_room/edit_action",
+				data:JSON.stringify(data),
+				async:false,
+				error:function(request){
+					alert("post error")						
+				},
+				success:function(res){
+					if(res.code==200){
+						alert("更新成功")
+						window.location.reload();						
+					}else{
+						alert("更新失败")
+					}						
+				}
+			});		
+	}
+	$('#add').on('click',function(){
+	   // alert("点击上传")	
+		var len=document.querySelector("input[type=file]").files.length;		
+		if (len==0){
+			uploadForm();
+		}				
+		return false;
+	});
+	//
 	
 	$('#addDish').on('click',function(){
 		//layer.msg("点击添加按钮");

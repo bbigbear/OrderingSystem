@@ -43,7 +43,25 @@ func (this *ManageController) Get() {
 	}
 	fmt.Println("get menutype reslut num:", num1)
 	this.Data["mt_info"] = maps_mt
-
+	//获取窗口信息
+	var maps_room models.DiningRoom
+	room := new(models.DiningRoom)
+	err1 := o.QueryTable(room).One(&maps_room)
+	if err1 != nil {
+		fmt.Println("get room detail err!")
+	}
+	this.Data["id"] = maps_room.Id
+	this.Data["n"] = maps_room.Name
+	this.Data["cn"] = maps_room.CanteenName
+	this.Data["t"] = maps_room.Time
+	this.Data["d"] = maps_room.Detail
+	this.Data["bp"] = maps_room.BusinessPicPath
+	this.Data["rp"] = maps_room.RoomPicPath
+	this.Data["s"] = maps_room.Status
+	this.Data["phone"] = maps_room.Phone
+	this.Data["cam"] = maps_room.CampusName
+	//this.Data["room_pic"] = maps_room.RoomPicPath
+	//this.Data["detail"] = maps_room.Detail
 	this.TplName = "restaurant_manage.tpl"
 }
 

@@ -124,6 +124,10 @@
 		display: none;
 		disabled:true
 	}
+	.laytable-cell-1-RoomPicPath{  /*最后的pic为字段的field*/
+      height: 100%;
+      max-width: 100%;
+    } 
 </style>
 
 <script src="/static/layui.js"></script>
@@ -190,7 +194,7 @@
 	    ,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
-		  {field: 'RoomPicPath', title: '窗口图片', width:'11%',height:'20%'
+		  {field: 'RoomPicPath', title: '窗口图片', width:120,height:80
 			,templet:function(d){
 				var list=d.RoomPicPath.split(',')
 				//alert(list.length)
