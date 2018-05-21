@@ -278,10 +278,10 @@
 		  anim: 2,
 		  content: ['/v1/restaurant_manage/adddishtype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				window.location.reload();				
-			  }
+			  //}
 			  return false; 
 		  },
 		});
@@ -304,10 +304,10 @@
 		  anim: 2,
 		  content: ['/v1/restaurant_manage/addmenutype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				window.location.reload();				
-			  }
+			  //}
 			  return false; 
 		  },
 		});
@@ -398,11 +398,11 @@
 			  anim: 2,
 			  content: ['/v1/restaurant_manage/edittime?id='+data.Id], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
-				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+				  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)
 					//window.location.reload();	
 					table.reload({});			
-				  }
+				 // }
 				  return false; 
 			  },
 			});

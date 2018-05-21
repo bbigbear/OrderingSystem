@@ -124,10 +124,10 @@
 		  anim: 2,
 		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			 // if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				window.location.reload();				
-			  }
+			  //}
 			  return false; 
 		  },
 		});

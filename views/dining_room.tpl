@@ -175,12 +175,12 @@
 		  anim: 2,
 		  content: ['/v1/dining_room/add?campus='+cp], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
-		  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+		  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 		    layer.close(index)
 			//window.parent.location.reload();
 			//重载表格
 			table.reload('listReload', {});
-		  }
+		  //}
 		  return false; 
 		  },
 		});

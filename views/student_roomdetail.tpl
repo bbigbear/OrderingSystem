@@ -283,9 +283,9 @@
 			  anim: 2,
 			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'&rid='+{{.id}}+'&sid='+{{.sid}}+'&readyid='+{{.readyId}},'no'], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){
-				  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+				  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)				
-				  }
+				  //}
 				  return false; 
 			  },
 			});

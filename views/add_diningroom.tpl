@@ -71,7 +71,7 @@ body{padding: 10px;}
       <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
     </div>
   </div>
-<!--  <div class="layui-form-item">
+  <div class="layui-form-item">
 	<div class="layui-upload">
 	<label class="layui-form-label">营业执照</label>
 	<div class="layui-upload-list" id="demo1">
@@ -79,7 +79,7 @@ body{padding: 10px;}
 		<input type="file" name="file" id="file[]" class="layui-upload-file">
 	</div>
 	</div>
-  </div>-->
+  </div>
   <div class="layui-form-item">
 	<div class="layui-upload">
 	<label class="layui-form-label">餐厅照片</label>
@@ -113,7 +113,7 @@ body{padding: 10px;}
 
 <script>
 layui.use(['form','laydate','upload','jquery','layedit'], function(){
-  var form = layui.form
+  var form = layui.form 
   ,laydate=layui.laydate
   ,upload = layui.upload
   , $ = layui.jquery
@@ -134,7 +134,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		,auto:false
 	    ,number: 1
 	    ,size: 3*1024
-		,bindAction: '#add1'
+		,bindAction: '#add'
 		//,field:'myfile'
 	    ,choose: function(obj){
 	      //预读本地文件示例，不支持ie8
@@ -164,9 +164,9 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			console.log(obj)
 			//post json
 			//uploadForm();	
-			$('#add1').on('click',function(){				
-				return false;
-			});					
+			//$('#add1').on('click',function(){				
+			//	return false;
+			//});					
 	    }
 	  });
 	
@@ -209,7 +209,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	      	//alert(path_src)
 			console.log(obj)
 			//post json
-			uploadForm();						
+			uploadForm();					
 	    }
 	  }); 
 	//文本域
@@ -272,7 +272,8 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			});		
 	}
 	$('#add').on('click',function(){
-	    //alert("点击确认")	
+	    //alert("点击确认")
+		//var yingye_len=document.querySelector("input[type=file]").files.length;
 		var len=document.querySelector("input[type=file]").files.length;		
 		if (len==0){
 			uploadForm();
