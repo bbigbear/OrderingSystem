@@ -63,8 +63,10 @@ func init() {
 	beego.Router("/v1/restaurant_ready/gettempdata", &controllers.ReadyController{}, "*:GetTempData")
 	beego.Router("/v1/restaurant_ready/deltemp", &controllers.ReadyController{}, "*:DelTemp")
 	beego.Router("/v1/restaurant_ready/edittemp", &controllers.ReadyController{}, "*:EditTemp")
+	beego.Router("/v1/restaurant_ready/edittemp_action", &controllers.ReadyController{}, "*:EditTempAction")
 	beego.Router("/v1/restaurant_ready/addreadydish", &controllers.ReadyController{}, "*:AddReadyDish")
 	beego.Router("/v1/restaurant_ready/AddMultiReadyDish", &controllers.ReadyController{}, "*:AddMultiReadyDish")
+	beego.Router("/v1/restaurant_ready/delreadydish", &controllers.ReadyController{}, "post:DelReadyDish")
 	beego.Router("/v1/restaurant_ready/addready_action", &controllers.ReadyController{}, "post:AddReadyAction")
 	beego.Router("/v1/restaurant_ready/getreadydishdata", &controllers.ReadyController{}, "*:GetReadyDishData")
 

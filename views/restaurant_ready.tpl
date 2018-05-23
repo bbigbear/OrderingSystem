@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id=<<<.id>>>">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id=<<<.id>>>">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id=<<<.id>>>">管理</a></li>
       </ul>
     </div>
   </div>
@@ -55,9 +55,9 @@
 					    </div>
 						<div class="layui-input-inline" style="width: 80px;">
 							<select name="timeinterval" id="timeinterval" lay-verType="tips">
-					       	  {{range .time}}
-							  <option value={{.Name}}>{{.Name}}</option>
-							  {{end}}
+					       	  <<<range .time>>>
+							  <option value=<<<.Name>>>><<<.Name>>></option>
+							  <<<end>>>
 					        </select>
 						</div>
 						<label class="layui-form-label">营业时间：</label>
@@ -69,9 +69,9 @@
 					    <label class="layui-form-label">选择模板：</label>
 						<div class="layui-input-inline" style="width: 200px;">
 							<select name="tname" id="tname" lay-verType="tips">
-					          {{range .temp}}
-							  <option value={{.Name}}>{{.Name}}</option>
-							  {{end}}
+					          <<<range .temp>>>
+							  <option value=<<<.Name>>>><<<.Name>>></option>
+							  <<<end>>>
 					        </select>
 						</div>					
 					</div>
@@ -99,9 +99,9 @@
 					<a style="padding-right:10px;">按类别：</a>
 					<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
 					  <a id="all">不限</a>
-					  {{range .maps_ti}}
-					  <a id="{{.Id}}">{{.Name}}</a>
-					  {{end}}
+					  <<<range .maps_ti>>>
+					  <a id="<<<.Id>>>"><<<.Name>>></a>
+					  <<<end>>>
 					</span>
 					<div class="layui-input-inline" style="width: 150px;margin-left:100px;">
 					    <input type="text" name="Stocks" id="date1" autocomplete="off" class="layui-input" placeholder="请输入日期">		
@@ -109,15 +109,15 @@
 				</div>
 				
 				<div class="layui-collapse">
-				{{range $i,$e:=.maps_ready}}
+				<<<range $i,$e:=.maps_ready>>>
 				  <div class="layui-colla-item">
-					{{if eq $e.Status "未开始"}}
-						<h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs" style="margin-left:100px;" id="{{$e.Id}}_undo">撤销</a></h2>	
-					{{else if eq $e.Status "已完成"}}
-					    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="{{$e.Id}}_order">查看订单</a></h2>
-					{{else}}
-					    <h2 class="layui-colla-title">{{$e.Date}}&nbsp;&nbsp;{{$e.TimeInterval}}&nbsp;&nbsp;{{$e.Status}} <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="{{$e.Id}}_order">查看订单<span class="layui-badge-dot layui-bg-red"></span></a></h2>
-					{{end}}				    			    
+					<<<if eq $e.Status "未开始">>>
+						<h2 class="layui-colla-title"><<<$e.Date>>>&nbsp;&nbsp;<<<$e.TimeInterval>>>&nbsp;&nbsp;<<<$e.Status>>> <a class="layui-btn layui-btn-normal layui-btn-xs" style="margin-left:100px;" id="<<<$e.Id>>>_undo">撤销</a></h2>	
+					<<<else if eq $e.Status "已完成">>>
+					    <h2 class="layui-colla-title"><<<$e.Date>>>&nbsp;&nbsp;<<<$e.TimeInterval>>>&nbsp;&nbsp;<<<$e.Status>>> <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="<<<$e.Id>>>_order">查看订单</a></h2>
+					<<<else>>>
+					    <h2 class="layui-colla-title"><<<$e.Date>>>&nbsp;&nbsp;<<<$e.TimeInterval>>>&nbsp;&nbsp;<<<$e.Status>>> <a class="layui-btn layui-btn-normal layui-btn-xs"  style="margin-left:100px;" id="<<<$e.Id>>>_order">查看订单<span class="layui-badge-dot layui-bg-red"></span></a></h2>
+					<<<end>>>				    			    
 					<div class="layui-colla-content">
 						<table class="layui-table" lay-size="sm">
 						  <colgroup>
@@ -133,20 +133,20 @@
 						    </tr>							
 						  </thead>
 						  <tbody>
-							{{range $.maps_rd}}
-								{{if eq .Tid $e.Tid}}
+							<<<range $.maps_rd>>>
+								<<<if eq .Tid $e.Tid>>>
 							    <tr>
-							      <td>{{.Dname}}</td>
-							      <td>{{.Number}}</td>
-							      <td>{{.Mname}}</td>
+							      <td><<<.Dname>>></td>
+							      <td><<<.Number>>></td>
+							      <td><<<.Mname>>></td>
 							    </tr>
-								{{end}}
-							{{end}}						    
+								<<<end>>>
+							<<<end>>>						    
 						  </tbody>
 						</table>
 					</div>
 				  </div>
-				{{end}}
+				<<<end>>>
 				  <!--<div class="layui-colla-item">
 				    <h2 class="layui-colla-title">李清照</h2>
 				    <div class="layui-colla-content">内容区域</div>
@@ -203,16 +203,6 @@
 	    ,type: 'date'
 	  });
 	
-	//自动加载
-	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
-			form.render('select');	
-		}				
-	});
 	//点击备餐
 	$('#add_ready').on('click',function(){
 		
@@ -222,7 +212,7 @@
 			alert("营业时间不能为空")
 		}else{
 			var data={
-			'rid':parseInt({{.id}}),
+			'rid':parseInt(<<<.id>>>),
 			'date':$("#date").val(),
 			'timeInterval':$("#timeinterval").val(),
 			'time':$("#time").val(),
@@ -251,62 +241,6 @@
 			
 	});
 	
-	
-	$('#addCanteen').on('click',function(){
-		//layer.msg("点击添加按钮");
-		//获取校区
-		var cp=$("#campus").val();
-		//iframe窗
-		layer.open({
-		  type: 2,
-		  title: '新增食堂',
-		  //closeBtn: 0, //不显示关闭按钮
-		  shadeClose: true,
-		  area: ['450px', '150px'],
-		 // offset: 'rb', //右下角弹出
-		  //time: 2000, //2秒后自动关闭
-		  maxmin: true,
-		  anim: 2,
-		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
-		  cancel: function(index, layero){ 
-			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-				window.location.reload();				
-			  //}
-			  return false; 
-		  },
-		});
-	});	
-	//获取下拉列表
-	form.on('select(campus_select)',function(data){
-		//layer.msg(data)
-		console.log(data.value);
-		window.location.href="/v1/canteen?campus="+data.value;
-		
-	});
-	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
-		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
-		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
-			//layer.close(index)
-			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
-			$.post('/v1/canteen/del', jsData, function (out) {
-                if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
-                } else {
-                    layer.msg(out.message)
-                }
-            }, "json");	
-	        //向服务端发送删除指令
-		}
-	});
-	{{end}}
-	
 	//点击新增模板
 	$('#add_temp').on('click',function(){
 		//iframe窗
@@ -320,24 +254,25 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_ready/addtempready?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_ready/addtempready?id=<<<.id>>>','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
-				window.location.reload();				
+				location.reload();
+							
 			  //}
 			  return false; 
 		  },
 		});		
-		//window.location.href="/v1/restaurant_ready/addtempready?id="+{{.id}};
-		//window.location.href="/v1/restaurant_ready/addtemp?id="+{{.id}};
+		//window.location.href="/v1/restaurant_ready/addtempready?id="+<<<.id>>>;
+		//window.location.href="/v1/restaurant_ready/addtemp?id="+<<<.id>>>;
 		
 	});
 	//temp 渲染table
 	table.render({
 	    elem: '#tempList'
 	    ,height: 315
-	    ,url: '/v1/restaurant_ready/gettempdata?id={{.id}}' //数据接口
+	    ,url: '/v1/restaurant_ready/gettempdata?id=<<<.id>>>' //数据接口
 	    //,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头		  
@@ -377,7 +312,7 @@
 				  //time: 2000, //2秒后自动关闭
 				  maxmin: true,
 				  anim: 2,
-				  content: ['/v1/restaurant_ready/edittemp?id='+data.Id+"&rid={{.id}}"], //iframe的url，no代表不显示滚动条
+				  content: ['/v1/restaurant_ready/edittemp?id='+data.Id+"&rid=<<<.id>>>"], //iframe的url，no代表不显示滚动条
 				  cancel: function(index, layero){ 
 				  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)
@@ -389,12 +324,12 @@
 			} 	    
 	  });
 	//撤销备餐,点击查看订单
-	{{range $i,$e:=.maps_ready}}
-	$('#{{$e.Id}}_undo').on('click',function(){
-		//layer.msg({{$e.Status}})		
+	<<<range $i,$e:=.maps_ready>>>
+	$('#<<<$e.Id>>>_undo').on('click',function(){
+		//layer.msg(<<<$e.Status>>>)		
 		//alert("撤销")
 		if(confirm('确定要撤销么')){ //只有当点击confirm框的确定时，该层才会关闭
-			var jsData={'id':{{$e.Id}}}
+			var jsData={'id':<<<$e.Id>>>}
 				$.post('/v1/restaurant_ready/del', jsData, function (out) {
 	                if (out.code == 200) {
 	                    layer.alert('撤销成功了', {icon: 1},function(index){
@@ -409,8 +344,8 @@
 		}
 				
 	});
-	$('#{{$e.Id}}_order').on('click',function(){
-		layer.msg({{$e.Id}})
+	$('#<<<$e.Id>>>_order').on('click',function(){
+		layer.msg(<<<$e.Id>>>)
 		layer.open({
 		  type: 2,
 		  title: '查看订单',
@@ -421,7 +356,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_ready/getorder?readyid='+{{$e.Id}},'no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_ready/getorder?readyid='+<<<$e.Id>>>,'no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			 //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -431,14 +366,14 @@
 		  },
 		});
 	});
-	{{end}}
+	<<<end>>>
 	
 	
 	//ready 渲染table
 	table.render({
 	    elem: '#readyList'
 	    ,height: 315
-	    ,url: '/v1/restaurant_ready/getreadydishdata?id={{.id}}' //数据接口
+	    ,url: '/v1/restaurant_ready/getreadydishdata?id=<<<.id>>>' //数据接口
 	    //,page: true //开启分页
 		,id: 'listReload2'
 	    ,cols: [[ //表头		  

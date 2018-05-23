@@ -50,7 +50,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   
 	$('#add').on('click',function(){
 		var data={
-			'rid':parseInt({{.id}}),
+			'rid':parseInt(<<<.id>>>),
 			'name':$("#name").val()
 			};
 		console.log(data)

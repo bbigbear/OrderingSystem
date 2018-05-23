@@ -50,7 +50,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   
 	$('#add').on('click',function(){
 		var data={
-			'campusName':{{.campus_name}},
+			'campusName':<<<.campus_name>>>,
 			'name':$("#name").val()
 			};
 		console.log(data)

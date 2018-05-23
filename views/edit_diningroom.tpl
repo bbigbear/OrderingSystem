@@ -30,9 +30,9 @@ body{padding: 10px;}
       <label class="layui-form-label">经营校区</label>
       <div class="layui-input-block">
         <select name="campus" id="campus" lay-filter="campus_select">
-          {{range .canteen_info}}
-		    <option value= {{.CampusName}} > {{.CampusName}} </option>
-		  {{end}}
+          <<<range .canteen_info>>>
+		    <option value= <<<.CampusName>>> > <<<.CampusName>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -42,9 +42,9 @@ body{padding: 10px;}
       <label class="layui-form-label">经营食堂</label>
       <div class="layui-input-block">
         <select name="canteen" id="canteen" lay-filter="canteen_select">
-          {{range .canteen_info}}
-		    <option value= {{.Name}} > {{.Name}} </option>
-		  {{end}}
+          <<<range .canteen_info>>>
+		    <option value= <<<.Name>>> > <<<.Name>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -52,9 +52,9 @@ body{padding: 10px;}
   <div class="layui-form-item">
     <label class="layui-form-label">经营时段</label>
     <div class="layui-input-block">
-	  {{range .time_info}}
-      <input type="checkbox" name={{.Type}} title={{.Type}} value={{.Type}} checked="checked">
-      {{end}}
+	  <<<range .time_info>>>
+      <input type="checkbox" name=<<<.Type>>> title=<<<.Type>>> value=<<<.Type>>> checked="checked">
+      <<<end>>>
     </div>
   </div>
 <!--  <div class="layui-form-item">
@@ -71,7 +71,7 @@ body{padding: 10px;}
       <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
     </div>
   </div>
-<!--  <div class="layui-form-item">
+  <div class="layui-form-item">
 	<div class="layui-upload">
 	<label class="layui-form-label">营业执照</label>
 	<div class="layui-upload-list" id="demo1">
@@ -79,7 +79,7 @@ body{padding: 10px;}
 		<input type="file" name="file" id="file[]" class="layui-upload-file">
 	</div>
 	</div>
-  </div>-->
+  </div>
 
   <div class="layui-form-item">
 	<div class="layui-upload">
@@ -101,7 +101,7 @@ body{padding: 10px;}
     <div class="layui-input-block">
       <button class="layui-btn" id="add">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->
-      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+<!--      <button type="reset" class="layui-btn layui-btn-primary">取消</button>-->
     </div>
   </div>
 </form>
@@ -128,13 +128,13 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    	//初始化
 	var list = []		
  	$(function(){
-		$("#name").val({{.n}})
-		$("#canteen").val({{.cn}})		
-		$("#dishType").val({{.t}})
-		$("#info").val({{.d}})
-		$("#phone").val({{.phone}})
+		$("#name").val(<<<.n>>>)
+		$("#canteen").val(<<<.cn>>>)		
+		$("#dishType").val(<<<.t>>>)
+		$("#info").val(<<<.d>>>)
+		$("#phone").val(<<<.phone>>>)
 		layedit.build('info'); 
-		list={{.rp}}.split(',')
+		list=<<<.rp>>>.split(',')
 		if(list[0]==""){
 			list=[]
 		}
@@ -147,12 +147,27 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 				delete list[$(this)[0].id]
 				console.log("list",list);
              });
-		}		
+		}
+		list1=<<<.bp>>>.split(',')
+		if(list1[0]==""){
+			list1=[]
+		}
+		//alert(list[0])
+		for(var i=0;i<list1.length-1;i++){
+			$('#demo1').append('<img src="'+"/"+list[i]+'" id="'+i+'" style="width:80px;height:80px;padding-left:10px;">')
+			$("#"+i).bind('click',function(){             
+                //$(this).remove();
+				//list.splice(i,1)
+				//delete list[$(this)[0].id]
+				//console.log("list",list);
+				alert("营业执照不能删除")
+             });
+		}	
 		form.render();
 	});
 	
 	//餐厅图片上传
-	  //var path_src={{.rp}}
+	  //var path_src=<<<.rp>>>
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -220,11 +235,11 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	//});
 	function uploadForm(){	
 		var checkbox_src=""
-		{{range .time_info}}
-		if($("input[name={{.Type}}]:checked").val()!=undefined){
-			checkbox_src=checkbox_src+$("input[name={{.Type}}]:checked").val()+',';
+		<<<range .time_info>>>
+		if($("input[name=<<<.Type>>>]:checked").val()!=undefined){
+			checkbox_src=checkbox_src+$("input[name=<<<.Type>>>]:checked").val()+',';
 		}		
-		{{end}}
+		<<<end>>>
 		var path_src=''
 		for(var i=0;i<list.length;i++){
 			if(list[i]==undefined){
@@ -236,11 +251,11 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			}
 		}
 		var data={
-			'id':parseInt({{.id}}),
+			'id':parseInt(<<<.id>>>),
 			'name':$("#name").val(),
 			'canteenName':$("#canteen").val(),
 			'time':checkbox_src,
-			//'businessPicPath':path_src1,
+			'businessPicPath':<<<.bp>>>,
 			'roomPicPath':path_src,
 			'detail':layedit.getContent(index),
 			'phone':$("#phone").val(),

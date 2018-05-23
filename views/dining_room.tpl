@@ -59,17 +59,17 @@
 			<label class="layui-form-label">选择校区</label>
 		    <div class="layui-input-inline">
 				<select name="campus" id="campus" lay-filter="campus_select">
-		          <option value="雁塔校区">雁塔校区</option>
-		          <option value="庆兴校区">庆兴校区</option>
-				  <option value="曲江校区">曲江校区</option>
+		          <<<range .canteen_info>>>
+				    <option value= <<<.CampusName>>> > <<<.CampusName>>> </option>
+				  <<<end>>>
 		        </select>
 			</div>			
 			<label class="layui-form-label">选择食堂</label>
 			<div class="layui-input-inline">
 				<select name="canteen" id="canteen" lay-filter="canteen_select">
-				  {{range .canteen_info}}
-		          <option value= {{.Name}} > {{.Name}} </option>
-				  {{end}}
+				  <<<range .canteen_info>>>
+		          <option value= <<<.Name>>> > <<<.Name>>> </option>
+				  <<<end>>>
 		        </select>
 			</div>
 		  </div>
@@ -106,9 +106,13 @@
 		</table>-->
 		<table id="roomList" lay-filter="room"></table>
 		<script type="text/html" id="barDemo">
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>
-			<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="stop">停业</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>			
 			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+			{{#  if(d.Status =="未营业" ){ }}
+			    <a class="layui-btn layui-btn-xs" lay-event="start">恢复</a>
+			{{#  }else{ }}
+				<a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="stop">停业</a>
+			{{#  } }}
 		</script>
 		<hr class="layui-bg-green">		
 	</div>
@@ -134,17 +138,18 @@
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
 	//JavaScript代码区域
-	layui.use(['element','layer','jquery','table'], function(){
+	layui.use(['element','layer','jquery','table','laytpl'], function(){
 	  var element = layui.element
 		,form=layui.form
 		,layer=layui.layer
 		,$=layui.jquery
-		,table=layui.table;
+		,table=layui.table
+		,laytpl = layui.laytpl;
 	  //layer.msg("你好");
 	//自动加载
 	$(function(){
-		if({{.campus}}!=""){
-			$("#campus").val({{.campus}});			
+		if(<<<.campus>>>!=""){
+			$("#campus").val(<<<.campus>>>);			
 			form.render('select');	
 		}
 	});
@@ -191,7 +196,7 @@
 	    elem: '#roomList'
 	    ,height: 315
 	    ,url: '/v1/dining_room/getdata' //数据接口
-	    ,page: true //开启分页
+	   // ,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
 		  {field: 'RoomPicPath', title: '窗口图片', width:120,height:80
@@ -231,9 +236,9 @@
 			  anim: 2,
 			  content: ['/v1/dining_room/edit?id='+data.Id], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			 // if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
-			  }
+			  //}
 			  return false; 
 			  },
 		});
@@ -278,7 +283,7 @@
 		//点击检索按钮
 		form.on('switch(iswork)', function(data){
 		 // console.log(data.elem); //得到checkbox原始DOM对象
-		  console.log(data.elem.checked); //开关是否开启，true或者false
+		 // console.log(data.elem.checked); //开关是否开启，true或者false
 		 // console.log(data.value); //开关value值，也可以通过data.elem.value得到
 		  //console.log(data.othis); //得到美化后的DOM对象
 		var status		

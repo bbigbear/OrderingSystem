@@ -63,11 +63,11 @@
 		</div>		
 		<blockquote class="layui-elem-quote">食堂开设</blockquote>
 		<div style="padding: 15px;">
-			{{range .canteen_info}}
-		    <button class="layui-btn" id={{.Id}}>
-			  {{.Name}} <i class="layui-icon">&#x1006;</i>
+			<<<range .canteen_info>>>
+		    <button class="layui-btn" id=<<<.Id>>>>
+			  <<<.Name>>> <i class="layui-icon">&#x1006;</i>
 			</button>
-			{{end}}
+			<<<end>>>
 			<button class="layui-btn layui-btn-primary" id="addCanteen"><i class="layui-icon">&#xe654;</i></button>
 		</div>	
 	</div>
@@ -98,11 +98,11 @@
 	  //layer.msg("你好");
 	//自动加载
 	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
+		//layer.msg(<<<.campus>>>);
+		if(<<<.campus>>>!=""){
+			//layer.msg(<<<.campus>>>);
+			$("#campus").val(<<<.campus>>>);
+			//$("select[name=campus_select]").val(<<<.campus>>>);
 			form.render('select');	
 		}				
 	});
@@ -140,19 +140,19 @@
 		
 	});
 	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
+	<<<range .canteen_info>>>
+	$('#<<<.Id>>>').on('click',function(){
 		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
+		//layer.msg(<<<.Name>>>);
 		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
 			//layer.close(index)
 			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
+			//layer.msg(<<<.Name>>>);
+			//window.location.href="/v1/canteen/del?id="+<<<.Id>>>;
+			var jsData={'id':<<<.Id>>>}
 			$.post('/v1/canteen/del', jsData, function (out) {
                 if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
+                    window.location.href="/v1/canteen?campus="+<<<.CampusName>>>;
                 } else {
                     layer.msg(out.message)
                 }
@@ -160,7 +160,7 @@
 	        //向服务端发送删除指令
 		}
 	});
-	{{end}}
+	<<<end>>>
   });
 
 	

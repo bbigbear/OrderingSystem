@@ -22,7 +22,7 @@ body{padding: 10px;}
     <label class="layui-form-label">菜品名称</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过20个汉字" autocomplete="off" class="layui-input">-->
-	  <input type="text" name="Name" id="name" value="{{.Name}}" placeholder="请输入菜品名称" autocomplete="off" class="layui-input">
+	  <input type="text" name="Name" id="name" value="<<<.Name>>>" placeholder="请输入菜品名称" autocomplete="off" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item">
@@ -30,9 +30,9 @@ body{padding: 10px;}
       <label class="layui-form-label">菜品种类</label>
       <div class="layui-input-block">
         <select name="DishType" id="dishType" lay-filter="dishType_select">
-          {{range .map_dt}}
-		    <option value= {{.Name}} > {{.Name}} </option>
-		  {{end}}
+          <<<range .map_dt>>>
+		    <option value= <<<.Name>>> > <<<.Name>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -41,14 +41,14 @@ body{padding: 10px;}
     <div class="layui-inline">
       <label class="layui-form-label">菜品售价</label>
       <div class="layui-input-inline" style="width: 100px;">
-        <input type="text" name="Sell_price" id="sell_price" value="{{.Price}}" placeholder="￥" autocomplete="off" class="layui-input">
+        <input type="text" name="Sell_price" id="sell_price" value="<<<.Price>>>" placeholder="￥" autocomplete="off" class="layui-input">
       </div>
     </div>
   </div>
   <div class="layui-form-item layui-form-text">
     <label class="layui-form-label">菜品描述</label>
     <div class="layui-input-block">
-      <textarea placeholder="请输入内容" class="layui-textarea" name="Detail" id="detail" value="{{.Detail}}"></textarea>
+      <textarea placeholder="请输入内容" class="layui-textarea" name="Detail" id="detail" value="<<<.Detail>>>"></textarea>
     </div>
   </div>
   <div class="layui-form-item">
@@ -91,13 +91,13 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    	//初始化
 	var list = []
  	$(function(){
-		$("#name").val({{.n}})
-		$("#sell_price").val({{.p}})		
-		$("#dishType").val({{.t}})
-		$("#detail").val({{.d}})
+		$("#name").val(<<<.n>>>)
+		$("#sell_price").val(<<<.p>>>)		
+		$("#dishType").val(<<<.t>>>)
+		$("#detail").val(<<<.d>>>)
 		layedit.build('detail'); 
 
-		list={{.dp}}.split(',')
+		list=<<<.dp>>>.split(',')
 		if(list[0]==""){
 			list=[]
 		}
@@ -119,7 +119,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	});
 	
 	//餐厅图片上传
-	  //var path_src={{.dp}}
+	  //var path_src=<<<.dp>>>
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -198,8 +198,8 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		}
 		console.log("path_src",path_src)
 		var data={
-			'id':parseInt({{.id}}),
-			'rid':parseInt({{.rid}}),
+			'id':parseInt(<<<.id>>>),
+			'rid':parseInt(<<<.rid>>>),
 			'name':$("#name").val(),
 			'price':parseFloat($("#sell_price").val()),
 			'dishType':$("#dishType").val(),

@@ -7,33 +7,33 @@
 <link rel="stylesheet" href="/static/css/layui.css">
 </head>
 <body class="layui-layout-body">
-   {{range .map}}
+   <<<range .map>>>
   <div class="layui-row" style="padding-top:20px;">
     <div class="layui-col-xs6">	 
       <form class="layui-form layui-form-pane1">
 		<div class="layui-form-item">	
 			<div class="layui-input-block">
-		      <h2>{{.Rname}}</h2>	 
+		      <h2><<<.Rname>>></h2>	 
 		    </div>		        
 		</div>
 		<div class="layui-form-item" style="padding-top:50px;">	
 			<div class="layui-input-block">
-		      订单状态:{{.Ostatus}}
+		      订单状态:<<<.Ostatus>>>
 		    </div>		        
 		</div>
 		<div class="layui-form-item">
 			<div class="layui-input-block">
-		      订单编号:{{.Oid}}
+		      订单编号:<<<.Oid>>>
 		    </div>	    
 		</div>	
 		<div class="layui-form-item">		
 			<div class="layui-input-block">
-		      订单类型:{{.Otype}}
+		      订单类型:<<<.Otype>>>
 		    </div>    
 		</div>
 		<div class="layui-form-item">		
 			<div class="layui-input-block">
-		      购买人:{{.Sname}}
+		      购买人:<<<.Sname>>>
 		    </div>    
 		</div>		
 	   <div class="layui-form-item" style="width:330px;padding-left:100px;">
@@ -42,7 +42,7 @@
 	   </div>
 	  <div class="layui-form-item">
 	    <div class="layui-input-block">
-	      合计:{{.Total}}元
+	      合计:<<<.Total>>>元
 	    </div>
 	  </div>
 	</form>
@@ -60,7 +60,7 @@
 		  <li class="layui-timeline-item">
 		    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
 		    <div class="layui-timeline-content layui-text">
-		      <h3 class="layui-timeline-title">{{.Otime}}</h3>
+		      <h3 class="layui-timeline-title"><<<.Otime>>></h3>
 		      <p>已下单</p>		      
 		    </div>
 		  </li>
@@ -68,7 +68,7 @@
 	  </div>
     </div>
   </div>
-  {{end}}
+  <<<end>>>
 <script src="/static/layui.js"></script>
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
 <script>
@@ -84,7 +84,7 @@
 	  table.render({
 	    elem: '#List'
 	    ,height: 130
-	    ,url: '/v1/student_orderdetail/getlist?oid={{.oid}}'//数据接口
+	    ,url: '/v1/student_orderdetail/getlist?oid=<<<.oid>>>'//数据接口
 		,id: 'listReload'		
 	    ,cols: [[ //表头	  
 	      {field:'Name', title:'菜品', width:120}

@@ -53,7 +53,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 	//点击上传
 	$('#add_time').on('click',function(){
 		var data={
-			'id':parseInt({{.id}}),
+			'id':parseInt(<<<.id>>>),
 			'time':$("#time").val()
 			};
 		console.log(data)

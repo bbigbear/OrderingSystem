@@ -23,9 +23,9 @@ body{padding: 10px;}
 			<a style="padding-right:10px;">按类别：</a>
 			<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
 			  <a id="all">不限</a>
-			  {{range .map}}
-			  <a id="{{.Id}}">{{.Name}}</a>
-			  {{end}}
+			  <<<range .map>>>
+			  <a id="<<<.Id>>>"><<<.Name>>></a>
+			  <<<end>>>
 			</span>
 		</div>
 		<table id="dishList" lay-filter="room"></table>
@@ -68,8 +68,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 	  table.render({
 	    elem: '#dishList'
 	    ,height: 315
-	    ,url: '/v1/restaurant_dish/getdata?id={{.id}}'//数据接口
-	    ,page: true //开启分页
+	    ,url: '/v1/restaurant_dish/getdata?id=<<<.id>>>'//数据接口
+	    //,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
 		  {type:'checkbox', fixed: 'left'}
@@ -89,7 +89,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		  ,{field:'Price',  title:'价格', width:120}
 	      ,{field:'Detail',  title:'描述', width:120}
 		  ,{field:'DishType',  title:'类型', width:120}
-		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
+		 // ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
 	    ]]
 	  });		
 		//监听工具条
@@ -109,12 +109,12 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/restaurant_dish/edit?id='+data.Id+"&rid={{.id}}"], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/restaurant_dish/edit?id='+data.Id+"&rid=<<<.id>>>"], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				window.location.reload();
-			  }
+			  //}
 			  return false; 
 			  },
 		});
@@ -142,19 +142,19 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		window.location.reload();
 	});	
 	//点击检索按钮
-	{{range .map}}
-	$('#{{.Id}}').on('click',function(){
-		//layer.msg({{.Name}})
+	<<<range .map>>>
+	$('#<<<.Id>>>').on('click',function(){
+		//layer.msg(<<<.Name>>>)
                 table.reload('listReload', {
                     where: {
-                        dt: {{.Name}},
+                        dt: <<<.Name>>>,
                     }
                 });
 	});	
-	{{end}}
+	<<<end>>>
 	//批量添加
 	$('#add').on('click',function(){
-		//layer.msg({{.mname}})		
+		//layer.msg(<<<.mname>>>)		
 		var str="";
 		var str_img="";
 		var str_price="";
@@ -177,9 +177,9 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 					type:"POST",
 					url:"/v1/restaurant_ready/AddMultiReadyDish",
 					data:{
-						tid:{{.tid}},
+						tid:<<<.tid>>>,
 						dname:str,
-						mname:{{.mname}},
+						mname:<<<.mname>>>,
 						number:parseInt(number),
 						pic:str_img,
 						price:str_price,						

@@ -30,9 +30,9 @@ body{padding: 10px;}
       <label class="layui-form-label">经营校区</label>
       <div class="layui-input-block">
         <select name="campus" id="campus" lay-filter="campus_select">
-          {{range .canteen_info}}
-		    <option value= {{.CampusName}} > {{.CampusName}} </option>
-		  {{end}}
+          <<< range .canteen_info >>>
+		    <option value= <<<.CampusName>>> > <<<.CampusName>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -42,9 +42,9 @@ body{padding: 10px;}
       <label class="layui-form-label">经营食堂</label>
       <div class="layui-input-block">
         <select name="canteen" id="canteen" lay-filter="canteen_select">
-          {{range .canteen_info}}
-		    <option value= {{.Name}} > {{.Name}} </option>
-		  {{end}}
+          <<<range .canteen_info>>>
+		    <option value= <<<.Name>>> > <<<.Name>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -52,9 +52,9 @@ body{padding: 10px;}
   <div class="layui-form-item">
     <label class="layui-form-label">经营时段</label>
     <div class="layui-input-block">
-	  {{range .time_info}}
-      <input type="checkbox" name={{.Type}} title={{.Type}} value={{.Type}}>
-      {{end}}
+	  <<<range .time_info>>>
+      <input type="checkbox" name=<<<.Type>>> title=<<<.Type>>> value=<<<.Type>>>>
+      <<<end>>>
     </div>
   </div>
 <!--  <div class="layui-form-item">
@@ -100,7 +100,7 @@ body{padding: 10px;}
     <div class="layui-input-block">
       <button class="layui-btn" id="add">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->
-      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+<!--      <button type="reset" class="layui-btn layui-btn-primary">取消</button>-->
     </div>
   </div>
 </form>
@@ -126,38 +126,28 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	});
 	//营业执照图片上传
 	  var path_src1=""
-	  var uploadList=upload.render({
+	  var count = 0
+	  var uploadList1=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
 	    ,multiple: true
 		,exts: 'jpg|png|gif|bmp|jpeg'
-		,auto:false
+		,auto:true
 	    ,number: 1
 	    ,size: 3*1024
-		,bindAction: '#add'
+		//,bindAction: '#add'
 		//,field:'myfile'
-	    ,choose: function(obj){
-	      //预读本地文件示例，不支持ie8
-		  //alert(obj);
-		  var files = obj.pushFile();
-	      obj.preview(function(index, file, result){
-	        $('#demo1').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" id="upload_img_'+index+'" style="width:80px;height:80px;padding-left:10px;">')
-	      	$("#upload_img_"+index).bind('click',function(){
-                delete files[index];//删除对应的文件
-                $(this).remove();
-				uploadList.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选			
-             });
-		});
-	    }
 	    ,done: function(res){
 	      //上传完毕
 			//alert("上传完毕")
 			console.log(res);
 			if (res.code==200){
+				$('#demo1').append('<img src="'+"/"+res.data.src +'" alt="'+ res.data.name +'" class="layui-upload-img" id="upload_img_'+res.data.name+'" style="width:80px;height:80px;padding-left:10px;">')			
 				path_src1=path_src1+res.data.src+',';	
+				count=count+1				
 			}else{
 				layer.msg(res.message);
-			}			
+			}
 	    }
 	    ,allDone: function(obj){
 	      	//alert(path_src)
@@ -236,16 +226,16 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	function uploadForm(){
 		//alert(path_src)
 		var checkbox_src=""
-		{{range .time_info}}
-		if($("input[name={{.Type}}]:checked").val()!=undefined){
-			checkbox_src=checkbox_src+$("input[name={{.Type}}]:checked").val()+',';
+		<<<range .time_info>>>
+		if($("input[name=<<<.Type>>>]:checked").val()!=undefined){
+			checkbox_src=checkbox_src+$("input[name=<<<.Type>>>]:checked").val()+',';
 		}		
-		{{end}}	 		
+		<<<end>>>
 		var data={
 			'name':$("#name").val(),
 			'canteenName':$("#canteen").val(),
 			'time':checkbox_src,
-			//'businessPicPath':path_src1,
+			'businessPicPath':path_src1,
 			'roomPicPath':path_src,
 			'detail':layedit.getContent(index),
 			'status':"营业中",
@@ -275,7 +265,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    //alert("点击确认")
 		//var yingye_len=document.querySelector("input[type=file]").files.length;
 		var len=document.querySelector("input[type=file]").files.length;		
-		if (len==0){
+		if (len==count){
 			uploadForm();
 		}
 		//console.log(document.querySelector("input[name='file1']").value);

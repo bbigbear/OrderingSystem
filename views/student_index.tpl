@@ -30,8 +30,8 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/student_index?sid={{.sid}}">订餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/student_order?sid={{.sid}}">我的订单</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index?sid=<<<.sid>>>">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order?sid=<<<.sid>>>">我的订单</a></li>
       </ul>
     </div>
   </div>
@@ -86,14 +86,14 @@
 	  //layer.msg("你好");
 	//初始化
  	$(function(){
-		var sid={{.sid}}		
-		{{range .map}}
-			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+{{.RoomPicPath}}+'" id="room_img_'+{{.Id}}+'" style="width:100px;height:100px;"></div><div><p><b>{{.Name}}</b></p></div></div>')
-			$("#room_img_"+{{.Id}}).bind('click',function(){             
-               // layer.msg({{.Id}})
-				window.location.href="/v1/student_index/getroomdetail?rid={{.Id}}&sid="+sid;				
+		var sid=<<<.sid>>>		
+		<<<range .map>>>
+			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+<<<.RoomPicPath>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:100px;height:100px;"></div><div><p><b><<<.Name>>></b></p></div></div>')
+			$("#room_img_"+<<<.Id>>>).bind('click',function(){             
+               // layer.msg(<<<.Id>>>)
+				window.location.href="/v1/student_index/getroomdetail?rid=<<<.Id>>>&sid="+sid;				
              });		
-		{{end}}
+		<<<end>>>
 	});
 		
 	$('#search').on('click',function(){
@@ -111,19 +111,19 @@
 		
 	});
 	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
+	<<<range .canteen_info>>>
+	$('#<<<.Id>>>').on('click',function(){
 		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
+		//layer.msg(<<<.Name>>>);
 		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
 			//layer.close(index)
 			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
+			//layer.msg(<<<.Name>>>);
+			//window.location.href="/v1/canteen/del?id="+<<<.Id>>>;
+			var jsData={'id':<<<.Id>>>}
 			$.post('/v1/canteen/del', jsData, function (out) {
                 if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
+                    window.location.href="/v1/canteen?campus="+<<<.CampusName>>>;
                 } else {
                     layer.msg(out.message)
                 }
@@ -131,7 +131,7 @@
 	        //向服务端发送删除指令
 		}
 	});
-	{{end}}
+	<<<end>>>
   });
 
 	

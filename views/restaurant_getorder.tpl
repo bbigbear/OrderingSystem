@@ -46,7 +46,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 	  table.render({
 	    elem: '#List'
 	    ,height: 315
-	    ,url: '/v1/restaurant_ready/getorder_action?readyid={{.readyid}}' //数据接口
+	    ,url: '/v1/restaurant_ready/getorder_action?readyid=<<<.readyid>>>' //数据接口
 	    //,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头		  

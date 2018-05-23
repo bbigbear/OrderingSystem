@@ -50,7 +50,7 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   
 	$('#add').on('click',function(){
 		var data={
-			'rid':parseInt({{.id}}),
+			'rid':parseInt(<<<.id>>>),
 			'name':$("#name").val()
 			};
 		console.log(data)
@@ -66,7 +66,10 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 			success:function(res){
 				if(res.code==200){
 					alert("新增成功")
-					window.location.reload();					
+					//layer.close(index);
+					//window.location.reload();			
+					parent.layer.closeAll();
+					parent.location.reload();								
 				}else{
 					alert("新增失败")
 				}						

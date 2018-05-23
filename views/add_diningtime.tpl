@@ -38,7 +38,7 @@ body{padding: 10px;}
     <div class="layui-input-block">
       <button class="layui-btn" id="add_time">确认</button>
 <!--	  <input type="hidden" id="pic_path">-->
-      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+<!--      <button type="reset" class="layui-btn layui-btn-primary">取消</button>-->
     </div>
   </div>
 </form>
@@ -65,34 +65,54 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 			'time':$("#time").val()
 			};
 		console.log(data)
-		$.ajax({
-			type:"POST",
-			contentType:"application/json;charset=utf-8",
-			url:"/v1/dining_time/add_action",
-			data:JSON.stringify(data),
-			async:false,
-			error:function(request){
-				alert("post error")						
-			},
-			success:function(res){
-				if(res.code==200){
-					alert("新增成功")
-					window.location.reload();					
-				}else{
-					alert("新增失败")
-				}						
-			}
-		});
+		if ($("#time").val()==""){
+			alert("时段不能为空")
+		}else{
+			$.ajax({
+				type:"POST",
+				contentType:"application/json;charset=utf-8",
+				url:"/v1/dining_time/add_action",
+				data:JSON.stringify(data),
+				async:false,
+				error:function(request){
+					alert("post error")						
+				},
+				success:function(res){
+					if(res.code==200){
+						alert("新增成功")
+						window.location.reload();					
+					}else{
+						alert("新增失败")
+					}						
+				}
+			});
+		}		
 		return false;
 	});
 
 	//时间范围
-	  laydate.render({
+	  var ins1=laydate.render({
 	    elem: '#time'
 	    ,type: 'time'
 	    ,range: true
-	  });
-	  
+		,change: function(value, date, endDate){
+		    //console.log(value); //得到日期生成的值，如：2017-08-18
+		    //console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+		    //console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+			if ((date.hours==endDate.hours)&&((endDate.minutes)-(date.minutes))<30){
+				//alert("营业区间不小于30分钟")
+				//$("#time").attr("value","");
+				//document.getElementById("time").value="";	
+				ins1.hint("营业区间不小于30分钟");
+			}else if((date.hours>endDate.hours)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}else if((date.hours==endDate.hours)&&(date.minutes>endDate.minutes)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}else if((date.hours==endDate.hours)&&(date.minutes==endDate.minutes)&&(date.seconds>endDate.seconds)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}
+		}
+	  });  
 });
 </script>
 

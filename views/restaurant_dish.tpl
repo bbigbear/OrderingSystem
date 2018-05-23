@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id=<<<.id>>>">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id=<<<.id>>>">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id=<<<.id>>>">管理</a></li>
       </ul>
     </div>
   </div>
@@ -42,9 +42,9 @@
 			<a style="padding-right:10px;">按类别：</a>
 			<span class="layui-breadcrumb" lay-separator="|" style="font-size:30px;">
 			  <a id="all">不限</a>
-			  {{range .map}}
-			  <a id="{{.Id}}">{{.Name}}</a>
-			  {{end}}
+			  <<<range .map>>>
+			  <a id="<<<.Id>>>"><<<.Name>>></a>
+			  <<<end>>>
 			</span>
 		</div>
 		<blockquote class="layui-elem-quote">菜品信息</blockquote>
@@ -94,8 +94,8 @@
 	  //layer.msg("你好");
 	//自动加载
 	$(function(){
-		if({{.campus}}!=""){
-			$("#campus").val({{.campus}});			
+		if(<<<.campus>>>!=""){
+			$("#campus").val(<<<.campus>>>);			
 			form.render('select');	
 		}				
 	});
@@ -124,7 +124,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_dish/add?id='+{{.id}}], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_dish/add?id='+<<<.id>>>], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 		  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 		    layer.close(index)
@@ -142,8 +142,8 @@
 	  table.render({
 	    elem: '#dishList'
 	    ,height: 315
-	    ,url: '/v1/restaurant_dish/getdata?id={{.id}}'//数据接口
-	    ,page: true //开启分页
+	    ,url: '/v1/restaurant_dish/getdata?id=<<<.id>>>'//数据接口
+	    //,page: true //开启分页
 		,id: 'listReload'
 	    ,cols: [[ //表头
 		  {type:'checkbox'}
@@ -183,12 +183,12 @@
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/restaurant_dish/edit?id='+data.Id+"&rid={{.id}}"], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/restaurant_dish/edit?id='+data.Id+"&rid=<<<.id>>>"], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){ 
-			  if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
+			 // if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				window.location.reload();
-			  }
+			 // }
 			  return false; 
 			  },
 		});
@@ -216,17 +216,17 @@
 		window.location.reload();
 	});	
 	//点击检索按钮
-	{{range .map}}
-	$('#{{.Id}}').on('click',function(){
-		//layer.msg({{.Name}})
+	<<<range .map>>>
+	$('#<<<.Id>>>').on('click',function(){
+		//layer.msg(<<<.Name>>>)
                 table.reload('listReload', {
                     where: {
-                        dt: {{.Name}},
+                        dt: <<<.Name>>>,
                     }
                 });
 
 	});	
-	{{end}}
+	<<<end>>>
 	
 	//批量删除
 	$('#dish_del').on('click',function(){				

@@ -30,9 +30,9 @@ body{padding: 10px;}
       <label class="layui-form-label">菜品种类</label>
       <div class="layui-input-block">
         <select name="DishType" id="dishType" lay-filter="dishType_select">
-          {{range .map}}
-		    <option value= {{.Name}} > {{.Name}} </option>
-		  {{end}}
+          <<<range .map>>>
+		    <option value= <<<.Name>>> > <<<.Name>>> </option>
+		  <<<end>>>
         </select>
       </div>
     </div>
@@ -151,7 +151,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	//});
 	function uploadForm(){	 		
 		var data={
-			'rid':parseInt({{.id}}),
+			'rid':parseInt(<<<.id>>>),
 			'name':$("#name").val(),
 			'price':parseFloat($("#sell_price").val()),
 			'dishType':$("#dishType").val(),

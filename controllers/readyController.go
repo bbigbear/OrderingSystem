@@ -255,6 +255,36 @@ func (this *ReadyController) EditTemp() {
 	this.TplName = "restaurant_edittemp.tpl"
 }
 
+//编辑模板
+func (this *ReadyController) EditTempAction() {
+	//获取tid
+	id := this.Input().Get("id")
+	fmt.Println("tid:", id)
+	this.Data["tid"] = id
+
+	//获取name
+	name := this.Input().Get("name")
+	fmt.Println("name:", name)
+
+	fmt.Println("点击更新餐厅按钮")
+	//定义
+	o := orm.NewOrm()
+	//先查询再更新
+	tr := new(models.TempReady)
+	num, err := o.QueryTable(tr).Filter("Id", id).Update(orm.Params{
+		"Name": name,
+	})
+	fmt.Println("num", num)
+
+	if err != nil {
+		fmt.Println("err!")
+	}
+
+	this.ajaxMsg("更新成功", MSG_OK)
+	return
+
+}
+
 func (this *ReadyController) AddTempAction() {
 	fmt.Println("点击添加模板按钮")
 	o := orm.NewOrm()
@@ -441,6 +471,29 @@ func (this *ReadyController) AddReadyAction() {
 
 	list["id"] = num
 	this.ajaxList("新增成功", MSG_OK, 1, list)
+	return
+}
+
+//删除编辑模板菜品
+func (this *ReadyController) DelReadyDish() {
+	fmt.Println("点击删除编辑模板菜品")
+	//获取id
+	id, err := this.GetInt("id")
+	if err != nil {
+		log4go.Stdout("删除菜品id失败", err.Error())
+		this.ajaxMsg("删除菜品id失败", MSG_ERR_Param)
+	}
+	fmt.Println("删除菜品id:", id)
+	o := orm.NewOrm()
+	rd := new(models.ReadyDish)
+	num, err := o.QueryTable(rd).Filter("Id", id).Delete()
+	if err != nil {
+		log4go.Stdout("删除菜品失败", err.Error())
+		this.ajaxMsg("删除菜品失败", MSG_ERR_Resources)
+	}
+	fmt.Println("del temp dish reslut num:", num)
+	//list["data"] = maps
+	this.ajaxMsg("删除菜品成功", MSG_OK)
 	return
 }
 

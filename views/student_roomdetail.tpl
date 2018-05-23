@@ -30,8 +30,8 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/student_index?sid={{.sid}}">订餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/student_order?sid={{.sid}}">我的订单</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_index?sid=<<<.sid>>>">订餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/student_order?sid=<<<.sid>>>">我的订单</a></li>
       </ul>
     </div>
   </div>
@@ -55,23 +55,23 @@
 		      <button class="layui-btn" id="search">搜索</button>
 		  	</div>
 		  </div>-->
-		  {{range $i,$e:=.mt_info}}
-					<blockquote class="layui-elem-quote">{{$e.Name}}</blockquote>	
+		  <<<range $i,$e:=.mt_info>>>
+					<blockquote class="layui-elem-quote"><<<$e.Name>>></blockquote>	
 					<div class="layui-form-item">									
-					{{range $.rd_info}}
-						{{if eq .Mname $e.Name}}										
+					<<<range $.rd_info>>>
+						<<<if eq .Mname $e.Name>>>										
 							<div class="layui-inline">
-<!--							    <label class="layui-form-label">{{.Dname}}</label>-->
+<!--							    <label class="layui-form-label"><<<.Dname>>></label>-->
 							    <div class="layui-input-inline" style="width:100px;height:100px;">
-									<div><img src="/{{.Pic}}" id="room_img_'+{{.Id}}+'" id="room_img_'+{{.Id}}+'" style="width:80px;height:80px;"></div>
-									<div><p>{{.Dname}}</p></div>
-									<div><p>￥{{.Price}} <i class="layui-icon" id="{{.Id}}">&#xe654;</i></p></div>
+									<div><img src="/<<<.Pic>>>" id="room_img_'+<<<.Id>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:80px;height:80px;"></div>
+									<div><p><<<.Dname>>></p></div>
+									<div><p>￥<<<.Price>>> <i class="layui-icon" id="<<<.Id>>>">&#xe654;</i></p></div>
 							    </div>
 							</div>			  
-						{{end}}									
-					{{end}}
+						<<<end>>>									
+					<<<end>>>
 					</div>
-			{{end}}
+			<<<end>>>
 		</form>
 		<div class="runtest">
 		  <!--<textarea class="site-demo-text" id="testmain">
@@ -128,12 +128,12 @@
 	
 	//初始化
  	$(function(){		
-		{{range .map}}
-			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+{{.RoomPicPath}}+'" id="room_img_'+{{.Id}}+'" style="width:100px;height:100px;"></div><div><p><b>{{.Name}}</b></p></div></div>')
-			$("#room_img_"+{{.Id}}).bind('click',function(){             
-                layer.msg({{.Id}})
+		<<<range .map>>>
+			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+<<<.RoomPicPath>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:100px;height:100px;"></div><div><p><b><<<.Name>>></b></p></div></div>')
+			$("#room_img_"+<<<.Id>>>).bind('click',function(){             
+                layer.msg(<<<.Id>>>)
              });		
-		{{end}}
+		<<<end>>>
 	});
 	var sum=0
 	//var list_map = new Array();
@@ -161,12 +161,12 @@
 	    return false;
 	}
 	
-	{{range $i,$e:=.mt_info}}													
-			{{range $.rd_info}}
-				{{if eq .Mname $e.Name}}										
-					$('#{{.Id}}').on('click',function(){						
+	<<<range $i,$e:=.mt_info>>>													
+			<<<range $.rd_info>>>
+				<<<if eq .Mname $e.Name>>>										
+					$('#<<<.Id>>>').on('click',function(){						
 						//console.log(name_data)
-						var dname={{.Dname}}
+						var dname=<<<.Dname>>>
 						var sum=0
 						if (isInArray(name_data,dname)){
 							console.log("相同")
@@ -185,14 +185,14 @@
 							$("#sum").text("合计:"+sum)	
 							return							
 						}
-						name_data.push({{.Dname}})
+						name_data.push(<<<.Dname>>>)
 						//console.log(name_data)
 						var arr  =
 					     {
-					         "name" : {{.Dname}},
-					         "price" : {{.Price}},
+					         "name" : <<<.Dname>>>,
+					         "price" : <<<.Price>>>,
 							 "num" : 1,
-							 "sum" : {{.Price}}
+							 "sum" : <<<.Price>>>
 					     }
 						//var json = jQstringify(student);
 						data.push(arr)
@@ -208,9 +208,9 @@
 						$("#sum").text("合计:"+sum+"元")									
 									        
 					});
-				{{end}}									
-			{{end}}
-	{{end}}
+				<<<end>>>									
+			<<<end>>>
+	<<<end>>>
 	//
 	//table 渲染
 	  table.render({
@@ -281,7 +281,7 @@
 			  //time: 2000, //2秒后自动关闭
 			  maxmin: true,
 			  anim: 2,
-			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'&rid='+{{.id}}+'&sid='+{{.sid}}+'&readyid='+{{.readyId}},'no'], //iframe的url，no代表不显示滚动条
+			  content: ['/v1/student_ordersure?name='+str_name+'&price='+str_price+'&num='+str_num+'&rid='+<<<.id>>>+'&sid='+<<<.sid>>>+'&readyid='+<<<.readyId>>>,'no'], //iframe的url，no代表不显示滚动条
 			  cancel: function(index, layero){
 				  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)				

@@ -29,9 +29,9 @@
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
       <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id={{.id}}">菜品库</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id={{.id}}">备餐</a></li>
-        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id={{.id}}">管理</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_dish?id=<<<.id>>>">菜品库</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_ready?id=<<<.id>>>">备餐</a></li>
+        <li class="layui-nav-item"><a href="/v1/restaurant_manage?id=<<<.id>>>">管理</a></li>
       </ul>
     </div>
   </div>
@@ -48,20 +48,20 @@
 		    <div class="layui-tab-item layui-show">
 				<blockquote class="layui-elem-quote" style="margin-top:10px;">菜品库分类</blockquote>
 				<div style="padding: 15px;">
-					{{range .dt_info}}
-				    <button class="layui-btn" id="dt_{{.Id}}">
-					  {{.Name}} <i class="layui-icon">&#x1006;</i>
+					<<<range .dt_info>>>
+				    <button class="layui-btn" id="dt_<<<.Id>>>">
+					  <<<.Name>>> <i class="layui-icon">&#x1006;</i>
 					</button>
-					{{end}}
+					<<<end>>>
 					<button class="layui-btn layui-btn-primary" id="addDish"><i class="layui-icon">&#xe654;</i></button>
 				</div>
 				<blockquote class="layui-elem-quote">菜单分类</blockquote>
 				<div style="padding: 15px;">
-					{{range .mt_info}}
-				    <button class="layui-btn" id="mt_{{.Id}}">
-					  {{.Name}} <i class="layui-icon">&#x1006;</i>
+					<<<range .mt_info>>>
+				    <button class="layui-btn" id="mt_<<<.Id>>>">
+					  <<<.Name>>> <i class="layui-icon">&#x1006;</i>
 					</button>
-					{{end}}
+					<<<end>>>
 					<button class="layui-btn layui-btn-primary" id="addMenu"><i class="layui-icon">&#xe654;</i></button>
 				</div>	
 			</div>
@@ -132,17 +132,17 @@
 	//自动加载
 	var list =[]
 	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
+		//layer.msg(<<<.campus>>>);
+		if(<<<.campus>>>!=""){
+			//layer.msg(<<<.campus>>>);
+			$("#campus").val(<<<.campus>>>);
+			//$("select[name=campus_select]").val(<<<.campus>>>);
 			form.render('select');	
 		}	
-		$("#info").val({{.d}})
+		$("#info").val(<<<.d>>>)
 		layedit.build('info');
 		
-		list={{.rp}}.split(',')
+		list=<<<.rp>>>.split(',')
 		for(var i=0;i<list.length-1;i++){
 			$('#demo1').append('<img src="'+"/"+list[i]+'" id="'+i+'" style="width:80px;height:80px;padding-left:10px;">')
 			$("#"+i).bind('click',function(){             
@@ -157,7 +157,7 @@
 		hideTool:['image','face']
 	});
 	//图片上传
-	  var path_src={{.rp}}
+	  var path_src=<<<.rp>>>
 	  var uploadList=upload.render({
 	    elem: '#test1'
 	    ,url: '/v1/put_img'
@@ -222,15 +222,15 @@
 			}
 		}
 		var data={
-			'id':parseInt({{.id}}),
-			'name':{{.n}},
-			'canteenName':{{.cn}},
-			'time':{{.t}},
+			'id':parseInt(<<<.id>>>),
+			'name':<<<.n>>>,
+			'canteenName':<<<.cn>>>,
+			'time':<<<.t>>>,
 			//'businessPicPath':path_src1,
 			'roomPicPath':path_src,
 			'detail':layedit.getContent(index),
-			'phone':{{.phone}},
-			'campusName':{{.cam}}
+			'phone':<<<.phone>>>,
+			'campusName':<<<.cam>>>
 			};
 			$.ajax({
 				type:"POST",
@@ -276,7 +276,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_manage/adddishtype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_manage/adddishtype?id=<<<.id>>>','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -302,7 +302,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_manage/addmenutype?id={{.id}}','no'], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_manage/addmenutype?id=<<<.id>>>','no'], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -320,16 +320,16 @@
 		
 	});
 	//菜品类型
-	{{range .dt_info}}
-	$('#dt_{{.Id}}').on('click',function(){
+	<<<range .dt_info>>>
+	$('#dt_<<<.Id>>>').on('click',function(){
 		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
+		//layer.msg(<<<.Name>>>);
 		if(confirm('确定要删除该菜品？')){ //只有当点击confirm框的确定时，该层才会关闭
 			//layer.close(index)
 			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
+			//layer.msg(<<<.Name>>>);
+			//window.location.href="/v1/canteen/del?id="+<<<.Id>>>;
+			var jsData={'id':<<<.Id>>>}
 			$.post('/v1/restaurant_manage/deldishtype', jsData, function (out) {
                 if (out.code == 200) {
                     window.location.reload();
@@ -340,18 +340,18 @@
 	        //向服务端发送删除指令
 		}
 	});
-	{{end}}
+	<<<end>>>
 	//菜单类型
-	{{range .mt_info}}
-	$('#mt_{{.Id}}').on('click',function(){
+	<<<range .mt_info>>>
+	$('#mt_<<<.Id>>>').on('click',function(){
 		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
+		//layer.msg(<<<.Name>>>);
 		if(confirm('确定要删除该菜单？')){ //只有当点击confirm框的确定时，该层才会关闭
 			//layer.close(index)
 			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
+			//layer.msg(<<<.Name>>>);
+			//window.location.href="/v1/canteen/del?id="+<<<.Id>>>;
+			var jsData={'id':<<<.Id>>>}
 			$.post('/v1/restaurant_manage/delmenutype', jsData, function (out) {
                 if (out.code == 200) {
                     window.location.reload();
@@ -362,14 +362,14 @@
 	        //向服务端发送删除指令
 		}
 	});
-	{{end}}
+	<<<end>>>
 	
 	//时间管理
 	 //table 渲染
 	  table.render({
 	    elem: '#timeList'
 	    ,height: 315
-	    ,url: '/v1/restaurant_manage/gettimedata?id={{.id}}' //数据接口
+	    ,url: '/v1/restaurant_manage/gettimedata?id=<<<.id>>>' //数据接口
 	    //,page: true //开启分页
 		,id: 'listReload2'
 	    ,cols: [[ //表头		  

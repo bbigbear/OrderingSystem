@@ -14,33 +14,34 @@
 				<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
 				  <div class="layui-form-item">
 					<div class="layui-inline">
-				      <label class="layui-form-label">模板名称</label>
+				      <label class="layui-form-label" style="width:100px;">更改模板名称</label>
 				      <div class="layui-input-inline">
-				        <input type="text" class="layui-input" id="time">
+				        <input type="text" class="layui-input" id="name">
 				      </div>
 					  <div class="layui-inline">
 				        <button class="layui-btn" id="save">保存</button>
-				      </div>  
+				      </div>
 				    </div> 
 				  </div>
 				  <div style="padding: 15px;">
-					{{range $i,$e:=.mt_info}}
-					<blockquote class="layui-elem-quote">{{$e.Name}}</blockquote>	
+					<<<range $i,$e:=.mt_info>>>
+					<blockquote class="layui-elem-quote"><<<$e.Name>>></blockquote>	
 					<div class="layui-form-item">
-					<button class="layui-btn layui-btn-primary" id={{$e.Id}}><i class="layui-icon">&#xe654;</i></button>									
-					{{range $.rd_info}}
-						{{if eq .Mname $e.Name}}										
+					<button class="layui-btn layui-btn-primary" id=<<<$e.Id>>>><i class="layui-icon">&#xe654;</i></button>									
+					<<<range $.rd_info>>>
+						<<<if eq .Mname $e.Name>>>										
 							<div class="layui-inline">
-							    <label class="layui-form-label">{{.Dname}}</label>
+								<i class="layui-icon" id="rd_<<<.Id>>>">&#x1006;</i>
+							    <label class="layui-form-label"><<<.Dname>>></label>
 							    <div class="layui-input-inline" style="width:40px;">
-							        <input type="text" name="price_min" value={{.Number}} autocomplete="off" class="layui-input">
+							        <input type="text" name="price_min" value=<<<.Number>>> autocomplete="off" class="layui-input">
 							    </div>
 							</div>			  
-						{{end}}									
-					{{end}}
+						<<<end>>>								
+					<<<end>>>
 					</div>
 					<hr class="layui-bg-green">
-					{{end}}
+					<<<end>>>
 					<!--<table id="timeList" lay-filter="time"></table>
 					<script type="text/html" id="barDemo">
 						<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -69,92 +70,43 @@
 		,table=layui.table
 		,form=layui.form;
 	  //layer.msg("你好");
-	//时间范围
-	  laydate.render({
-	    elem: '#time'
-	    ,type: 'time'
-	    ,range: true
-	  });
-	  
-	  laydate.render({
-	    elem: '#date'
-	    ,type: 'date'
-	  });
 	
-	 laydate.render({
-	    elem: '#date1'
-	    ,type: 'date'
-	  });
 	
-	//自动加载
-	$(function(){
-		//layer.msg({{.campus}});
-		if({{.campus}}!=""){
-			//layer.msg({{.campus}});
-			$("#campus").val({{.campus}});
-			//$("select[name=campus_select]").val({{.campus}});
-			form.render('select');	
-		}				
-	});
-	
-	$('#addCanteen').on('click',function(){
-		//layer.msg("点击添加按钮");
-		//获取校区
-		var cp=$("#campus").val();
-		//iframe窗
-		layer.open({
-		  type: 2,
-		  title: '新增食堂',
-		  //closeBtn: 0, //不显示关闭按钮
-		  shadeClose: true,
-		  area: ['450px', '150px'],
-		 // offset: 'rb', //右下角弹出
-		  //time: 2000, //2秒后自动关闭
-		  maxmin: true,
-		  anim: 2,
-		  content: ['/v1/canteen/add?campus='+cp,'no'], //iframe的url，no代表不显示滚动条
-		  cancel: function(index, layero){ 
-			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
-			    layer.close(index)
-				window.location.reload();				
-			 // }
-			  return false; 
-		  },
-		});
-	});	
-	//获取下拉列表
-	form.on('select(campus_select)',function(data){
-		//layer.msg(data)
-		console.log(data.value);
-		window.location.href="/v1/canteen?campus="+data.value;
-		
-	});
-	//
-	{{range .canteen_info}}
-	$('#{{.Id}}').on('click',function(){
-		//var dc=$("#delCanteen").val();
-		//layer.msg({{.Name}});
-		if(confirm('确定要删除该食堂？')){ //只有当点击confirm框的确定时，该层才会关闭
-			//layer.close(index)
-			//window.location.reload();
-			//layer.msg({{.Name}});
-			//window.location.href="/v1/canteen/del?id="+{{.Id}};
-			var jsData={'id':{{.Id}}}
-			$.post('/v1/canteen/del', jsData, function (out) {
+	$('#save').on('click',function(){
+		//alert("点击保存")
+		var jsData={'id':<<<.tid>>>,'name':$('#name').val(),}
+			$.post('/v1/restaurant_ready/edittemp_action', jsData, function (out) {
                 if (out.code == 200) {
-                    window.location.href="/v1/canteen?campus="+{{.CampusName}};
+                    layer.alert('更新成功', {icon: 1},function(index){
+                        layer.close(index);
+                    });
                 } else {
                     layer.msg(out.message)
                 }
-            }, "json");	
-	        //向服务端发送删除指令
-		}
-	});
-	{{end}}
-	var rid={{.id}}
-	var tid={{.tid}}
-	{{range .mt_info}}
-	$('#{{.Id}}').on('click',function(){
+            }, "json");
+	});	
+	<<<range $.rd_info>>>
+		$('#rd_<<<.Id>>>').on('click',function(){
+			//alert("点击删除<<<.Id>>>")
+			var jsData={'id':<<<.Id>>>}
+			$.post('/v1/restaurant_ready/delreadydish', jsData, function (out) {
+                if (out.code == 200) {
+                    layer.alert('删除成功了', {icon: 1},function(index){
+                        layer.close(index);
+						//form.render();
+						location.reload();
+                    });
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");
+		});						
+	<<<end>>>
+	
+	var rid=<<<.id>>>
+	var tid=<<<.tid>>>
+	<<<range .mt_info>>>
+	$('#<<<.Id>>>').on('click',function(){
 		//iframe窗
 		layer.open({
 		  type: 2,
@@ -166,7 +118,7 @@
 		  //time: 2000, //2秒后自动关闭
 		  maxmin: true,
 		  anim: 2,
-		  content: ['/v1/restaurant_ready/addreadydish?id='+rid+'&mname={{.Name}}&tid='+tid], //iframe的url，no代表不显示滚动条
+		  content: ['/v1/restaurant_ready/addreadydish?id='+rid+'&mname=<<<.Name>>>&tid='+tid], //iframe的url，no代表不显示滚动条
 		  cancel: function(index, layero){ 
 			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
@@ -176,7 +128,7 @@
 		  },
 		});
 	});
-	{{end}}
+	<<<end>>>
   });
 
 	
