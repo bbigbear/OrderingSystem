@@ -261,12 +261,31 @@
 	      });
 	    } else if(layEvent === 'stop'){
 	      layer.confirm('真的停业么', function(index){
-	        var jsData={'id':data.Id}
+	        var jsData={'id':data.Id,'status':"未营业"}
 			$.post('/v1/dining_room/stop', jsData, function (out) {
                 if (out.code == 200) {
                     layer.alert('停业成功了', {icon: 1},function(index){
                         layer.close(index);
-                        table.reload({});
+                        //table.reload({});
+						window.location.reload();
+                    });
+                } else {
+                    layer.msg(out.message)
+                }
+            }, "json");
+			//obj.del(); //删除对应行（tr）的DOM结构
+	        layer.close(index);
+	        //向服务端发送删除指令
+	      });					  
+	    }else if(layEvent === 'start'){
+	      layer.confirm('真的恢复么', function(index){
+	        var jsData={'id':data.Id,'status':"营业中"}
+			$.post('/v1/dining_room/stop', jsData, function (out) {
+                if (out.code == 200) {
+                    layer.alert('恢复成功了', {icon: 1},function(index){
+                        layer.close(index);
+                        //table.reload({});
+						window.location.reload();
                     });
                 } else {
                     layer.msg(out.message)

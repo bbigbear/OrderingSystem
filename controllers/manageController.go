@@ -194,6 +194,7 @@ func (this *ManageController) GetTimeInterval() {
 		this.ajaxMsg("获取时间类型失败", MSG_ERR_Resources)
 	}
 	fmt.Println("del canteen reslut num:", num)
+
 	//list["data"] = maps
 	//this.Data["time_info"] = maps
 	//	this.TplName = "restaurant_manage.tpl"

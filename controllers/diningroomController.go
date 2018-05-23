@@ -215,6 +215,35 @@ func (this *DiningRoomController) EditRoomAction() {
 	if num == 0 {
 		this.ajaxMsg("更新失败", MSG_ERR_Resources)
 	}
+	//获取时段类型，存储到timeInterval
+
+	//	Rid := diningroom.Id
+	//	time := diningroom.Time
+	//	timeList := strings.Split(time, ",")
+	//	time_count := len(timeList) - 1
+	//	for i := 0; i < time_count; i++ {
+	//		//insert
+	//		var ti models.TimeInterval
+	//		var dt models.DiningTime
+	//		diningtime := new(models.DiningTime)
+	//		ti.Rid = Rid
+	//		ti.Name = timeList[i]
+
+	//		//先查询
+	//		err := o.QueryTable(diningtime).Filter("Type", timeList[i]).One(&dt)
+	//		if err != nil {
+	//			log4go.Stdout("新增时段失败", err.Error())
+	//			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+	//		}
+	//		ti.Time = dt.Time
+
+	//		num, err := o.Insert(&ti)
+	//		if err != nil {
+	//			log4go.Stdout("新增时段失败", err.Error())
+	//			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+	//		}
+	//		fmt.Println("新增时段Id(num)", num)
+	//	}
 	this.ajaxMsg("更新成功", MSG_OK)
 	return
 }
@@ -286,30 +315,34 @@ func (this *DiningRoomController) DelRoom() {
 }
 
 func (this *DiningRoomController) StopRoom() {
-	fmt.Println("点击停业餐厅按钮")
+	fmt.Println("点击修改状态餐厅按钮")
 	//获取id
 	id, err := this.GetInt("id")
 	if err != nil {
-		log4go.Stdout("停业id失败", err.Error())
-		this.ajaxMsg("停业id失败", MSG_ERR_Param)
+		log4go.Stdout("修改状态id失败", err.Error())
+		this.ajaxMsg("修改状态id失败", MSG_ERR_Param)
 	}
-	fmt.Println("停业id:", id)
+	fmt.Println("修改状态id:", id)
+	//获取status
+	status := this.GetString("status")
+	fmt.Println("status is", status)
 	o := orm.NewOrm()
 	//diningroom := new(models.DiningRoom)
 	var d models.DiningRoom
 	d.Id = int64(id)
-	d.Status = "未营业"
+
+	d.Status = status
 	num, err := o.Update(&d, "Status")
 	if err != nil {
-		log4go.Stdout("停业餐厅失败", err.Error())
-		this.ajaxMsg("停业餐厅失败", MSG_ERR_Resources)
+		log4go.Stdout("修改状态失败", err.Error())
+		this.ajaxMsg("修改状态失败", MSG_ERR_Resources)
 	}
 	if num == 0 {
-		this.ajaxMsg("停业餐厅失败", MSG_ERR_Resources)
+		this.ajaxMsg("修改状态失败", MSG_ERR_Resources)
 	}
 	fmt.Println("del canteen reslut num:", num)
 	//list["data"] = maps
-	this.ajaxMsg("停业餐厅成功", MSG_OK)
+	this.ajaxMsg("修改状态成功", MSG_OK)
 	return
 }
 
