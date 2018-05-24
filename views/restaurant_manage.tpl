@@ -222,7 +222,7 @@
 			}
 		}
 		var data={
-			'id':parseInt(<<<.id>>>),
+			'id':parseInt(<<<.mid>>>),
 			'name':<<<.n>>>,
 			'canteenName':<<<.cn>>>,
 			'time':<<<.t>>>,

@@ -39,7 +39,7 @@ func DBConnection() {
 
 func RegisterModel() {
 	fmt.Println("注册数据库模型")
-	orm.RegisterModel(new(models.Canteen), new(models.DiningTime), new(models.DiningRoom), new(models.TimeInterval), new(models.DishType), new(models.Dish), new(models.MenuType), new(models.ReadyDish), new(models.TempReady), new(models.Ready), new(models.Order), new(models.OrderStauts), new(models.Student))
+	orm.RegisterModel(new(models.Campus), new(models.Canteen), new(models.DiningTime), new(models.DiningRoom), new(models.TimeInterval), new(models.DishType), new(models.Dish), new(models.MenuType), new(models.ReadyDish), new(models.TempReady), new(models.Ready), new(models.Order), new(models.OrderStauts), new(models.Student))
 	//orm.RegisterModel(new(models.))
 	//orm.RegisterModel(new(models.OrderTime))
 }

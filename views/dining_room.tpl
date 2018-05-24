@@ -59,8 +59,8 @@
 			<label class="layui-form-label">选择校区</label>
 		    <div class="layui-input-inline">
 				<select name="campus" id="campus" lay-filter="campus_select">
-		          <<<range .canteen_info>>>
-				    <option value= <<<.CampusName>>> > <<<.CampusName>>> </option>
+		          <<<range .campus_info>>>
+				    <option value= <<<.Name>>> > <<<.Name>>> </option>
 				  <<<end>>>
 		        </select>
 			</div>			

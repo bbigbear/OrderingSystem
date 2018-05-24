@@ -79,11 +79,30 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
 	});
 
 	//时间范围
-	  laydate.render({
+	  var ins1=laydate.render({
 	    elem: '#time'
 	    ,type: 'time'
 	    ,range: true
-	  });
+		,min: '<<<.time1>>>'
+		,max: '<<<.time2>>>'
+		,change: function(value, date, endDate){
+		    //console.log(value); //得到日期生成的值，如：2017-08-18
+		    //console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+		    //console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+			if ((date.hours==endDate.hours)&&((endDate.minutes)-(date.minutes))<30){
+				//alert("营业区间不小于30分钟")
+				//$("#time").attr("value","");
+				//document.getElementById("time").value="";	
+				ins1.hint("营业区间不小于30分钟");
+			}else if((date.hours>endDate.hours)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}else if((date.hours==endDate.hours)&&(date.minutes>endDate.minutes)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}else if((date.hours==endDate.hours)&&(date.minutes==endDate.minutes)&&(date.seconds>endDate.seconds)){
+				ins1.hint("前一时间不能晚于后一时间");
+			}
+		}
+	  }); 
 	  
 });
 </script>

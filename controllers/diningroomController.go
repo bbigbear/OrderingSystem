@@ -35,6 +35,17 @@ func (this *DiningRoomController) Get() {
 	fmt.Println("get canteen reslut num:", num)
 	this.Data["canteen_info"] = maps
 
+	//校区
+	c := new(models.Campus)
+	var maps_campus []orm.Params
+	num1, err := o.QueryTable(c).Values(&maps_campus)
+	if err != nil {
+		log4go.Stdout("获取食堂失败", err.Error())
+		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get campus reslut num:", num1)
+	this.Data["campus_info"] = maps_campus
+
 	this.TplName = "dining_room.tpl"
 }
 
@@ -199,6 +210,7 @@ func (this *DiningRoomController) EditRoomAction() {
 	if err != nil {
 		fmt.Println("err!")
 	}
+	//获取经营时间类型
 	diningroom1.Id = diningroom.Id
 	diningroom1.CampusName = diningroom.CampusName
 	diningroom1.CanteenName = diningroom.CanteenName
@@ -215,35 +227,46 @@ func (this *DiningRoomController) EditRoomAction() {
 	if num == 0 {
 		this.ajaxMsg("更新失败", MSG_ERR_Resources)
 	}
+
 	//获取时段类型，存储到timeInterval
 
-	//	Rid := diningroom.Id
-	//	time := diningroom.Time
-	//	timeList := strings.Split(time, ",")
-	//	time_count := len(timeList) - 1
-	//	for i := 0; i < time_count; i++ {
-	//		//insert
-	//		var ti models.TimeInterval
-	//		var dt models.DiningTime
-	//		diningtime := new(models.DiningTime)
-	//		ti.Rid = Rid
-	//		ti.Name = timeList[i]
+	Rid := diningroom.Id
+	ti := new(models.TimeInterval)
+	exist := o.QueryTable(ti).Filter("Rid", Rid).Exist()
+	if exist {
+		num, err := o.QueryTable(ti).Filter("Rid", Rid).Delete()
+		if err != nil {
+			fmt.Println("delet err!")
+		}
+		fmt.Println("delet num", num)
+	}
 
-	//		//先查询
-	//		err := o.QueryTable(diningtime).Filter("Type", timeList[i]).One(&dt)
-	//		if err != nil {
-	//			log4go.Stdout("新增时段失败", err.Error())
-	//			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
-	//		}
-	//		ti.Time = dt.Time
+	time := diningroom.Time
+	timeList := strings.Split(time, ",")
+	time_count := len(timeList) - 1
+	for i := 0; i < time_count; i++ {
+		//insert
+		var ti models.TimeInterval
+		var dt models.DiningTime
+		diningtime := new(models.DiningTime)
+		ti.Rid = Rid
+		ti.Name = timeList[i]
 
-	//		num, err := o.Insert(&ti)
-	//		if err != nil {
-	//			log4go.Stdout("新增时段失败", err.Error())
-	//			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
-	//		}
-	//		fmt.Println("新增时段Id(num)", num)
-	//	}
+		//先查询
+		err := o.QueryTable(diningtime).Filter("Type", timeList[i]).One(&dt)
+		if err != nil {
+			log4go.Stdout("新增时段失败", err.Error())
+			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+		}
+		ti.Time = dt.Time
+
+		num, err := o.Insert(&ti)
+		if err != nil {
+			log4go.Stdout("新增时段失败", err.Error())
+			this.ajaxMsg("新增时段失败", MSG_ERR_Resources)
+		}
+		fmt.Println("新增时段Id(num)", num)
+	}
 	this.ajaxMsg("更新成功", MSG_OK)
 	return
 }

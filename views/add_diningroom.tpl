@@ -30,8 +30,8 @@ body{padding: 10px;}
       <label class="layui-form-label">经营校区</label>
       <div class="layui-input-block">
         <select name="campus" id="campus" lay-filter="campus_select">
-          <<< range .canteen_info >>>
-		    <option value= <<<.CampusName>>> > <<<.CampusName>>> </option>
+          <<< range .campus_info >>>
+		    <option value= <<<.Name>>> > <<<.Name>>> </option>
 		  <<<end>>>
         </select>
       </div>
@@ -271,7 +271,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		//console.log(document.querySelector("input[name='file1']").value);
 		//$("input[name='file']").each(function(){ 		
 			//console.log($(this).val())
-		//}); 		
+		//}); 	
 		return false;
 	});
 	

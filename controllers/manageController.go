@@ -4,6 +4,7 @@ import (
 	"OrderingSystem/models"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/alecthomas/log4go"
@@ -50,7 +51,7 @@ func (this *ManageController) Get() {
 	if err1 != nil {
 		fmt.Println("get room detail err!")
 	}
-	this.Data["id"] = maps_room.Id
+	this.Data["mid"] = maps_room.Id
 	this.Data["n"] = maps_room.Name
 	this.Data["cn"] = maps_room.CanteenName
 	this.Data["t"] = maps_room.Time
@@ -209,6 +210,28 @@ func (this *ManageController) EditTimeInterval() {
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
 	this.Data["id"] = id
+
+	//获取timeinterid
+	o := orm.NewOrm()
+	ti := new(models.TimeInterval)
+	var ti_info models.TimeInterval
+	err := o.QueryTable(ti).Filter("Id", id).One(&ti_info)
+	if err != nil {
+		fmt.Println("err")
+	}
+	//获取时间
+
+	dt := new(models.DiningTime)
+	var dtinfo models.DiningTime
+	err1 := o.QueryTable(dt).Filter("Type", ti_info.Name).One(&dtinfo)
+	if err1 != nil {
+		fmt.Println("err1!")
+	}
+	times := strings.Replace(dtinfo.Time, " ", "", -1)
+	time_list := strings.Split(times, "-")
+	fmt.Println("time_list:", time_list)
+	this.Data["time1"] = time_list[0]
+	this.Data["time2"] = time_list[1]
 
 	this.TplName = "restaurant_edittime.tpl"
 }

@@ -55,6 +55,7 @@ func (this *ReadyController) Get() {
 	}
 	fmt.Println("get dishType result num:", num2)
 	this.Data["maps_ti"] = maps_ti
+
 	//获取备份内容
 	var maps_ready []orm.Params
 	var new_maps_ready []map[string]interface{}
@@ -459,6 +460,15 @@ func (this *ReadyController) AddReadyAction() {
 		fmt.Printf("Not row found")
 	}
 	ready.Tid = temp.Id
+	//查数据库
+	//	ti := new(models.TimeInterval)
+	//	var ti_info models.TimeInterval
+	//	err2 := o.QueryTable(ti).Filter("Rid", ready.Rid).Filter("Name", ready.TimeInterval).One(&ti_info)
+	//	if err2 != nil {
+	//		fmt.Println("get ti time err!", err)
+	//	}
+	//	ready.Time = ti_info.Time
+	//	fmt.Println("readytime", ready.Time)
 	//插入备餐数据库
 	num, err := o.Insert(&ready)
 	if err != nil {

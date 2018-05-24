@@ -33,6 +33,16 @@ func (this *CanteenController) Get() {
 	}
 	fmt.Println("get canteen reslut num:", num)
 	this.Data["canteen_info"] = maps
+	//校区
+	c := new(models.Campus)
+	var maps_campus []orm.Params
+	num1, err := o.QueryTable(c).Values(&maps_campus)
+	if err != nil {
+		log4go.Stdout("获取食堂失败", err.Error())
+		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
+	}
+	fmt.Println("get campus reslut num:", num1)
+	this.Data["campus_info"] = maps_campus
 
 	this.TplName = "canteen.tpl"
 }

@@ -54,7 +54,7 @@
 					        <input type="text" name="date" id="date" autocomplete="off" class="layui-input">		
 					    </div>
 						<div class="layui-input-inline" style="width: 80px;">
-							<select name="timeinterval" id="timeinterval" lay-verType="tips">
+							<select name="timeinterval" id="timeinterval" lay-verType="tips" lay-filter="timeinterval">
 					       	  <<<range .time>>>
 							  <option value=<<<.Name>>>><<<.Name>>></option>
 							  <<<end>>>
@@ -401,7 +401,18 @@
 	    ]]
 	  });
 	
+	//form.on('select(timeinterval)', function(data){	  
+	 // console.log(data.value); //得到被选中的值
+	  //<<<range .maps_ti>>>
+		//<<<if eq .Name "">>>
+			//console.log(<<<.Time>>>)
+		//<<<end>>>
+	  //<<<end>>>
+	//}); 
+	
   });
+
+ 
 
 	
 	
