@@ -15,6 +15,11 @@ type CanteenController struct {
 }
 
 func (this *CanteenController) Get() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
+
 	o := orm.NewOrm()
 	var maps []orm.Params
 	canteen := new(models.Canteen)
@@ -48,6 +53,10 @@ func (this *CanteenController) Get() {
 }
 
 func (this *CanteenController) AddCanteen() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
 	fmt.Println("加载添加食堂按钮")
 	//获取校区
 	campus := this.Input().Get("campus")

@@ -1,21 +1,21 @@
 package controllers
 
 import (
-	"MenuPj/models"
+	"OrderingSystem/models"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
+	"net/http"
 	"time"
 
 	_ "github.com/Go-SQL-Driver/MySQL"
-	"github.com/astaxie/beego/orm"
 
 	//"crypto/rand"
 	"math/rand"
 
-	"github.com/alecthomas/log4go"
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/toolbox"
+	"github.com/astaxie/beego/httplib"
 )
 
 const (
@@ -116,50 +116,6 @@ func (this *BaseController) GetMinuteDiffer(server_time, mqtime string) int64 {
 	}
 }
 
-func TimeTask() {
-	//定期上架
-	fmt.Println("定时执行")
-	//ordertime
-	o := orm.NewOrm()
-	ot := new(models.OrderTime)
-	var maps []orm.Params
-	var dish_info models.Dish
-	tk1 := toolbox.NewTask("tk1", "0/1 * * * * *", func() error {
-		//fmt.Println("tk1")
-		nt := time.Now().Format("2016-01-02 15:04:05")
-		s, err := time.ParseInLocation("2006-01-02 15:04:05", nt, time.Local)
-		if err != nil {
-			log4go.Stdout("转化秒数失败", err.Error())
-		}
-		//最终秒数
-		result_s := s.Unix()
-		num, err := o.QueryTable(ot).Filter("Secs__exact", result_s).Values(&maps)
-		if err != nil {
-			log4go.Stdout("获取上架时间失败", err.Error())
-		}
-		fmt.Println("判断是否存在相同的时间t_num:", num)
-		if num != 0 {
-			for _, m := range maps {
-				did, err := strconv.ParseInt(fmt.Sprint(m["Did"]), 10, 64)
-				if err != nil {
-					log4go.Stdout("时间转int64失败", err.Error())
-				}
-				dish_info.Id = did
-			}
-			dish_info.Status = 0
-			dish_info.Time = nt
-			_, err := o.Update(&dish_info)
-			if err != nil {
-				log4go.Stdout("上架更新失败", err.Error())
-			}
-		}
-		return nil
-	})
-	toolbox.AddTask("tk1", tk1)
-	toolbox.StartTask()
-
-}
-
 //生成随机数
 func (this *BaseController) randStr(strSize int, randType string) string {
 
@@ -195,4 +151,47 @@ func (this *BaseController) GetRandomString(l int) string {
 		result = append(result, bytes[r.Intn(len(bytes))])
 	}
 	return string(result)
+}
+
+//单点登录
+func (this *BaseController) SessionLogin(skey string) int {
+	buf, err := base64.StdEncoding.DecodeString(skey)
+	if err != nil {
+		return 0
+	}
+
+	var v []string
+	err1 := json.Unmarshal(buf, &v)
+	if err1 != nil {
+		return 0
+	}
+
+	url := beego.AppConfig.String("session_login_url")
+	reqParm := httplib.Get(url)
+	cookie := &http.Cookie{
+		Name:  v[0],
+		Value: v[1],
+	}
+	reqParm.SetCookie(cookie)
+	//	str, err := reqParm.String()
+	//	if err != nil {
+	//		fmt.Println("err", err.Error())
+	//	}
+	//	fmt.Println(str)
+	var login_info models.Login
+	err2 := reqParm.ToJSON(&login_info)
+	if err2 != nil {
+		fmt.Println(err)
+		return 0
+	}
+	fmt.Println("login_info", &login_info)
+	if login_info.ReadName == "管理员" {
+		fmt.Println("登录成功")
+		//存session
+		this.SetSession("islogin", 1)
+		return 1
+	} else {
+		fmt.Println("不是管理员，无权登录")
+		return 0
+	}
 }

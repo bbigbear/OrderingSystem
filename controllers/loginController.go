@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/Go-SQL-Driver/MySQL"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -17,12 +18,22 @@ func (this *LoginController) Get() {
 
 	//this.StartNotificationTask()
 	//this.TplName = "index.tpl"
+	skey := this.GetString("session")
+	if skey != "" {
+		fmt.Println("单点登录")
+		n := this.SessionLogin(skey)
+		fmt.Println("n:", n)
+		if n == 1 {
+			fmt.Println("进入首页")
+			this.Redirect("/", 302)
+		}
+	}
 	this.TplName = "login.tpl"
 }
 
 func (this *LoginController) LoginAction() {
-
 	fmt.Println("点击登录按钮")
+
 	list := make(map[string]interface{})
 	role := this.Input().Get("role")
 	uname := this.Input().Get("inputAccount")
@@ -32,8 +43,28 @@ func (this *LoginController) LoginAction() {
 		if beego.AppConfig.String("uname") == uname &&
 			beego.AppConfig.String("pwd") == pwd {
 			fmt.Println("登录成功")
-			//存session
 			//this.SetSession("islogin", 1)
+			token := beego.AppConfig.String("token")
+			url := beego.AppConfig.String("login_url")
+			req := httplib.Post(url)
+			req.Header("Content-Type", "application/json")
+			req.Header("token", token)
+			req.Header("system", "perm")
+
+			login := make(map[string]interface{})
+			login["username"] = uname
+			login["password"] = pwd
+			req.JSONBody(login)
+
+			var login_info models.Login
+			err := req.ToJSON(&login_info)
+			if err != nil {
+				fmt.Println(err)
+				this.ajaxMsg("err to json", MSG_ERR)
+			}
+			fmt.Println(login_info.ReadName)
+			//存session
+			this.SetSession("islogin", 1)
 			this.ajaxMsg("登录成功", MSG_OK)
 		} else {
 			fmt.Println("账户密码错误")
@@ -51,6 +82,8 @@ func (this *LoginController) LoginAction() {
 			}
 			if room_info.Pwd == pwd {
 				list["id"] = room_info.Id
+				//存session
+				this.SetSession("islogin", 1)
 				this.ajaxList("登录成功", MSG_OK, 1, list)
 			} else {
 				this.ajaxMsg("密码错误", MSG_ERR)
@@ -72,6 +105,8 @@ func (this *LoginController) LoginAction() {
 			}
 			if student_info.Pwd == pwd {
 				list["id"] = student_info.Sid
+				//存session
+				this.SetSession("islogin", 1)
 				this.ajaxList("登录成功", MSG_OK, 1, list)
 			} else {
 				this.ajaxMsg("密码错误", MSG_ERR)

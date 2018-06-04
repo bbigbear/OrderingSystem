@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	beego.Router("/", &controllers.MainController{})
-	beego.Router("/login", &controllers.LoginController{})
+	beego.Router("/", &controllers.LoginController{})
+	beego.Router("/v1/login", &controllers.LoginController{})
 	beego.Router("/login_action", &controllers.LoginController{}, "post:LoginAction")
 	//get img
 	beego.Router("/v1/put_img", &controllers.BaseController{}, "*:PutFileImg")

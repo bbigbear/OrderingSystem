@@ -17,6 +17,10 @@ type ManageController struct {
 
 //加载管理界面
 func (this *ManageController) Get() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
 	//获取name
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -68,6 +72,10 @@ func (this *ManageController) Get() {
 
 //新建菜品类型
 func (this *ManageController) AddDishType() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
 	//获取rid
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -123,6 +131,10 @@ func (this *ManageController) DelDishType() {
 
 //新建菜单类型
 func (this *ManageController) AddMenuType() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
 	//获取rid
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -206,6 +218,10 @@ func (this *ManageController) GetTimeInterval() {
 
 //
 func (this *ManageController) EditTimeInterval() {
+	if this.GetSession("islogin") != 1 {
+		fmt.Println("未登录")
+		this.Redirect("/v1/login", 302)
+	}
 	//获取name
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
