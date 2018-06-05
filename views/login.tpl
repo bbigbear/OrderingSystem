@@ -50,7 +50,7 @@
 						},
 						success:function(res){
 							if(res.code==200){
-								alert("登录成功")
+								//alert("登录成功")
 								//window.location.href="/"
 								if(role=="school"){
 									window.location.href="/v1/canteen"

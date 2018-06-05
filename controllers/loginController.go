@@ -8,6 +8,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/httplib"
 	"github.com/astaxie/beego/orm"
+	"github.com/tidwall/gjson"
 )
 
 type LoginController struct {
@@ -25,7 +26,7 @@ func (this *LoginController) Get() {
 		fmt.Println("n:", n)
 		if n == 1 {
 			fmt.Println("进入首页")
-			this.Redirect("/", 302)
+			this.Redirect("/v1/canteen", 302)
 		}
 	}
 	this.TplName = "login.tpl"
@@ -40,22 +41,31 @@ func (this *LoginController) LoginAction() {
 	pwd := this.Input().Get("inputPassword")
 	fmt.Println(role)
 	if role == "school" {
-		if beego.AppConfig.String("uname") == uname &&
-			beego.AppConfig.String("pwd") == pwd {
-			fmt.Println("登录成功")
-			//this.SetSession("islogin", 1)
-			token := beego.AppConfig.String("token")
-			url := beego.AppConfig.String("login_url")
-			req := httplib.Post(url)
-			req.Header("Content-Type", "application/json")
-			req.Header("token", token)
-			req.Header("system", "perm")
+		//		if beego.AppConfig.String("uname") == uname &&
+		//			beego.AppConfig.String("pwd") == pwd {
+		fmt.Println("登录成功")
+		//this.SetSession("islogin", 1)
+		token := beego.AppConfig.String("token")
+		url := beego.AppConfig.String("login_url")
+		req := httplib.Post(url)
+		req.Header("Content-Type", "application/json")
+		req.Header("token", token)
+		req.Header("system", "perm")
 
-			login := make(map[string]interface{})
-			login["username"] = uname
-			login["password"] = pwd
-			req.JSONBody(login)
+		login := make(map[string]interface{})
+		login["username"] = uname
+		login["password"] = pwd
+		req.JSONBody(login)
 
+		str, err := req.String()
+		if err != nil {
+			fmt.Println("err", err.Error())
+		}
+		fmt.Println("str", str)
+		code := gjson.Get(str, "code")
+		if code.Exists() {
+			this.ajaxMsg("账号密码错误", MSG_ERR_Param)
+		} else {
 			var login_info models.Login
 			err := req.ToJSON(&login_info)
 			if err != nil {
@@ -63,13 +73,19 @@ func (this *LoginController) LoginAction() {
 				this.ajaxMsg("err to json", MSG_ERR)
 			}
 			fmt.Println(login_info.ReadName)
-			//存session
-			this.SetSession("islogin", 1)
-			this.ajaxMsg("登录成功", MSG_OK)
-		} else {
-			fmt.Println("账户密码错误")
-			this.ajaxMsg("账户密码错误", MSG_ERR)
+			if login_info.ReadName == "管理员" {
+				//存session
+				this.SetSession("islogin", 1)
+				this.ajaxMsg("登录成功", MSG_OK)
+			} else {
+				this.ajaxMsg("你无权登录", MSG_ERR_Verified)
+			}
 		}
+
+		//		} else {
+		//			fmt.Println("账户密码错误")
+		//			this.ajaxMsg("账户密码错误", MSG_ERR)
+		//		}
 	} else if role == "room" {
 		o := orm.NewOrm()
 		r := new(models.DiningRoom)
