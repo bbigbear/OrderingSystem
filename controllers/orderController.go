@@ -19,10 +19,6 @@ type OrderController struct {
 }
 
 func (this *OrderController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	fmt.Println("获取餐厅信息")
 	//获取sid
 	sid := this.Input().Get("sid")
@@ -78,10 +74,6 @@ func (this *OrderController) Get() {
 	this.TplName = "student_index.tpl"
 }
 func (this *OrderController) GetRoomDetail() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取rid
 	rid := this.Input().Get("rid")
 	fmt.Println("rid:", rid)
@@ -133,10 +125,6 @@ func (this *OrderController) GetRoomDetail() {
 }
 
 func (this *OrderController) GetOrder() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取sid
 	sid := this.Input().Get("sid")
 	fmt.Println("sid:", sid)
@@ -165,10 +153,6 @@ func (this *OrderController) GetOrderData() {
 }
 
 func (this *OrderController) SureOrder() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取data
 	price := this.Input().Get("price")
 	fmt.Println("price:", price)
@@ -286,10 +270,6 @@ func (this *OrderController) AddOrder() {
 
 //订单详情
 func (this *OrderController) GetOrderDetail() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	fmt.Println("获取订单详情")
 	o := orm.NewOrm()
 	var maps []orm.Params

@@ -18,10 +18,6 @@ type ReadyController struct {
 }
 
 func (this *ReadyController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取name
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -94,10 +90,6 @@ func (this *ReadyController) Get() {
 
 //新增模板
 func (this *ReadyController) AddTempReady() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取id
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -195,10 +187,6 @@ func (this *ReadyController) DelReady() {
 
 //
 func (this *ReadyController) GetOrder() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	fmt.Println("查看订单")
 	//获取id
 	readyid := this.Input().Get("readyid")
@@ -230,10 +218,6 @@ func (this *ReadyController) GetOrderAction() {
 
 //编辑模板
 func (this *ReadyController) EditTemp() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取rid
 	rid := this.Input().Get("rid")
 	fmt.Println("rid:", rid)
@@ -326,10 +310,6 @@ func (this *ReadyController) AddTempAction() {
 
 //为模板添加菜品
 func (this *ReadyController) AddReadyDish() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取id
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -382,7 +362,7 @@ func (this *ReadyController) AddMultiReadyDish() {
 	//pic
 	pic := this.Input().Get("pic")
 	fmt.Println("add pic:", pic)
-	picList := strings.Split(dname, ",")
+	picList := strings.Split(pic, ",")
 	fmt.Println("picList:", picList)
 	//pic_len := len(picList) - 1
 	//price
@@ -428,6 +408,7 @@ func (this *ReadyController) AddMultiReadyDish() {
 			}
 			fmt.Println("自增Id(num)", num)
 		} else {
+			this.ajaxMsg("存在相同的菜品", MSG_ERR_Resources)
 			fmt.Println("存在相同的菜品:", nameList[i])
 		}
 	}

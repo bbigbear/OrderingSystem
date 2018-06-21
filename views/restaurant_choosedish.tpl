@@ -53,7 +53,9 @@ body{padding: 10px;}
 
 <script src="/static/layui.js"></script>
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
-
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 layui.use(['form','laydate','upload','jquery','layedit','element','table'], function(){
   var form = layui.form
@@ -63,7 +65,11 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
   ,layedit=layui.layedit
   ,element=layui.element
   ,table=layui.table;
-  	
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})  	
 	//table 渲染
 	  table.render({
 	    elem: '#dishList'
@@ -160,7 +166,8 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		var str_price="";
 		var number=$("#number").val();		
 		var checkStatus=table.checkStatus('listReload')
-		,data=checkStatus.data;
+		var data=checkStatus.data;
+		console.log(data);
 		if(data.length==0){
 			alert("请选择要添加的菜品")
 		}else if(number==""){
@@ -168,9 +175,10 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 		}else{
 			for(var i=0;i<data.length;i++){
 				str+=data[i].Name+",";
-				str_img+=data[i].DishPicPath+",";
+				str_img+=data[i].DishPicPath;
 				str_price+=data[i].Price+",";
 			}
+			console.log(data);
 			layer.confirm('是否添加这'+data.length+'个菜品?',{icon:3,title:'提示'},function(index){
 				//window.location.href="/v1/delmultidata?id="+str+"";
 				$.ajax({
@@ -192,10 +200,10 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
 						if(res.code==200){
 							alert("添加成功")	
 							//重载表格
-							table.reload('listReload', {							  
+							table.reload('listReload', {					  
 							});												
 						}else{
-							alert("添加失败")
+							alert(res.message)
 						}						
 					}					
 				});				

@@ -21,7 +21,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/login">退出</a></li>
+      <li class="layui-nav-item"><a href="/">退出</a></li>
     </ul>
   </div>
   
@@ -39,9 +39,9 @@
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
 		<div class="layui-tab layui-tab-card">
-		  <ul class="layui-tab-title">
+		  <ul class="layui-tab-title" lay-filter="demo">
 		    <li class="layui-this">备餐</li>
-		    <li>模板</li>
+		    <li lay-id="moban">模板</li>
 		    <li>备餐记录</li>
 		  </ul>
 		  <div class="layui-tab-content" style="height: auto;">
@@ -49,7 +49,7 @@
 				<blockquote class="layui-elem-quote" style="margin-top:10px;">备餐</blockquote>	
 				<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
 					<div class="layui-form-item">
-					    <label class="layui-form-label">备餐时间：</label>
+					    <label class="layui-form-label">*备餐时间：</label>
 					    <div class="layui-input-inline" style="width: 120px;">
 					        <input type="text" name="date" id="date" autocomplete="off" class="layui-input">		
 					    </div>
@@ -60,9 +60,14 @@
 							  <<<end>>>
 					        </select>
 						</div>
-						<label class="layui-form-label">营业时间：</label>
-					    <div class="layui-input-inline" style="width: 150px;">
-					        <input type="text" name="time" id="time" autocomplete="off" class="layui-input">		
+						<label class="layui-form-label">*营业时间：</label>
+					    <div class="layui-input-inline" style="width: 180px;">
+							<select name="timeinterval" id="timeinterval" lay-verType="tips" lay-filter="timeinterval">
+					       	  <<<range .time>>>
+							  <option value=<<<.Time>>>><<<.Time>>></option>
+							  <<<end>>>
+					        </select>
+<!--					        <input type="text" name="time" id="time" autocomplete="off" class="layui-input">		-->
 					    </div>
 					</div>
 					<div class="layui-form-item">
@@ -147,14 +152,6 @@
 					</div>
 				  </div>
 				<<<end>>>
-				  <!--<div class="layui-colla-item">
-				    <h2 class="layui-colla-title">李清照</h2>
-				    <div class="layui-colla-content">内容区域</div>
-				  </div>
-				  <div class="layui-colla-item">
-				    <h2 class="layui-colla-title">鲁迅</h2>
-				    <div class="layui-colla-content">内容区域</div>
-				  </div>-->
 				</div>
 			</div>
 		  </div>
@@ -176,6 +173,9 @@
 
 <script src="/static/layui.js"></script>
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','laydate'], function(){
@@ -186,6 +186,11 @@
 		,table=layui.table
 		,form=layui.form;
 	  //layer.msg("你好");
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})
 	//时间范围
 	  var ins1=laydate.render({
 	    elem: '#time'
@@ -278,7 +283,7 @@
 			  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 			    layer.close(index)
 				location.reload();
-							
+				element.tabChange('demo', 'moban');			
 			  //}
 			  return false; 
 		  },
@@ -335,7 +340,8 @@
 				  cancel: function(index, layero){ 
 				  //if(confirm('确定要关闭么')){ //只有当点击confirm框的确定时，该层才会关闭
 				    layer.close(index)
-					window.location.reload();
+					//window.location.reload();
+					element.tabChange('demo', 'moban');
 				  //}
 				  	return false; 
 				  },

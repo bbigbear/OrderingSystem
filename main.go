@@ -34,7 +34,21 @@ func main() {
 func DBConnection() {
 	fmt.Println("初始化数据库")
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	orm.RegisterDataBase("default", "mysql", "root:qwe!23@/ordering_system?charset=utf8&loc=Local")
+	host := beego.AppConfig.String("host")
+	db := beego.AppConfig.String("database")
+	user := beego.AppConfig.String("user")
+	passwd := beego.AppConfig.String("passwd")
+	maxOpenConns, err := beego.AppConfig.Int("MaxOpenConns")
+	if err != nil {
+		fmt.Println("MaxOpenConns is nil", err)
+	}
+	maxIdleConns, err := beego.AppConfig.Int("MaxIdleConns")
+	if err != nil {
+		fmt.Println("MaxIdleConns is nil", err)
+	}
+	sql := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&loc=Local", user, passwd, host, db)
+	orm.RegisterDataBase("default", "mysql", sql, maxIdleConns, maxOpenConns)
+	//orm.RegisterDataBase("default", "mysql", "root:qwe!23@/ordering_system?charset=utf8&loc=Local")
 }
 
 func RegisterModel() {

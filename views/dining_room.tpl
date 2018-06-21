@@ -36,7 +36,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/login">退出</a></li>
+      <li class="layui-nav-item"><a href="/">退出</a></li>
     </ul>
   </div>
   
@@ -66,10 +66,7 @@
 			</div>			
 			<label class="layui-form-label">选择食堂</label>
 			<div class="layui-input-inline">
-				<select name="canteen" id="canteen" lay-filter="canteen_select">
-				  <<<range .canteen_info>>>
-		          <option value= <<<.Name>>> > <<<.Name>>> </option>
-				  <<<end>>>
+				<select name="canteen" id="canteen" lay-filter="canteen_select">				  
 		        </select>
 			</div>
 		  </div>
@@ -83,27 +80,6 @@
 		<blockquote class="layui-elem-quote">食堂餐厅</blockquote>
 		<button class="layui-btn" id="addroom">添加窗口</button>
 		<hr class="layui-bg-green">
-		<!--<table class="layui-table">
-		  <colgroup>
-		    <col width="150">
-		    <col width="200">
-		    <col >
-		  </colgroup>
-		  <thead>
-		    <tr>
-		      <th>供应类型</th>
-		      <th>时间区间</th>
-		      <th>操作</th>
-		    </tr> 
-		  </thead>
-		  <tbody>
-		    <tr>
-		      <td>早餐</td>
-		      <td>2016-11-29</td>
-		      <td>人生就像是一场修行</td>
-		    </tr>
-		  </tbody>
-		</table>-->
 		<table id="roomList" lay-filter="room"></table>
 		<script type="text/html" id="barDemo">
 			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">详情</a>			
@@ -136,6 +112,9 @@
 
 <script src="/static/layui.js"></script>
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','laytpl'], function(){
@@ -148,6 +127,9 @@
 	  //layer.msg("你好");
 	//自动加载
 	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
 		if(<<<.campus>>>!=""){
 			$("#campus").val(<<<.campus>>>);			
 			form.render('select');	
@@ -155,12 +137,16 @@
 	});
 	
 	//获取下拉列表
-	//form.on('select(campus_select)',function(data){
-		//layer.msg(data)
-		//console.log(data.value);
-		//window.location.href="/v1/dining_room?campus="+data.value;
-		
-	//});
+	form.on('select(campus_select)',function(data){
+		 $.getJSON("/v1/dining_room/getcampus?campus="+data.value, function(data){
+                var optionstring = "";
+                $.each(data.data, function(i,item){
+                    optionstring += "<option value=\"" + item.Name + "\" >" + item.Name + "</option>";
+                });
+                $("#canteen").html('<option value=""></option>' + optionstring);
+                form.render('select'); //这个很重要
+            });	
+	});
 	
 	//点击新增按钮
 	$('#addroom').on('click',function(){
@@ -205,7 +191,7 @@
 				//alert(list.length)
 				if(list.length!=1){
 					for(var i=0;i<list.length-1;i++){
-						return '<img src="'+'/'+list[i]+'">'				
+						return '<img style="width:120;height:80;" src="'+'/'+list[i]+'">'				
 					}
 				}else{
 					return ""	
@@ -213,7 +199,7 @@
 			}}
 	      ,{field:'Name', title:'窗口名称', width:120}
 	      ,{field:'Status',  title:'状态', width:120}
-	      ,{field:'Time', title:'供应时段', width:120}
+	      ,{field:'Time', title:'供应时段', width:150}
 		  ,{fixed: 'right', title:'操作',width:200, align:'center', toolbar: '#barDemo'}
 	    ]]
 	  });		
@@ -301,25 +287,21 @@
 		//重新加载
 		//点击检索按钮
 		form.on('switch(iswork)', function(data){
-		 // console.log(data.elem); //得到checkbox原始DOM对象
-		 // console.log(data.elem.checked); //开关是否开启，true或者false
-		 // console.log(data.value); //开关value值，也可以通过data.elem.value得到
-		  //console.log(data.othis); //得到美化后的DOM对象
-		var status		
-		if(data.elem.checked){
-			status="营业中"
-		}else{
-			status="未营业"
-		}
-		table.reload('listReload', {
-                    where: {
-                        status: status,
-						cname:$("#campus").val(),
-						rname:$("#canteen").val(),
-                    }
-                });
+			var status		
+			if(data.elem.checked){
+				status="营业中"
+			}else{
+				status="未营业"
+			}
+			table.reload('listReload', {
+	                    where: {
+	                        status: status,
+							cname:$("#campus").val(),
+							rname:$("#canteen").val(),
+	                    }
+	                });
 		}); 
-		
+			
   });
 
 	

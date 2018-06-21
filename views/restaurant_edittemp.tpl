@@ -31,7 +31,7 @@
 					<<<range $.rd_info>>>
 						<<<if eq .Mname $e.Name>>>										
 							<div class="layui-inline">
-								<i class="layui-icon" id="rd_<<<.Id>>>">&#x1006;</i>
+								<i class="layui-icon" id="rd_<<<.Id>>>"  style="font-size: 20px; color: #FF5722;">&#x1007;</i>
 							    <label class="layui-form-label"><<<.Dname>>></label>
 							    <div class="layui-input-inline" style="width:40px;">
 							        <input type="text" name="price_min" value=<<<.Number>>> autocomplete="off" class="layui-input">
@@ -60,6 +60,9 @@
 
 <script src="/static/layui.js"></script>
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','laydate'], function(){
@@ -71,7 +74,11 @@
 		,form=layui.form;
 	  //layer.msg("你好");
 	
-	
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})
 	$('#save').on('click',function(){
 		//alert("点击保存")
 		var jsData={'id':<<<.tid>>>,'name':$('#name').val(),}

@@ -17,10 +17,6 @@ type DishController struct {
 }
 
 func (this *DishController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取id
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -42,10 +38,6 @@ func (this *DishController) Get() {
 }
 
 func (this *DishController) AddDish() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	//获取name
 	id := this.Input().Get("id")
 	fmt.Println("id:", id)
@@ -87,10 +79,6 @@ func (this *DishController) AddDishAction() {
 }
 
 func (this *DishController) EditDish() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	o := orm.NewOrm()
 	var maps []orm.Params
 	dish := new(models.Dish)

@@ -21,7 +21,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/login">退出</a></li>
+      <li class="layui-nav-item"><a href="/">退出</a></li>
     </ul>
   </div>
   
@@ -93,6 +93,12 @@
 					</div>
 				  </div>
 				  <div class="layui-form-item">
+				    <label class="layui-form-label">*修改密码</label>
+				    <div class="layui-input-block" style="width:200px;">
+					  <input type="password" id="password" autocomplete="off" class="layui-input">
+				    </div>					
+				  </div>
+				  <div class="layui-form-item">
 				    <div class="layui-input-block">
 				      <button class="layui-btn" id="add">确认修改</button>
 				      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
@@ -117,6 +123,9 @@
 
 <script src="/static/layui.js"></script>
 <!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','layedit','upload'], function(){
@@ -128,7 +137,11 @@
 		,form=layui.form
 		,layedit=layui.layedit;
 	  //layer.msg("你好");
-	
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})	
 	//自动加载
 	var list =[]
 	$(function(){
@@ -230,7 +243,8 @@
 			'roomPicPath':path_src,
 			'detail':layedit.getContent(index),
 			'phone':<<<.phone>>>,
-			'campusName':<<<.cam>>>
+			'campusName':<<<.cam>>>,
+			'pwd':$("#password").val(),
 			};
 			$.ajax({
 				type:"POST",

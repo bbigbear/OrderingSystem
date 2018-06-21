@@ -22,7 +22,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/login">退出</a></li>
+      <li class="layui-nav-item"><a href="/">退出</a></li>
     </ul>
   </div>
   
@@ -73,7 +73,9 @@
 </style>
 
 <script src="/static/layui.js"></script>
-<!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>	
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','flow'], function(){
@@ -86,9 +88,15 @@
 	  //layer.msg("你好");
 	//初始化
  	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
 		var sid=<<<.sid>>>		
 		<<<range .map>>>
-			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+<<<.RoomPicPath>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:100px;height:100px;"></div><div><p><b><<<.Name>>></b></p></div></div>')
+			var list=[]
+			list=<<<.RoomPicPath>>>.split(',')	
+			//console.log(list[0])
+			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+list[0]+'" id="room_img_'+<<<.Id>>>+'" style="width:100px;height:100px;"></div><div><p><b style="padding-left:25px;"><<<.Name>>></b></p></div></div>')
 			$("#room_img_"+<<<.Id>>>).bind('click',function(){             
                // layer.msg(<<<.Id>>>)
 				window.location.href="/v1/student_index/getroomdetail?rid=<<<.Id>>>&sid="+sid;				

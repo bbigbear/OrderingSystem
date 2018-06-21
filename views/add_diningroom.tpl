@@ -19,7 +19,7 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
   <div class="layui-form-item">
-    <label class="layui-form-label">餐厅名称</label>
+    <label class="layui-form-label">*餐厅名称</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过20个汉字" autocomplete="off" class="layui-input">-->
 	  <input type="text" name="Name" id="name" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
@@ -39,12 +39,9 @@ body{padding: 10px;}
   </div>
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">经营食堂</label>
+      <label class="layui-form-label">*经营食堂</label>
       <div class="layui-input-block">
         <select name="canteen" id="canteen" lay-filter="canteen_select">
-          <<<range .canteen_info>>>
-		    <option value= <<<.Name>>> > <<<.Name>>> </option>
-		  <<<end>>>
         </select>
       </div>
     </div>
@@ -57,16 +54,8 @@ body{padding: 10px;}
       <<<end>>>
     </div>
   </div>
-<!--  <div class="layui-form-item">
-    <div class="layui-inline">
-      <label class="layui-form-label">经营时段</label>
-      <div class="layui-input-inline" style="width: 100px;">
-        <input type="text" name="Original_price" id="original_price" autocomplete="off" class="layui-input">
-      </div>
-    </div>
-  </div>-->
   <div class="layui-form-item layui-form-text">
-    <label class="layui-form-label">菜品描述</label>
+    <label class="layui-form-label">*菜品描述</label>
     <div class="layui-input-block">
       <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
     </div>
@@ -90,11 +79,12 @@ body{padding: 10px;}
 	</div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">手机号码</label>
+    <label class="layui-form-label">*手机号码</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过11个汉字" autocomplete="off" class="layui-input">-->
 	  <input type="text" name="Phone" id="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input">
     </div>
+	<div class="layui-form-mid layui-word-aux">用于餐厅人员的登录账号,初始密码:123456</div>
   </div>
   <div class="layui-form-item">
     <div class="layui-input-block">
@@ -110,7 +100,9 @@ body{padding: 10px;}
 
 <script src="/static/layui.js"></script>
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
-
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 layui.use(['form','laydate','upload','jquery','layedit'], function(){
   var form = layui.form 
@@ -118,6 +110,11 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
   ,upload = layui.upload
   , $ = layui.jquery
   ,layedit=layui.layedit;
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})
   
 	//日期
 	laydate.render({
@@ -168,7 +165,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    ,multiple: true
 		,exts: 'jpg|png|gif|bmp|jpeg'
 		,auto:false
-	    ,number: 1
+	    ,number: 4
 	    ,size: 3*1024
 		,bindAction: '#add'
 		//,field:'myfile'
@@ -206,6 +203,19 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	var index=layedit.build('info',{
 		hideTool:['image','face']
 	});
+	
+	//获取下拉列表
+	form.on('select(campus_select)',function(data){
+		 $.getJSON("/v1/dining_room/getcampus?campus="+data.value, function(data){
+                var optionstring = "";
+                $.each(data.data, function(i,item){
+                    optionstring += "<option value=\"" + item.Name + "\" >" + item.Name + "</option>";
+                });
+                $("#canteen").html('<option value=""></option>' + optionstring);
+                form.render('select'); //这个很重要
+            });
+	});
+	
 	//添加图片
 	$('#test1').on('click',function(){
 		return false;//禁止form自动提交
@@ -231,15 +241,22 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 			checkbox_src=checkbox_src+$("input[name=<<<.Type>>>]:checked").val()+',';
 		}		
 		<<<end>>>
-		var data={
-			'name':$("#name").val(),
-			'canteenName':$("#canteen").val(),
+		var name = $("#name").val()
+		var canteen = $("#canteen").val()
+		var info = layedit.getContent(index)
+		var phone = $("#phone").val()
+		if(name==""||canteen==""||info==""||phone==""){
+			alert("带*号的必填")
+		}else{
+			var data={
+			'name':name,
+			'canteenName':canteen,
 			'time':checkbox_src,
 			'businessPicPath':path_src1,
 			'roomPicPath':path_src,
-			'detail':layedit.getContent(index),
+			'detail':info,
 			'status':"营业中",
-			'phone':$("#phone").val(),
+			'phone':phone,
 			'campusName':$("#campus").val()
 			};
 			$.ajax({
@@ -259,19 +276,15 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 						alert("新增失败")
 					}						
 				}
-			});		
+			});
+		}
+				
 	}
 	$('#add').on('click',function(){
-	    //alert("点击确认")
-		//var yingye_len=document.querySelector("input[type=file]").files.length;
 		var len=document.querySelector("input[type=file]").files.length;		
 		if (len==count){
 			uploadForm();
 		}
-		//console.log(document.querySelector("input[name='file1']").value);
-		//$("input[name='file']").each(function(){ 		
-			//console.log($(this).val())
-		//}); 	
 		return false;
 	});
 	

@@ -70,7 +70,9 @@
   </div>
   <<<end>>>
 <script src="/static/layui.js"></script>
-<!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table'], function(){
@@ -79,7 +81,12 @@
 		,$=layui.jquery
 		,table=layui.table
 		,form=layui.form;
-	 
+	
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})	 
 	//table 渲染
 	  table.render({
 	    elem: '#List'

@@ -19,7 +19,7 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="">
   <div class="layui-form-item">
-    <label class="layui-form-label">模板名称</label>
+    <label class="layui-form-label">*模板名称</label>
     <div class="layui-input-block">
 	<input type="text" name="Name" id="name" placeholder="请输入模板名称" autocomplete="off" class="layui-input">
     </div>
@@ -38,7 +38,9 @@ body{padding: 10px;}
 
 <script src="/static/layui.js"></script>
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
-
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   var form = layui.form
@@ -47,34 +49,42 @@ layui.use(['form','laydate','upload','jquery','layedit','element'], function(){
   , $ = layui.jquery
   ,layedit=layui.layedit
   ,element=layui.element;
-  
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	})  
 	$('#add').on('click',function(){
-		var data={
+		var name=$("#name").val()
+		if(name==""){
+			alert("模板名称不能为空")
+		}else{
+			var data={
 			'rid':parseInt(<<<.id>>>),
 			'name':$("#name").val()
 			};
-		console.log(data)
-		$.ajax({
-			type:"POST",
-			contentType:"application/json;charset=utf-8",
-			url:"/v1/restaurant_ready/addtempready_action",
-			data:JSON.stringify(data),
-			async:false,
-			error:function(request){
-				alert("post error")						
-			},
-			success:function(res){
-				if(res.code==200){
-					alert("新增成功")
-					//layer.close(index);
-					//window.location.reload();			
-					parent.layer.closeAll();
-					parent.location.reload();								
-				}else{
-					alert("新增失败")
-				}						
-			}
-		});
+			$.ajax({
+				type:"POST",
+				contentType:"application/json;charset=utf-8",
+				url:"/v1/restaurant_ready/addtempready_action",
+				data:JSON.stringify(data),
+				async:false,
+				error:function(request){
+					alert("post error")						
+				},
+				success:function(res){
+					if(res.code==200){
+						alert("新增成功")
+						//layer.close(index);
+						//window.location.reload();			
+						parent.layer.closeAll();
+						parent.location.reload();								
+					}else{
+						alert("新增失败")
+					}						
+				}
+			});
+		}		
 		return false;
 	});
 });

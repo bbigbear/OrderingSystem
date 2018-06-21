@@ -15,10 +15,6 @@ type DiningTimeController struct {
 }
 
 func (this *DiningTimeController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	this.TplName = "dining_time.tpl"
 }
 
@@ -41,10 +37,6 @@ func (this *DiningTimeController) GetTimeData() {
 }
 
 func (this *DiningTimeController) AddTime() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	this.TplName = "add_diningtime.tpl"
 }
 

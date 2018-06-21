@@ -16,67 +16,53 @@ type DiningRoomController struct {
 }
 
 func (this *DiningRoomController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	o := orm.NewOrm()
 	var maps []orm.Params
-	canteen := new(models.Canteen)
-	//获取campus
-	campus := this.Input().Get("campus")
-	if campus == "" {
-		campus = "雁塔校区"
-	}
-	fmt.Println("campus:", campus)
-	this.Data["campus"] = campus
+	campus := new(models.Campus)
 	//查询数据库
-	num, err := o.QueryTable(canteen).Filter("CampusName", campus).Values(&maps)
+	num, err := o.QueryTable(campus).Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取食堂失败", err.Error())
 		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
 	}
 	fmt.Println("get canteen reslut num:", num)
-	this.Data["canteen_info"] = maps
-
-	//校区
-	c := new(models.Campus)
-	var maps_campus []orm.Params
-	num1, err := o.QueryTable(c).Values(&maps_campus)
-	if err != nil {
-		log4go.Stdout("获取食堂失败", err.Error())
-		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
-	}
-	fmt.Println("get campus reslut num:", num1)
-	this.Data["campus_info"] = maps_campus
+	this.Data["campus_info"] = maps
 
 	this.TplName = "dining_room.tpl"
 }
 
-func (this *DiningRoomController) AddRoom() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
-	o := orm.NewOrm()
-	var maps []orm.Params
-	canteen := new(models.Canteen)
+func (this *DiningRoomController) GetCampus() {
 	//获取campus
 	campus := this.Input().Get("campus")
 	if campus == "" {
-		campus = "雁塔校区"
+		this.ajaxMsg("获取失败", MSG_ERR_Param)
 	}
-	fmt.Println("campus:", campus)
-	//this.Data["campus"] = campus
+	o := orm.NewOrm()
+	//校区
+	c := new(models.Canteen)
+	var maps_campus []orm.Params
+	num, err := o.QueryTable(c).Filter("CampusName", campus).Values(&maps_campus)
+	if err != nil {
+		log4go.Stdout("获取食堂失败", err.Error())
+		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
+	}
+	this.ajaxList("获取食堂成功", MSG_OK, num, maps_campus)
+
+}
+
+func (this *DiningRoomController) AddRoom() {
+	o := orm.NewOrm()
+	var maps []orm.Params
+	campus := new(models.Campus)
 	//查询食堂数据库
 	//num, err := o.QueryTable(canteen).Filter("CampusName", campus).Values(&maps)
-	num, err := o.QueryTable(canteen).Values(&maps)
+	num, err := o.QueryTable(campus).Values(&maps)
 	if err != nil {
 		log4go.Stdout("获取食堂失败", err.Error())
 		this.ajaxMsg("获取食堂失败", MSG_ERR_Resources)
 	}
 	fmt.Println("get canteen reslut num:", num)
-	this.Data["canteen_info"] = maps
+	this.Data["campus_info"] = maps
 	//查询时段数据库
 	var timemaps []orm.Params
 	diningtime := new(models.DiningTime)
@@ -152,10 +138,6 @@ func (this *DiningRoomController) AddRoomAction() {
 }
 
 func (this *DiningRoomController) EditRoom() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
 	o := orm.NewOrm()
 	var maps []orm.Params
 	diningroom := new(models.DiningRoom)
@@ -231,6 +213,7 @@ func (this *DiningRoomController) EditRoomAction() {
 	diningroom1.Phone = diningroom.Phone
 	diningroom1.RoomPicPath = diningroom.RoomPicPath
 	diningroom1.Time = diningroom.Time
+	diningroom1.Pwd = diningroom.Pwd
 	fmt.Println("diningroom1_info:", &diningroom1)
 	num, err := o.Update(&diningroom1)
 	if err != nil {

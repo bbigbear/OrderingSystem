@@ -75,7 +75,7 @@ func (this *LoginController) LoginAction() {
 			fmt.Println(login_info.ReadName)
 			if login_info.ReadName == "管理员" {
 				//存session
-				this.SetSession("islogin", 1)
+				//this.SetSession("islogin", 1)
 				this.ajaxMsg("登录成功", MSG_OK)
 			} else {
 				this.ajaxMsg("你无权登录", MSG_ERR_Verified)
@@ -99,7 +99,7 @@ func (this *LoginController) LoginAction() {
 			if room_info.Pwd == pwd {
 				list["id"] = room_info.Id
 				//存session
-				this.SetSession("islogin", 1)
+				//this.SetSession("islogin", 1)
 				this.ajaxList("登录成功", MSG_OK, 1, list)
 			} else {
 				this.ajaxMsg("密码错误", MSG_ERR)
@@ -113,16 +113,16 @@ func (this *LoginController) LoginAction() {
 		o := orm.NewOrm()
 		s := new(models.Student)
 		var student_info models.Student
-		isExist := o.QueryTable(s).Filter("Sid", uname).Exist()
+		isExist := o.QueryTable(s).Filter("Name", uname).Exist()
 		if isExist {
-			err := o.QueryTable(s).Filter("Sid", uname).One(&student_info)
+			err := o.QueryTable(s).Filter("Name", uname).One(&student_info)
 			if err != nil {
 				fmt.Println("err!")
 			}
 			if student_info.Pwd == pwd {
 				list["id"] = student_info.Sid
 				//存session
-				this.SetSession("islogin", 1)
+				//this.SetSession("islogin", 1)
 				this.ajaxList("登录成功", MSG_OK, 1, list)
 			} else {
 				this.ajaxMsg("密码错误", MSG_ERR)

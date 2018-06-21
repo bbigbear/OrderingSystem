@@ -19,7 +19,7 @@ body{padding: 10px;}
 <body>
 <form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">
   <div class="layui-form-item">
-    <label class="layui-form-label">菜品名称</label>
+    <label class="layui-form-label">*菜品名称</label>
     <div class="layui-input-block">
 <!--     <input type="text" name="title" lay-verify="required|title" required placeholder="标题不超过20个汉字" autocomplete="off" class="layui-input">-->
 	  <input type="text" name="Name" id="name" placeholder="请输入菜品名称" autocomplete="off" class="layui-input">
@@ -39,14 +39,14 @@ body{padding: 10px;}
   </div>
   <div class="layui-form-item">
     <div class="layui-inline">
-      <label class="layui-form-label">菜品售价</label>
+      <label class="layui-form-label">*菜品售价</label>
       <div class="layui-input-inline" style="width: 100px;">
         <input type="text" name="Sell_price" id="sell_price" placeholder="￥" autocomplete="off" class="layui-input">
       </div>
     </div>
   </div>
   <div class="layui-form-item layui-form-text">
-    <label class="layui-form-label">菜品描述</label>
+    <label class="layui-form-label">*菜品描述</label>
     <div class="layui-input-block">
       <textarea placeholder="请输入内容" class="layui-textarea" name="Info" id="info"></textarea>
     </div>
@@ -74,7 +74,9 @@ body{padding: 10px;}
 
 <script src="/static/layui.js"></script>
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
-
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 layui.use(['form','laydate','upload','jquery','layedit'], function(){
   var form = layui.form
@@ -82,7 +84,12 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
   ,upload = layui.upload
   , $ = layui.jquery
   ,layedit=layui.layedit;
-  
+	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}
+	}) 
+	
 	//日期
 	laydate.render({
 		elem:'#time'
@@ -97,7 +104,7 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 	    ,multiple: true
 		,exts: 'jpg|png|gif|bmp|jpeg'
 		,auto:false
-	    ,number: 1
+	    ,number: 4
 	    ,size: 3*1024
 		,bindAction: '#add'
 		//,field:'myfile'
@@ -140,23 +147,20 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 		return false;//禁止form自动提交
 	});
 	
-	
-	//复选框
-	//var checkbox_src=""
-	//form.on('checkbox', function(data){
-		//console.log(data);		   
-		//if(data.elem.checked==true){		
-			//checkbox_src=checkbox_src+data.elem.title+',';	
-		//}
-	//});
-	function uploadForm(){	 		
-		var data={
+	function uploadForm(){
+		var name = $("#name").val()
+		var price = $("#sell_price").val()
+		var detail = layedit.getContent(index)
+		if (name==""||price==""||detail==""){
+			alert("带*的必填")
+		}else{
+			var data={
 			'rid':parseInt(<<<.id>>>),
-			'name':$("#name").val(),
-			'price':parseFloat($("#sell_price").val()),
+			'name':name,
+			'price':parseFloat(price),
 			'dishType':$("#dishType").val(),
 			'dishPicPath':path_src,
-			'detail':layedit.getContent(index),
+			'detail':detail,
 			};
 			$.ajax({
 				type:"POST",
@@ -175,10 +179,10 @@ layui.use(['form','laydate','upload','jquery','layedit'], function(){
 						alert("新增失败")
 					}						
 				}
-			});		
+			});
+		}				
 	}
-	$('#add').on('click',function(){
-	    	
+	$('#add').on('click',function(){	    	
 		var len=document.querySelector("input[type=file]").files.length;		
 		if (len==0){
 			uploadForm();

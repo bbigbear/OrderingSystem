@@ -27,6 +27,7 @@ func init() {
 	beego.Router("/v1/dining_room/del", &controllers.DiningRoomController{}, "post:DelRoom")
 	beego.Router("/v1/dining_room/stop", &controllers.DiningRoomController{}, "post:StopRoom")
 	beego.Router("/v1/dining_room/getroom", &controllers.DiningRoomController{}, "post:GetRoom")
+	beego.Router("/v1/dining_room/getcampus", &controllers.DiningRoomController{}, "*:GetCampus")
 
 	beego.Router("/v1/dining_time", &controllers.DiningTimeController{})
 	beego.Router("/v1/dining_time/add", &controllers.DiningTimeController{}, "*:AddTime")

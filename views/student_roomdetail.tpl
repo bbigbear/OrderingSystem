@@ -22,7 +22,7 @@
           <dd><a href="">安全设置</a></dd>
         </dl>
       </li>
-      <li class="layui-nav-item"><a href="/login">退出</a></li>
+      <li class="layui-nav-item"><a href="/">退出</a></li>
     </ul>
   </div>
   
@@ -38,23 +38,7 @@
   <div class="layui-body">
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
-<!--		<blockquote class="layui-elem-quote">食堂选择</blockquote>-->
-		<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">		
-		  <!--<div class="layui-form-item">
-			<label class="layui-form-label">选择类型</label>
-		    <div class="layui-input-inline">
-				<select name="cname" id="cname" lay-filter="campus_select">
-		          <option value="第一食堂">第一食堂</option>
-		          <option value="第二食堂">第二食堂</option>
-		        </select>
-			</div>
-			<div class="layui-input-inline" style="margin-left:100px;">
-				<input type="text" name="rname" id="rname" placeholder="请输入餐厅名称" autocomplete="off" class="layui-input">
-			</div>
-			<div class="layui-input-inline" >
-		      <button class="layui-btn" id="search">搜索</button>
-		  	</div>
-		  </div>-->
+		<form class="layui-form layui-form-pane1" action="" onsubmit="javascript:return false;">				  
 		  <<<range $i,$e:=.mt_info>>>
 					<blockquote class="layui-elem-quote"><<<$e.Name>>></blockquote>	
 					<div class="layui-form-item">									
@@ -64,8 +48,8 @@
 <!--							    <label class="layui-form-label"><<<.Dname>>></label>-->
 							    <div class="layui-input-inline" style="width:100px;height:100px;">
 									<div><img src="/<<<.Pic>>>" id="room_img_'+<<<.Id>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:80px;height:80px;"></div>
-									<div><p><<<.Dname>>></p></div>
-									<div><p>￥<<<.Price>>> <i class="layui-icon" id="<<<.Id>>>">&#xe654;</i></p></div>
+									<div><p><span style="font-size: 15px;"><<<.Dname>>></span></p></div>
+									<div><p><span style="font-size: 15px;">￥<<<.Price>>></span> <i class="layui-icon" id="<<<.Id>>>" style="font-size: 20px;padding-left:5px;cursor:pointer;">&#xe608;</i></p></div>
 							    </div>
 							</div>			  
 						<<<end>>>									
@@ -109,12 +93,14 @@
 		disabled:true
 	}
 	.runtest{position: relative; display:none;}
-	.site-demo-text{display:block; width: 320px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px; line-height:20px; overflow:auto; background-color: #f2f2f2;  font-size:12px; font-family:Courier New;}
+	.site-demo-text{display:block; width: 320px; height: 160px; border: 10px solid #F8F8F8; border-top-width: 0; padding: 10px;line-height:20px; overflow:auto; background-color: #f2f2f2;  font-size:12px; font-family:Courier New;}
 	#btns{position: absolute; right: 20px; bottom: 20px;}
 </style>
 
 <script src="/static/layui.js"></script>
-<!--<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>-->
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 	//JavaScript代码区域
 	layui.use(['element','layer','jquery','table','flow'], function(){
@@ -127,7 +113,10 @@
 	 //layer.msg("你好");
 	
 	//初始化
- 	$(function(){		
+ 	$(function(){
+		if($.cookie('user')!=1){
+			window.location.href="/"
+		}		
 		<<<range .map>>>
 			$('#demo').append('<div class="layui-input-inline" style="width:150px;height:150px;"><div><img src="'+"/"+<<<.RoomPicPath>>>+'" id="room_img_'+<<<.Id>>>+'" style="width:100px;height:100px;"></div><div><p><b><<<.Name>>></b></p></div></div>')
 			$("#room_img_"+<<<.Id>>>).bind('click',function(){             
@@ -250,7 +239,7 @@
 	
 	//
 	$('#btns').on('click',function(){
-		layer.msg("点击下单按钮")
+		//layer.msg("点击下单按钮")
 		var str="";
 		var str_name="";
 		var str_price="";
@@ -328,6 +317,7 @@
       ,shade: false
       ,offset: 'rb'
 	  ,closeBtn: 0
+	  //,maxmin: true
       ,resize: false
       ,success: function(layero, index){
         layer.style(index, {

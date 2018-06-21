@@ -47,7 +47,7 @@ body{padding: 10px;}
     <div class="layui-input-block">
       <button class="layui-btn" id="sure">确认下单</button>
 <!--	  <input type="hidden" id="pic_path">-->
-      <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+<!--      <button class="layui-btn layui-btn-primary" >取消</button>-->
     </div>
   </div>
 </form>
@@ -57,7 +57,9 @@ body{padding: 10px;}
 
 <script src="/static/layui.js"></script>
 <!-- <script src="../build/lay/dest/layui.all.js"></script> -->
-
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/Base64/1.0.1/base64.js"></script>
 <script>
 layui.use(['form','laydate','upload','jquery','layedit','element','table'], function(){
   var form = layui.form
@@ -68,6 +70,11 @@ layui.use(['form','laydate','upload','jquery','layedit','element','table'], func
   ,element=layui.element
   ,table=layui.table;
 
+	$(function(){
+			if($.cookie('user')!=1){
+				window.location.href="/"
+			}
+	})
   //获取url中的参数
         function getUrlParam(name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象

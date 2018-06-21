@@ -15,11 +15,6 @@ type CanteenController struct {
 }
 
 func (this *CanteenController) Get() {
-	if this.GetSession("islogin") != 1 {
-		fmt.Println("未登录")
-		this.Redirect("/v1/login", 302)
-	}
-
 	o := orm.NewOrm()
 	var maps []orm.Params
 	canteen := new(models.Canteen)
